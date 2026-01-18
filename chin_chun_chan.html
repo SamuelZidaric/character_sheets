@@ -310,6 +310,37 @@
         .log-entry { margin-bottom: 4px; border-bottom: 1px solid #333; padding-bottom: 2px; }
         .log-crit { color: #facc15; font-weight: bold; text-shadow: 0 0 5px #facc15; }
         .log-fail { color: #f87171; }
+
+        /* --- BACKSTORY MODAL --- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); z-index: 1000;
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: var(--card-bg); width: 800px; max-width: 90%; max-height: 85vh;
+            border-radius: 8px; border: 2px solid var(--samurai-highlight);
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            display: flex; flex-direction: column;
+        }
+        .modal-header {
+            padding: 20px; border-bottom: 1px solid #475569;
+            display: flex; justify-content: space-between; align-items: center;
+            background: #1e1b1a; border-radius: 6px 6px 0 0;
+        }
+        .modal-body {
+            padding: 30px; overflow-y: auto; font-family: 'Georgia', serif; 
+            line-height: 1.6; color: #d6d3d1; font-size: 1.1em;
+        }
+        .modal-close {
+            background: transparent; border: none; color: #fff; font-size: 1.5em; cursor: pointer;
+        }
+        .story-title { color: var(--gold); font-size: 1.5em; font-weight: bold; margin-bottom: 10px; text-align: center; }
+        .story-quote { 
+            font-style: italic; color: var(--accent); border-left: 3px solid var(--accent); 
+            padding-left: 15px; margin: 20px 0; background: rgba(88, 28, 135, 0.2); padding: 10px; border-radius: 4px;
+        }
+        .story-h3 { color: var(--samurai-highlight); margin-top: 25px; border-bottom: 1px solid #444; padding-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -318,6 +349,9 @@
     <a href="index.html" class="back-btn">← Back</a>
     <div class="header-info">
         <h1>Chin Chun Chan <span class="rules-badge">Samurai</span></h1>
+        <button class="rest-btn" onclick="toggleModal('backstory-modal')" style="border-color:var(--accent); color:var(--accent)">
+            📖 BOOK OF WISDOM
+        </button>
         <h2>Fighter (Samurai) • Amethyst Dragonborn Outlander • <span style="color:var(--samurai-highlight)">w/ Baby Hook Horror</span></h2>
     </div>
     <div class="level-control">
@@ -339,24 +373,24 @@
             </div>
 
             <div class="rp-block">
-                <span class="rp-label">Physical</span>
-                <span class="rp-text">Amethyst-scaled Dragonborn with violet crystalline eyes. Wears traditional samurai armor with amethyst gem inlays. Carries a katana and a wakizashi with purple-wrapped hilts.</span>
+                <span class="rp-label">Origin</span>
+                <span class="rp-text">Abandoned by wealthy merchant parents at a tavern[cite: 5, 7]. Raised by the dwarven <strong>Clan of the Iron Blossom</strong>[cite: 26]. Taught the blade by Master Thorin Ironwhisker (a dwarf who is "kind of a weeb")[cite: 37].</span>
             </div>
             <div class="rp-block">
                 <span class="rp-label">Personality</span>
-                <span class="rp-text">Disciplined warrior who follows the code of Bushido. Speaks with calm authority. Has adopted a baby Hook Horror as a companion, treating it with surprising gentleness.</span>
+                <span class="rp-text">Speaks in "profound wisdom" that is actually just obvious observations (e.g., "Hunger is when you haven't eaten")[cite: 32]. Bows to everyone, including rocks[cite: 140].</span>
             </div>
             <div class="rp-block">
-                <span class="rp-label">Ideals (Lawful/Neutral)</span>
-                <span class="rp-text"><strong>Honor & Discipline:</strong> A warrior's strength comes from unwavering dedication to their code. The blade is an extension of the soul.</span>
+                <span class="rp-label">Ideals</span>
+                <span class="rp-text"><strong>Enlightenment:</strong> "To know light, one must also know darkness." That is why I walked into this cave[cite: 80].</span>
             </div>
             <div class="rp-block">
                 <span class="rp-label">Bonds</span>
-                <span class="rp-text">Must restore honor to my fallen clan. My baby Hook Horror "Kagi" is my responsibility to raise and protect.</span>
+                <span class="rp-text">My katana, <strong>"Sharp Friend"</strong>[cite: 100]. My adoptive dwarf family. Kagi (my baby Hook Horror).</span>
             </div>
             <div class="rp-block" style="margin-bottom:0;">
                 <span class="rp-label">Flaws</span>
-                <span class="rp-text" style="color:var(--warning)">Rigid adherence to honor can be exploited. Protective to a fault over Kagi. Struggles with "dishonorable" tactics.</span>
+                <span class="rp-text" style="color:var(--warning)">Believes he is a master flute player (he is terrible)[cite: 62]. Thinks his breath weapon is just "breathing really hard"[cite: 132].</span>
             </div>
         </div>
 
@@ -421,14 +455,14 @@
                 </label>
             </div>
 
-            <div class="attack-card" onclick="rollAttack('Katana', 'wep1-hit', 'wep1-dmg')">
+            <div class="attack-card" onclick="rollAttack('Sharp Friend', 'wep1-hit', 'wep1-dmg')">
                 <div class="attack-header">
-                    <span>KATANA <span style="font-size:0.8em; color:#888;">(Longsword)</span></span>
+                    <span>SHARP FRIEND <span style="font-size:0.8em; color:#888;">(Katana)</span></span>
                     <span id="wep1-hit" style="color:var(--success);">+6 Hit</span>
                 </div>
                 <div class="attack-detail">
                     Damage: <span class="dmg-text" id="wep1-dmg">1d10+3</span> <span id="wep1-type">Slashing</span><br>
-                    <span id="wep1-desc" style="font-size:0.9em; color:#cbd5e1">Two-handed versatile grip.</span>
+                    <span id="wep1-desc" style="font-size:0.9em; color:#cbd5e1">"We are friends, right Sharp Friend?" (He holds it to his ear) .</span>
                 </div>
             </div>
 
@@ -546,12 +580,47 @@
         <div class="card">
             <div class="card-title">Psionic Mind</div>
             <div style="font-size:0.9em; color:#cbd5e1;">
-                <span style="color:var(--accent); font-weight:bold;">Telepathy (9m)</span><br>
-                <span style="font-size:0.85em; color:#94a3b8;">Speak telepathically with creatures within 9m that you can see. They can respond if they understand at least one language.</span>
+                <span style="color:var(--accent); font-weight:bold;">"Thinking Loudly" (Telepathy 9m)</span><br>
+                <span style="font-size:0.85em; color:#94a3b8;">You can send telepathic messages to creatures within 9m. Chin calls this "thinking really loudly at people". Often used to tell monsters that "Violence is just spicy peace"[cite: 93].</span>
             </div>
         </div>
     </div>
 
+    <div id="backstory-modal" class="modal-overlay" onclick="if(event.target === this) toggleModal('backstory-modal')">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span style="font-weight:bold; color:var(--gold); text-transform:uppercase;">The Book of Infinite Wisdom</span>
+                <button class="modal-close" onclick="toggleModal('backstory-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="story-title">The Definitely True Story of Chin Chun Chan </div>
+                
+                <div class="story-quote">
+                    "If you think about it, breathing is just mouth wind but on the inside." [cite: 2]
+                </div>
+
+                <h3 class="story-h3">Chapter 1: The Oopsie [cite: 4]</h3>
+                <p>Chin's parents were wealthy merchants who got so distracted by a jade salesman's pitch that they left the tavern without him[cite: 9, 10]. They traveled three kingdoms away before realizing they had forgotten the "purple scaly thing that called us mama and papa"[cite: 14, 16]. They did not turn back[cite: 18].</p>
+
+                <h3 class="story-h3">Chapter 2: Raised by Dwarves [cite: 21]</h3>
+                <p>Found by the Clan of the Iron Blossom, Chin's first words to a dwarf poking him with a stick were: <em>"Stick is long rock."</em>[cite: 24]. The dwarves tried to find his parents with posters reading "FOUND: One (1) Purple Baby Dragon. Very Stupid. Please Claim," but eventually adopted him[cite: 26, 27].</p>
+
+                <h3 class="story-h3">Chapter 3: The Way of the Blade [cite: 35]</h3>
+                <p>Master Thorin Ironwhisker, a dwarf who had been to Kara-Tur (and was "kind of a weeb"), taught Chin the samurai arts[cite: 36, 37]. Chin was surprisingly a prodigy at fighting, physically grasping what his mind could not. Thorin taught him that "The blade is an extension of your soul," leading Chin to believe that if he drops his sword, his soul is on the floor[cite: 43, 44].</p>
+
+                <h3 class="story-h3">Chin's Philosophy [cite: 113]</h3>
+                <ul>
+                    <li><strong>On Hunger:</strong> "Have you ever noticed that when you're hungry, it's because you haven't eaten?" [cite: 32]</li>
+                    <li><strong>On Combat:</strong> "The enemy cannot defeat you if you defeat them first." [cite: 117]</li>
+                    <li><strong>On Strategy:</strong> "Every battle is a surprise party. Except I'm the one surprising them. By hitting them." [cite: 128]</li>
+                    <li><strong>On The Underdark:</strong> "If it was above things, it would be the Overdark." [cite: 121]</li>
+                </ul>
+
+                <h3 class="story-h3">Inventory & Facts [cite: 99]</h3>
+                <p>Chin carries <strong>"Sharp Friend"</strong> (his katana, named because it is the sharp part) [cite: 100, 123] and a <strong>flute</strong> which he plays with the confidence of a man who thinks making noise is the same as making music[cite: 63]. He navigates the Underdark using "vibes" [cite: 87] and sends telepathic messages to monsters like "Violence is just spicy peace"[cite: 93].</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -570,64 +639,62 @@
 
     const levels = {
         1: {
-            str: 16, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 2, hp: 13,
+            str: 16, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 2, hp: 13,
             fightingSpirit: 3, actionSurge: 0, secondWind: 1,
             features: [
-                {name: "Amethyst Dragonborn", source: "Species", desc: "Force Resistance. Breath Weapon (15ft cone, 2d10 Force, DEX save). Psionic Mind (9m telepathy)."},
-                {name: "Outlander", source: "Background", desc: "Wanderer: Excellent memory for maps and geography. Can find food and fresh water for yourself and up to five others each day."},
-                {name: "Fighting Style: Great Weapon Fighting", source: "Fighter 1", desc: "Reroll 1s and 2s on damage dice with two-handed weapons."},
-                {name: "Second Wind", source: "Fighter 1", desc: "<span class='kw-bonus'>Bonus Action</span>. Heal 1d10 + Fighter level. Recharges on Short Rest."},
-                {name: "Weapon Mastery (2)", source: "Fighter 1", desc: "<b>Longsword (Flex):</b> Use different damage die based on grip.<br><b>Shortsword (Vex):</b> Advantage on next attack after hit."}
+                {name: "Amethyst Dragonborn", source: "Species", desc: "Force Resistance. Breath Weapon (Chin thinks he's just 'breathing hard'). Psionic Mind (Thinking loudly). [cite: 132, 134]"},
+                {name: "Background: The Oopsie", source: "History", desc: "Abandoned at a tavern, raised by dwarves. Carries a 'Book of Infinite Wisdom' stolen from said tavern[cite: 34]."},
+                {name: "Fighting Style: Defense", source: "Fighter 1", desc: "+1 AC. Master Thorin taught you to swing a sword without cutting your tail off[cite: 41]."},
+                {name: "Second Wind", source: "Fighter 1", desc: "<span class='kw-bonus'>Bonus Action</span>. Heal 1d10+Lvl. 'If you keep breathing, you don't die. This is the way.' [cite: 58]"},
+                {name: "Musical Menace", source: "Flaw", desc: "Carries a flute. Has never successfully played a song, but believes he has played thousands[cite: 137]."}
             ]
         },
         2: {
-            str: 16, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 2, hp: 22,
+            str: 16, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 2, hp: 22,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1,
             features: [
-                {name: "Action Surge", source: "Fighter 2", desc: "Take one additional Action on your turn. Recharges on Short Rest."},
-                {name: "Tactical Mind", source: "Fighter 2", desc: "When you fail an ability check, expend a use of Second Wind to add 1d10 to the roll. If still fails, Second Wind isn't expended."}
+                {name: "Action Surge", source: "Fighter 2", desc: "Take one additional Action on your turn. Recharges on Short Rest."}
             ]
         },
         3: {
-            str: 16, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 2, hp: 31,
+            str: 16, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 2, hp: 31,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1,
             features: [
                 {name: "Fighting Spirit", source: "Samurai 3", desc: "<span class='kw-bonus'>Bonus Action</span>. Gain Advantage on all weapon attacks and 5 Temp HP until end of turn. 3 uses, recharges on Long Rest."},
-                {name: "Bonus Proficiency", source: "Samurai 3", desc: "Gain proficiency in one of: History, Insight, Performance, or Persuasion. (Persuasion chosen)"},
-                {name: "Weapon Mastery (3)", source: "Fighter 3", desc: "Learn one additional weapon mastery. Can change one mastery when you level up."}
+                {name: "Bonus Proficiency", source: "Samurai 3", desc: "Gain proficiency in Persuasion."}
             ]
         },
         4: {
-            str: 18, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 2, hp: 40,
+            str: 16, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 2, hp: 40,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1,
             features: [
-                {name: "Feat: Great Weapon Master", source: "Fighter 4", desc: "+1 STR. Heavy Hew: On crit or reducing creature to 0 HP, make one extra attack as BA. Graze: On miss, deal STR mod damage."}
+                {name: "Feat: Sentinel", source: "Fighter 4", desc: "1. OA hits reduce speed to 0.<br>2. OA triggered even if enemy Disengages.<br>3. Reaction attack if enemy hits ally within 5ft."}
             ]
         },
         5: {
             str: 16, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 3, hp: 49,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
             features: [
-                {name: "Extra Attack", source: "Fighter 5", desc: "You can attack twice, instead of once, whenever you take the Attack action on your turn."},
+                {name: "Extra Attack", source: "Fighter 5", desc: "Attack twice when taking the Attack action."},
                 {name: "Gem Flight", source: "Amethyst Dragonborn 5", desc: "<span class='kw-bonus'>Bonus Action</span>. Gain 30ft fly speed for 10 minutes. 1 use, recharges on Long Rest."}
             ]
         },
         6: {
-            str: 20, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 3, hp: 58,
+            str: 18, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 3, hp: 58,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
             features: [
-                {name: "Ability Score Improvement", source: "Fighter 6", desc: "+2 STR (now 20). Maximum melee damage potential."}
+                {name: "Ability Score Improvement", source: "Fighter 6", desc: "+2 STR (now 18)."}
             ]
         },
         7: {
             str: 18, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 3, hp: 67,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
             features: [
-                {name: "Elegant Courtier", source: "Samurai 7", desc: "Add your Wisdom modifier to Persuasion checks. You also gain proficiency in Wisdom saving throws."}
+                {name: "Elegant Courtier", source: "Samurai 7", desc: "Add WIS mod to Persuasion checks. Gain Proficiency in WIS saves."}
             ]
         },
         8: {
-            str: 20, dex: 14, con: 18, int: 10, wis: 14, cha: 10, prof: 3, hp: 78,
+            str: 18, dex: 12, con: 18, int: 8, wis: 14, cha: 8, prof: 3, hp: 78,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
             features: [
                 {name: "Feat: Tough", source: "Fighter 8", desc: "HP increases by 2 per level (retroactive). +2 CON (now 18)."}
@@ -874,11 +941,8 @@
 
             let rolls = [];
             for(let i=0; i<count; i++) {
+                // Defense Style: No re-rolling 1s and 2s
                 let r = Math.floor(Math.random() * faces) + 1;
-                // Great Weapon Fighting: Reroll 1s and 2s
-                if (faces >= 6 && (r === 1 || r === 2)) {
-                    r = Math.floor(Math.random() * faces) + 1;
-                }
                 rolls.push(r);
             }
             let dmgTotal = rolls.reduce((a,b) => a+b, 0) + mod;
@@ -926,9 +990,15 @@
         log.prepend(entry);
     }
 
+    // --- UI Logic ---
+    function toggleModal(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'flex') ? 'none' : 'flex';
+    }
+
     // Initialize
     updateDashboard(1);
-</script>
 
+</script>
 </body>
 </html>
