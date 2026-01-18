@@ -3,23 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Character Sheets - Chin Chun Chan</title>
+    <title>Chin Chun Chan - Samurai Fighter</title>
     <style>
         :root {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
             --text-main: #f1f5f9;
             --text-muted: #94a3b8;
-            --accent: #8b5cf6; /* Amethyst purple fits the race perfectly */
+            --accent: #a855f7; /* Amethyst Purple for Dragonborn */
             --gold: #38bdf8;
             --magic: #c084fc;
             --success: #4ade80;
             --warning: #f87171;
-            --dex-highlight: #2dd4bf;
-        }
-
-        * {
-            box-sizing: border-box;
+            --samurai-highlight: #ef4444; /* Red for Samurai theme */
         }
 
         body {
@@ -28,234 +24,869 @@
             color: var(--text-main);
             margin: 0;
             padding: 20px;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            font-size: 14px;
         }
 
         header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 20px;
             background: var(--card-bg);
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            border-bottom: 3px solid var(--accent);
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--samurai-highlight);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
-        header p {
-            margin: 10px 0 0;
-            color: var(--text-muted);
-            font-size: 1.1em;
-        }
-
-        .character-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            padding: 10px;
-        }
-
-        .character-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-
-        .character-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
-        }
-
-        .card-image {
-            width: 100%;
-            height: 320px;
-            overflow: hidden;
-            position: relative;
-            background: #2d1b4e; /* Dark purple placeholder bg */
-        }
-
-        .card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top center;
-            transition: transform 0.3s ease;
-        }
-
-        .character-card:hover .card-image img {
-            transform: scale(1.05);
-        }
-
-        .card-level {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+        .header-info h1 { margin: 0; font-size: 1.8em; color: var(--samurai-highlight); text-transform: uppercase; letter-spacing: 2px; }
+        .header-info h2 { margin: 5px 0 0; font-size: 1em; color: var(--text-muted); }
+        .rules-badge {
+            display: inline-block;
             background: var(--accent);
             color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .level-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+
+        input[type=range] { accent-color: var(--samurai-highlight); width: 200px; cursor: pointer; }
+        .level-badge {
+            background: var(--samurai-highlight);
+            color: #fff;
             font-weight: bold;
-            font-size: 1.2em;
-            width: 45px;
-            height: 45px;
+            font-size: 1.5em;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 0 10px var(--samurai-highlight);
         }
 
-        .card-content {
-            padding: 20px;
+        .dashboard {
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            gap: 20px;
+            max-width: 1500px;
+            margin: 0 auto;
         }
 
-        .card-name {
-            font-size: 1.4em;
-            font-weight: bold;
-            color: var(--dex-highlight);
-            margin: 0 0 5px 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        @media (max-width: 1100px) { .dashboard { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 768px) { .dashboard { grid-template-columns: 1fr; } }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            border: 1px solid #334155;
         }
 
         .card-title {
-            font-size: 0.9em;
-            color: var(--text-muted);
-            margin: 0 0 15px 0;
-            font-style: italic;
-        }
-
-        .card-stats {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .stat-badge {
-            background: rgba(0,0,0,0.3);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .stat-badge.class {
-            border: 1px solid var(--accent);
-            color: var(--magic);
-        }
-
-        .stat-badge.race {
-            border: 1px solid var(--gold);
-            color: var(--gold);
-        }
-
-        .add-character-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            border: 2px dashed #475569;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 450px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: var(--text-muted);
-        }
-
-        .add-character-card:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .add-icon {
-            font-size: 4em;
-            margin-bottom: 15px;
-            opacity: 0.5;
-        }
-
-        .add-character-card:hover .add-icon {
-            opacity: 1;
-        }
-
-        .add-text {
-            font-size: 1.1em;
+            color: var(--samurai-highlight);
+            font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            border-bottom: 1px solid #475569;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            color: var(--text-muted);
+        /* --- IMAGES --- */
+        .char-img-container {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 2px solid var(--accent);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            background: #000;
+        }
+        .char-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+        }
+
+        .pet-img-container {
+            width: 100%;
+            height: 150px;
+            overflow: hidden;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--accent);
+        }
+        .pet-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- ROLEPLAY TEXT --- */
+        .rp-block { margin-bottom: 12px; font-size: 0.85em; color: #cbd5e1; line-height: 1.4; }
+        .rp-label { color: var(--gold); font-weight: bold; display: block; margin-bottom: 2px; font-size: 0.9em; text-transform: uppercase; }
+        .rp-text { font-style: italic; }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .stat-box {
+            background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 8px; text-align: center;
+        }
+        .stat-label { font-size: 0.75em; color: var(--text-muted); display: block; }
+        .stat-val { font-size: 1.2em; font-weight: bold; display: block; }
+        .stat-mod { font-size: 0.9em; color: var(--samurai-highlight); }
+
+        .skill-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
             font-size: 0.85em;
+            border-bottom: 1px solid #334155;
+        }
+        .skill-prof { color: var(--samurai-highlight); font-weight: bold; }
+
+        .combat-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .combat-stat {
+            background: #0f172a; width: 23%; text-align: center; padding: 10px 0;
+            border-radius: 8px; border: 1px solid #334155;
+        }
+        .c-val { display: block; font-size: 1.4em; font-weight: bold; color: var(--samurai-highlight); }
+        .c-lbl { font-size: 0.7em; text-transform: uppercase; color: #888; }
+
+        .attack-card { background: #334155; padding: 10px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid var(--accent); }
+        .attack-header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px; }
+        .attack-detail { font-size: 0.85em; color: #cbd5e1; font-style: italic; }
+        .dmg-text { color: var(--samurai-highlight); }
+
+        .feature-list { max-height: 450px; overflow-y: auto; padding-right: 5px; }
+        .feature-item { margin-bottom: 12px; border-bottom: 1px solid #475569; padding-bottom: 8px; }
+        .feat-name { color: var(--samurai-highlight); font-weight: bold; display: block; margin-bottom: 3px; }
+        .feat-source { font-size: 0.75em; color: #94a3b8; background: #0f172a; padding: 2px 6px; border-radius: 4px; }
+        .feat-desc { font-size: 0.85em; line-height: 1.4; color: #cbd5e1; margin-top: 5px; }
+
+        .kw-action { color: #f472b6; font-weight: bold; }
+        .kw-bonus { color: #fbbf24; font-weight: bold; }
+        .kw-react { color: #60a5fa; font-weight: bold; }
+
+        /* Resource Pips */
+        .resource-display { margin-bottom: 15px; }
+        .resource-row { display: flex; align-items: center; margin-bottom: 5px; }
+        .resource-label { width: 100px; font-weight: bold; color: var(--magic); }
+        .resource-pip {
+            width: 14px; height: 14px; border-radius: 50%; background: var(--samurai-highlight);
+            margin-right: 6px; box-shadow: 0 0 5px var(--samurai-highlight);
+            cursor: pointer; display: inline-block;
+        }
+        .resource-pip.used {
+            background: #334155;
+            box-shadow: none;
+            border: 1px solid #475569;
+        }
+        .resource-pip.action-surge {
+            background: var(--gold);
+            box-shadow: 0 0 5px var(--gold);
+        }
+        .resource-pip.second-wind {
+            background: var(--success);
+            box-shadow: 0 0 5px var(--success);
+        }
+        .resource-pip.breath {
+            background: var(--accent);
+            box-shadow: 0 0 5px var(--accent);
         }
 
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.8em;
-            }
-
-            .character-grid {
-                grid-template-columns: 1fr;
-            }
+        /* Pet Hover */
+        .pet-tooltip {
+            visibility: hidden; width: 300px; background-color: #0f172a; border: 2px solid var(--accent);
+            border-radius: 8px; padding: 0; position: absolute; bottom: 110%; right: 0; z-index: 200;
+            box-shadow: 0 10px 25px rgba(0,0,0,1); opacity: 0; transition: opacity 0.2s; pointer-events: none; text-align: left;
+            overflow: hidden;
         }
+        .pet-content { padding: 12px; }
+        #pet-resource { position: relative; cursor: help; }
+        #pet-resource:hover .pet-tooltip { visibility: visible; opacity: 1; }
+
+        /* Stat Block inside Tooltip */
+        .sb-header { border-bottom: 1px solid var(--accent); margin-bottom: 8px; padding-bottom: 5px; }
+        .sb-title { color: #facc15; font-weight: bold; font-size: 1.1em; text-transform: uppercase; }
+        .sb-meta { color: #94a3b8; font-size: 0.8em; font-style: italic; }
+        .sb-stats { display: flex; justify-content: space-between; background: #1e293b; padding: 5px; border-radius: 4px; margin-bottom: 8px; }
+        .sb-val { color: #fff; font-weight: bold; }
+        .sb-lbl { color: #94a3b8; font-size: 0.75em; }
+        .sb-action { font-size: 0.9em; margin-bottom: 6px; line-height: 1.3; color: #cbd5e1; }
+        .sb-action strong { color: #facc15; }
+
+        .toggle-container { display: flex; align-items: center; font-size: 0.8em; color: #ccc; margin-left: 10px; }
+        .toggle-checkbox { margin-right: 5px; accent-color: var(--magic); }
+
+        /* BUFF PANEL */
+        .buff-panel { display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+        .buff-lbl {
+            font-size: 0.75em; color: #94a3b8; background: #1e293b; padding: 4px 8px;
+            border-radius: 4px; border: 1px solid #334155; display: flex; align-items: center; cursor: pointer;
+        }
+        .buff-lbl:hover { border-color: var(--samurai-highlight); color:#fff; }
+        .buff-chk { margin-right: 5px; accent-color: var(--success); }
+
+        /* Make attack cards look clickable */
+        .attack-card { cursor: pointer; transition: transform 0.1s, border-color 0.1s; }
+        .attack-card:active { transform: scale(0.98); }
+        .attack-card:hover { border-color: #fff; }
+
+        /* Back Button */
+        .back-btn {
+            background: #1e293b; border: 1px solid var(--accent);
+            color: var(--accent); padding: 8px 16px; border-radius: 20px;
+            font-weight: bold; cursor: pointer; text-decoration: none;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .back-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 0 10px var(--accent); }
+
+        /* Short Rest Button */
+        .rest-btn {
+            background: #1e293b; border: 1px solid var(--samurai-highlight);
+            color: var(--samurai-highlight); padding: 5px 15px; border-radius: 20px;
+            font-weight: bold; cursor: pointer; margin-left: 15px;
+            transition: all 0.2s;
+        }
+        .rest-btn:hover { background: var(--samurai-highlight); color: #fff; box-shadow: 0 0 10px var(--samurai-highlight); }
+
+        /* Combat Log Console */
+        #combat-log {
+            background: #000; color: #4ade80; font-family: 'Consolas', monospace;
+            font-size: 0.85em; padding: 10px; border-radius: 6px; border: 1px solid #334155;
+            height: 120px; overflow-y: auto; margin-bottom: 20px; display: flex; flex-direction: column-reverse;
+        }
+        .log-entry { margin-bottom: 4px; border-bottom: 1px solid #333; padding-bottom: 2px; }
+        .log-crit { color: #facc15; font-weight: bold; text-shadow: 0 0 5px #facc15; }
+        .log-fail { color: #f87171; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Character Sheets</h1>
-            <p>Select a character to view their sheet</p>
-        </header>
 
-        <div class="character-grid">
-            <a href="chin-chun-chan.html" class="character-card">
-                <div class="card-image">
-                    <img src="images/chin-chun-chan.png" alt="Chin Chun Chan">
-                    <div class="card-level">5</div>
-                </div>
-                <div class="card-content">
-                    <h2 class="card-name">Chin Chun Chan</h2>
-                    <p class="card-title">Outlander Samurai - w/ Baby Hook Horror</p>
-                    <div class="card-stats">
-                        <span class="stat-badge class">Fighter (Samurai)</span>
-                        <span class="stat-badge race">Amethyst Dragonborn</span>
-                    </div>
-                </div>
-            </a>
+<header>
+    <a href="index.html" class="back-btn">← Back</a>
+    <div class="header-info">
+        <h1>Chin Chun Chan <span class="rules-badge">Samurai</span></h1>
+        <h2>Fighter (Samurai) • Amethyst Dragonborn Outlander • <span style="color:var(--samurai-highlight)">w/ Baby Hook Horror</span></h2>
+    </div>
+    <div class="level-control">
+        <label>LEVEL</label>
+        <input type="range" id="levelRange" min="1" max="8" value="5" oninput="updateDashboard(this.value)">
+        <div class="level-badge" id="lvl-badge">5</div>
+        <button class="rest-btn" onclick="shortRest()">SHORT REST</button>
+    </div>
+</header>
 
-            <div class="add-character-card" title="Add a new character">
-                <div class="add-icon">+</div>
-                <div class="add-text">Add Character</div>
+<div class="dashboard">
+
+    <div class="col-1">
+        <div class="card">
+            <div class="card-title">Identity</div>
+
+            <div class="char-img-container">
+                <img src="images/chin-chun-chan.png" alt="Chin Chun Chan" class="char-img">
+            </div>
+
+            <div class="rp-block">
+                <span class="rp-label">Physical</span>
+                <span class="rp-text">Amethyst-scaled Dragonborn with violet crystalline eyes. Wears traditional samurai armor with amethyst gem inlays. Carries a katana and a wakizashi with purple-wrapped hilts.</span>
+            </div>
+            <div class="rp-block">
+                <span class="rp-label">Personality</span>
+                <span class="rp-text">Disciplined warrior who follows the code of Bushido. Speaks with calm authority. Has adopted a baby Hook Horror as a companion, treating it with surprising gentleness.</span>
+            </div>
+            <div class="rp-block">
+                <span class="rp-label">Ideals (Lawful/Neutral)</span>
+                <span class="rp-text"><strong>Honor & Discipline:</strong> A warrior's strength comes from unwavering dedication to their code. The blade is an extension of the soul.</span>
+            </div>
+            <div class="rp-block">
+                <span class="rp-label">Bonds</span>
+                <span class="rp-text">Must restore honor to my fallen clan. My baby Hook Horror "Kagi" is my responsibility to raise and protect.</span>
+            </div>
+            <div class="rp-block" style="margin-bottom:0;">
+                <span class="rp-label">Flaws</span>
+                <span class="rp-text" style="color:var(--warning)">Rigid adherence to honor can be exploited. Protective to a fault over Kagi. Struggles with "dishonorable" tactics.</span>
             </div>
         </div>
 
-        <footer>
-            D&D 5th Edition Character Sheets
-        </footer>
+        <div class="card">
+            <div class="card-title">Attributes</div>
+            <div class="stat-grid">
+                <div class="stat-box" style="border-color:var(--samurai-highlight)"><span class="stat-label" style="color:var(--samurai-highlight)">STR</span><span class="stat-val" id="str">16</span><span class="stat-mod" id="str-mod">+3</span></div>
+                <div class="stat-box"><span class="stat-label">DEX</span><span class="stat-val" id="dex">14</span><span class="stat-mod" id="dex-mod">+2</span></div>
+                <div class="stat-box" style="border-color:var(--success)"><span class="stat-label" style="color:var(--success)">CON</span><span class="stat-val" id="con">16</span><span class="stat-mod" id="con-mod">+3</span></div>
+                <div class="stat-box"><span class="stat-label">INT</span><span class="stat-val" id="int">10</span><span class="stat-mod" id="int-mod">+0</span></div>
+                <div class="stat-box" style="border-color:var(--accent)"><span class="stat-label" style="color:var(--accent)">WIS</span><span class="stat-val" id="wis">14</span><span class="stat-mod" id="wis-mod">+2</span></div>
+                <div class="stat-box"><span class="stat-label">CHA</span><span class="stat-val" id="cha">10</span><span class="stat-mod" id="cha-mod">+0</span></div>
+            </div>
+            <div style="text-align:center; font-size:0.9em; color:#888;">
+                Proficiency: <strong style="color:var(--text-main)" id="prof-bonus">+3</strong>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Saving Throws</div>
+            <div id="saves-container"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Skills</div>
+            <div id="skills-container"></div>
+            <div style="font-size:0.75em; color:#888; margin-top:8px;">
+                ★ = Proficient
+            </div>
+        </div>
     </div>
+
+    <div class="col-2">
+        <div class="card" style="padding:10px; background:#0f172a;">
+            <div class="card-title" style="margin:0 0 5px 0; border:none; font-size:0.8em;">Combat Log</div>
+            <div id="combat-log">
+                <div class="log-entry">> System Ready...</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="combat-bar">
+                <div class="combat-stat"><span class="c-lbl">AC</span><span class="c-val" id="ac-val">18</span></div>
+                <div class="combat-stat">
+                    <span class="c-lbl">HP</span>
+                    <div style="display:flex; align-items:center; justify-content:center;">
+                        <input type="number" id="current-hp" value="49" style="width:40px; background:transparent; border:none; color:var(--samurai-highlight); font-weight:bold; font-size:1.4em; text-align:right; padding:0;">
+                        <span style="font-size:1em; color:#888; margin-left:2px;">/<span id="max-hp">49</span></span>
+                    </div>
+                </div>
+                <div class="combat-stat"><span class="c-lbl">Init</span><span class="c-val" id="init-val">+2</span></div>
+                <div class="combat-stat"><span class="c-lbl">Speed</span><span class="c-val">9m</span></div>
+            </div>
+
+            <div class="card-title">Attacks</div>
+
+            <div class="buff-panel">
+                <label class="buff-lbl"><input type="checkbox" id="buffFighting" class="buff-chk" onchange="updateDashboard(document.getElementById('levelRange').value)"> Fighting Spirit (Advantage)</label>
+            </div>
+
+            <div class="attack-card" onclick="rollAttack('Katana (Longsword)', 'wep1-hit', 'wep1-dmg')">
+                <div class="attack-header">
+                    <span>KATANA <span style="font-size:0.8em; color:#888;">(Longsword, Versatile)</span></span>
+                    <span id="wep1-hit" style="color:var(--success);">+6 Hit</span>
+                </div>
+                <div class="attack-detail">
+                    Damage: <span class="dmg-text" id="wep1-dmg">1d10+3</span> Slashing (2H)<br>
+                    <span class="kw-action">Mastery (Flex):</span> 1d8+3 one-handed, 1d10+3 two-handed.
+                </div>
+            </div>
+
+            <div class="attack-card" onclick="rollAttack('Wakizashi (Shortsword)', 'wep2-hit', 'wep2-dmg')">
+                <div class="attack-header">
+                    <span>WAKIZASHI <span style="font-size:0.8em; color:#888;">(Shortsword, Light)</span></span>
+                    <span id="wep2-hit" style="color:var(--success);">+6 Hit</span>
+                </div>
+                <div class="attack-detail">
+                    Damage: <span class="dmg-text" id="wep2-dmg">1d6+3</span> Piercing<br>
+                    <span class="kw-action">Mastery (Vex):</span> Hit grants Advantage on next attack.
+                </div>
+            </div>
+
+            <div class="attack-card" style="border-left-color: var(--accent);" onclick="rollBreathWeapon()">
+                <div class="attack-header">
+                    <span>BREATH WEAPON <span style="font-size:0.8em; color:#888;">(Amethyst, 15ft Cone)</span></span>
+                    <span id="breath-dc" style="color:var(--magic);">DC 14</span>
+                </div>
+                <div class="attack-detail">
+                    Damage: <span class="dmg-text" id="breath-dmg" style="color:var(--magic)">2d10</span> Force (DEX Save for half)
+                </div>
+            </div>
+
+            <div class="attack-card" style="border-left-color: var(--gold);" onclick="rollAttack('Longbow', 'wep3-hit', 'wep3-dmg')">
+                <div class="attack-header">
+                    <span>LONGBOW <span style="font-size:0.8em; color:#888;">(Range 150/600ft)</span></span>
+                    <span id="wep3-hit" style="color:var(--success);">+5 Hit</span>
+                </div>
+                <div class="attack-detail">
+                    Damage: <span class="dmg-text" id="wep3-dmg">1d8+2</span> Piercing
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Active Features & Feats</div>
+            <div class="feature-list" id="features-container">
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3">
+        <div class="card">
+            <div class="card-title">Resources</div>
+
+            <div class="attack-card" style="border-left-color: var(--samurai-highlight);" id="fighting-spirit-resource">
+                <div class="attack-header">
+                    <span>Fighting Spirit</span>
+                    <div id="fighting-spirit-pips"></div>
+                </div>
+                <div class="attack-detail"><span class="kw-bonus">Bonus Action</span>. Advantage on attacks + <span id="temp-hp-val">5</span> Temp HP. Until end of turn.</div>
+            </div>
+
+            <div class="attack-card" style="border-left-color: var(--gold);">
+                <div class="attack-header">
+                    <span>Action Surge</span>
+                    <div id="action-surge-pips"></div>
+                </div>
+                <div class="attack-detail"><span class="kw-action">Free Action</span>. Take one additional Action. Recharges on Short Rest.</div>
+            </div>
+
+            <div class="attack-card" style="border-left-color: var(--success);">
+                <div class="attack-header">
+                    <span>Second Wind</span>
+                    <div id="second-wind-pips"></div>
+                </div>
+                <div class="attack-detail"><span class="kw-bonus">Bonus Action</span>. Heal <span id="second-wind-heal">1d10+5</span> HP. Recharges on Short Rest.</div>
+            </div>
+
+            <div class="attack-card" style="border-left-color: var(--accent);">
+                <div class="attack-header">
+                    <span>Breath Weapon</span>
+                    <div id="breath-pips"></div>
+                </div>
+                <div class="attack-detail"><span class="kw-action">Action</span>. 15ft Cone, DEX Save. 2d10 Force damage. Recharges on Long Rest.</div>
+            </div>
+
+            <div class="attack-card" style="border-left-color: var(--magic); display:none;" id="gem-flight-resource">
+                <div class="attack-header">
+                    <span>Gem Flight</span>
+                    <div id="gem-flight-pips"></div>
+                </div>
+                <div class="attack-detail"><span class="kw-bonus">Bonus Action</span>. Gain 30ft fly speed for 10 minutes. Recharges on Long Rest.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Resistances & Immunities</div>
+            <div style="font-size:0.9em; color:#cbd5e1;">
+                <div style="margin-bottom:8px;">
+                    <span style="color:var(--accent); font-weight:bold;">Force Resistance</span><br>
+                    <span style="font-size:0.85em; color:#94a3b8;">Half damage from Force damage (Amethyst Dragonborn)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="pet-resource">
+            <div class="card-title">Companion</div>
+            <div class="pet-img-container">
+                <img src="images/baby-hook-horror.png" alt="Kagi the Baby Hook Horror" class="pet-img">
+            </div>
+            <div style="text-align:center; margin-bottom:10px;">
+                <span style="color:var(--accent); font-weight:bold; font-size:1.1em;">Kagi</span><br>
+                <span style="font-size:0.85em; color:#94a3b8;">Baby Hook Horror</span>
+            </div>
+            <div class="attack-detail" style="background:transparent; border:none; padding:0;">
+                <div style="margin-bottom:6px;"><strong style="color:var(--gold)">AC:</strong> 13 | <strong style="color:var(--gold)">HP:</strong> 15</div>
+                <div style="margin-bottom:6px;"><strong style="color:var(--gold)">Speed:</strong> 6m, Climb 6m</div>
+                <div style="margin-bottom:6px;"><strong style="color:#fff">Hook:</strong> +4 Hit, 1d6+2 Piercing</div>
+                <div style="font-size:0.85em; color:#94a3b8; font-style:italic;">Echolocation, Blindsight 18m</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Psionic Mind</div>
+            <div style="font-size:0.9em; color:#cbd5e1;">
+                <span style="color:var(--accent); font-weight:bold;">Telepathy (9m)</span><br>
+                <span style="font-size:0.85em; color:#94a3b8;">Speak telepathically with creatures within 9m that you can see. They can respond if they understand at least one language.</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- DATA ---
+    const allSkills = [
+        {name: "Acrobatics", ability: "dex"}, {name: "Animal Handling", ability: "wis"}, {name: "Arcana", ability: "int"},
+        {name: "Athletics", ability: "str"}, {name: "Deception", ability: "cha"}, {name: "History", ability: "int"},
+        {name: "Insight", ability: "wis"}, {name: "Intimidation", ability: "cha"}, {name: "Investigation", ability: "int"},
+        {name: "Medicine", ability: "wis"}, {name: "Nature", ability: "int"}, {name: "Perception", ability: "wis"},
+        {name: "Performance", ability: "cha"}, {name: "Persuasion", ability: "cha"}, {name: "Religion", ability: "int"},
+        {name: "Sleight of Hand", ability: "dex"}, {name: "Stealth", ability: "dex"}, {name: "Survival", ability: "wis"}
+    ];
+
+    // Samurai gets Persuasion or History + Outlander background skills
+    const proficientSkills = ["Athletics", "Perception", "Survival", "Persuasion", "Intimidation"];
+
+    const levels = {
+        1: {
+            str: 16, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 2, hp: 13,
+            fightingSpirit: 3, actionSurge: 0, secondWind: 1,
+            features: [
+                {name: "Amethyst Dragonborn", source: "Species", desc: "Force Resistance. Breath Weapon (15ft cone, 2d10 Force, DEX save). Psionic Mind (9m telepathy)."},
+                {name: "Outlander", source: "Background", desc: "Wanderer: Excellent memory for maps and geography. Can find food and fresh water for yourself and up to five others each day."},
+                {name: "Fighting Style: Great Weapon Fighting", source: "Fighter 1", desc: "Reroll 1s and 2s on damage dice with two-handed weapons."},
+                {name: "Second Wind", source: "Fighter 1", desc: "<span class='kw-bonus'>Bonus Action</span>. Heal 1d10 + Fighter level. Recharges on Short Rest."},
+                {name: "Weapon Mastery (2)", source: "Fighter 1", desc: "<b>Longsword (Flex):</b> Use different damage die based on grip.<br><b>Shortsword (Vex):</b> Advantage on next attack after hit."}
+            ]
+        },
+        2: {
+            str: 16, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 2, hp: 22,
+            fightingSpirit: 3, actionSurge: 1, secondWind: 1,
+            features: [
+                {name: "Action Surge", source: "Fighter 2", desc: "Take one additional Action on your turn. Recharges on Short Rest."},
+                {name: "Tactical Mind", source: "Fighter 2", desc: "When you fail an ability check, expend a use of Second Wind to add 1d10 to the roll. If still fails, Second Wind isn't expended."}
+            ]
+        },
+        3: {
+            str: 16, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 2, hp: 31,
+            fightingSpirit: 3, actionSurge: 1, secondWind: 1,
+            features: [
+                {name: "Fighting Spirit", source: "Samurai 3", desc: "<span class='kw-bonus'>Bonus Action</span>. Gain Advantage on all weapon attacks and 5 Temp HP until end of turn. 3 uses, recharges on Long Rest."},
+                {name: "Bonus Proficiency", source: "Samurai 3", desc: "Gain proficiency in one of: History, Insight, Performance, or Persuasion. (Persuasion chosen)"},
+                {name: "Weapon Mastery (3)", source: "Fighter 3", desc: "Learn one additional weapon mastery. Can change one mastery when you level up."}
+            ]
+        },
+        4: {
+            str: 18, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 2, hp: 40,
+            fightingSpirit: 3, actionSurge: 1, secondWind: 1,
+            features: [
+                {name: "Feat: Great Weapon Master", source: "Fighter 4", desc: "+1 STR. Heavy Hew: On crit or reducing creature to 0 HP, make one extra attack as BA. Graze: On miss, deal STR mod damage."}
+            ]
+        },
+        5: {
+            str: 18, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 3, hp: 49,
+            fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
+            features: [
+                {name: "Extra Attack", source: "Fighter 5", desc: "Attack twice when taking the Attack action."},
+                {name: "Gem Flight", source: "Amethyst Dragonborn 5", desc: "<span class='kw-bonus'>Bonus Action</span>. Manifest spectral wings and gain 30ft fly speed for 10 minutes. 1 use, recharges on Long Rest."},
+                {name: "Weapon Mastery (4)", source: "Fighter 5", desc: "Learn one additional weapon mastery."}
+            ]
+        },
+        6: {
+            str: 20, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 3, hp: 58,
+            fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
+            features: [
+                {name: "Ability Score Improvement", source: "Fighter 6", desc: "+2 STR (now 20). Maximum melee damage potential."}
+            ]
+        },
+        7: {
+            str: 20, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 3, hp: 67,
+            fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
+            features: [
+                {name: "Elegant Courtier", source: "Samurai 7", desc: "Add WIS modifier to Persuasion checks. Proficiency in WIS saves. If already proficient, choose INT or CHA saves instead."},
+                {name: "Weapon Mastery (5)", source: "Fighter 7", desc: "Learn one additional weapon mastery."}
+            ]
+        },
+        8: {
+            str: 20, dex: 14, con: 18, int: 10, wis: 14, cha: 10, prof: 3, hp: 78,
+            fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
+            features: [
+                {name: "Feat: Tough", source: "Fighter 8", desc: "HP increases by 2 per level (retroactive). +2 CON (now 18)."}
+            ]
+        }
+    };
+
+    function getMod(score) { return Math.floor((score - 10) / 2); }
+    function fmtSign(n) { return n >= 0 ? "+" + n : n; }
+
+    function updateDashboard(lvl) {
+        document.getElementById('lvl-badge').innerText = lvl;
+        let data = { ...levels[lvl] };
+
+        // --- READ INPUTS ---
+        const fightingSpiritEl = document.getElementById('buffFighting');
+        const hasFightingSpirit = fightingSpiritEl ? fightingSpiritEl.checked : false;
+
+        // --- Accumulate Features ---
+        let allFeatures = [];
+        for (let i = 1; i <= lvl; i++) {
+            if (levels[i].features) allFeatures = [...allFeatures, ...levels[i].features];
+        }
+
+        // --- Stats ---
+        const mods = {
+            str: getMod(data.str), dex: getMod(data.dex), con: getMod(data.con),
+            int: getMod(data.int), wis: getMod(data.wis), cha: getMod(data.cha)
+        };
+
+        for (const [key, val] of Object.entries(data)) {
+            if (['str','dex','con','int','wis','cha'].includes(key)) {
+                document.getElementById(key).innerText = val;
+                document.getElementById(`${key}-mod`).innerText = fmtSign(mods[key]);
+            }
+        }
+        document.getElementById('prof-bonus').innerText = fmtSign(data.prof);
+
+        // Initiative
+        const initMod = mods.dex;
+        document.getElementById('init-val').innerText = fmtSign(initMod);
+
+        // --- Saving Throws (Fighter: STR and CON) ---
+        const savesContainer = document.getElementById('saves-container');
+        savesContainer.innerHTML = '';
+
+        // At level 7, Elegant Courtier grants WIS save proficiency
+        const hasWisSave = (lvl >= 7);
+
+        const saves = [
+            {name: "Strength", mod: mods.str, prof: true},
+            {name: "Dexterity", mod: mods.dex, prof: false},
+            {name: "Constitution", mod: mods.con, prof: true},
+            {name: "Intelligence", mod: mods.int, prof: false},
+            {name: "Wisdom", mod: mods.wis, prof: hasWisSave},
+            {name: "Charisma", mod: mods.cha, prof: false}
+        ];
+
+        saves.forEach(s => {
+            const total = s.mod + (s.prof ? data.prof : 0);
+            const cls = s.prof ? 'skill-prof' : '';
+            savesContainer.innerHTML += `<div class="skill-row"><span class="${cls}">${s.name}</span> <span class="${cls}">${fmtSign(total)}</span></div>`;
+        });
+
+        // --- Skills ---
+        const skillsContainer = document.getElementById('skills-container');
+        skillsContainer.innerHTML = '';
+
+        allSkills.forEach(skill => {
+            const mod = mods[skill.ability];
+            const isProf = proficientSkills.includes(skill.name);
+            let total = mod + (isProf ? data.prof : 0);
+
+            // Elegant Courtier bonus for Persuasion at level 7+
+            if (skill.name === "Persuasion" && lvl >= 7) {
+                total += mods.wis;
+            }
+
+            const cls = isProf ? 'skill-prof' : '';
+            const star = isProf ? ' ★' : '';
+            skillsContainer.innerHTML += `<div class="skill-row"><span class="${cls}">${skill.name}${star}</span> <span class="${cls}">${fmtSign(total)}</span></div>`;
+        });
+
+        // --- Combat Stats ---
+        // Chain Mail (AC 16) or Half Plate (AC 15 + DEX max 2) = 17, or Splint (AC 17)
+        let ac = 16 + 2; // Splint armor (17) + Shield alternative or just using splint
+        if (lvl >= 4) ac = 18; // Better armor
+        document.getElementById('ac-val').innerText = ac;
+
+        // Attack Math
+        const hitMod = mods.str + data.prof;
+        const dmgMod = mods.str;
+
+        document.getElementById('wep1-hit').innerText = fmtSign(hitMod) + " Hit";
+        document.getElementById('wep1-dmg').innerText = `1d10${fmtSign(dmgMod)}`;
+
+        document.getElementById('wep2-hit').innerText = fmtSign(hitMod) + " Hit";
+        document.getElementById('wep2-dmg').innerText = `1d6${fmtSign(dmgMod)}`;
+
+        // Ranged (DEX based)
+        const rangedHit = mods.dex + data.prof;
+        document.getElementById('wep3-hit').innerText = fmtSign(rangedHit) + " Hit";
+        document.getElementById('wep3-dmg').innerText = `1d8${fmtSign(mods.dex)}`;
+
+        // Breath Weapon
+        const breathDC = 8 + data.prof + mods.con;
+        document.getElementById('breath-dc').innerText = "DC " + breathDC;
+
+        // Scale breath weapon damage
+        let breathDice = "2d10";
+        if (lvl >= 5) breathDice = "3d10";
+        if (lvl >= 11) breathDice = "4d10";
+        if (lvl >= 17) breathDice = "5d10";
+        document.getElementById('breath-dmg').innerText = breathDice;
+
+        // --- Features Render ---
+        const featContainer = document.getElementById('features-container');
+        featContainer.innerHTML = '';
+        allFeatures.forEach(f => {
+            let item = document.createElement('div');
+            item.className = 'feature-item';
+            item.innerHTML = `<span class="feat-name">${f.name} <span class="feat-source">${f.source}</span></span><div class="feat-desc">${f.desc}</div>`;
+            featContainer.appendChild(item);
+        });
+
+        // --- Resources ---
+        // Fighting Spirit Pips
+        const fsPips = document.getElementById('fighting-spirit-pips');
+        let fsPipHTML = '';
+        for(let i=0; i<data.fightingSpirit; i++) {
+            fsPipHTML += `<div class="resource-pip" onclick="this.classList.toggle('used')"></div>`;
+        }
+        fsPips.innerHTML = fsPipHTML;
+        document.getElementById('temp-hp-val').innerText = (lvl >= 10) ? "10" : (lvl >= 15) ? "15" : "5";
+
+        // Action Surge Pips
+        const asPips = document.getElementById('action-surge-pips');
+        let asPipHTML = '';
+        for(let i=0; i<data.actionSurge; i++) {
+            asPipHTML += `<div class="resource-pip action-surge" onclick="this.classList.toggle('used')"></div>`;
+        }
+        asPips.innerHTML = asPipHTML;
+
+        // Second Wind Pips
+        const swPips = document.getElementById('second-wind-pips');
+        let swPipHTML = '';
+        for(let i=0; i<data.secondWind; i++) {
+            swPipHTML += `<div class="resource-pip second-wind" onclick="this.classList.toggle('used')"></div>`;
+        }
+        swPips.innerHTML = swPipHTML;
+        document.getElementById('second-wind-heal').innerText = `1d10+${lvl}`;
+
+        // Breath Weapon Pip
+        const breathPips = document.getElementById('breath-pips');
+        breathPips.innerHTML = `<div class="resource-pip breath" onclick="this.classList.toggle('used')"></div>`;
+
+        // Gem Flight (Level 5+)
+        const gemFlightResource = document.getElementById('gem-flight-resource');
+        if (data.gemFlight) {
+            gemFlightResource.style.display = 'block';
+            const gfPips = document.getElementById('gem-flight-pips');
+            gfPips.innerHTML = `<div class="resource-pip breath" onclick="this.classList.toggle('used')"></div>`;
+        } else {
+            gemFlightResource.style.display = 'none';
+        }
+
+        // HP
+        const maxHpEl = document.getElementById('max-hp');
+        const curHpEl = document.getElementById('current-hp');
+        if (maxHpEl.innerText != data.hp) curHpEl.value = data.hp;
+        maxHpEl.innerText = data.hp;
+    }
+
+    // --- Short Rest Logic ---
+    function shortRest() {
+        // Reset Action Surge
+        const asPips = document.querySelectorAll('#action-surge-pips .resource-pip');
+        asPips.forEach(p => p.classList.remove('used'));
+
+        // Reset Second Wind
+        const swPips = document.querySelectorAll('#second-wind-pips .resource-pip');
+        swPips.forEach(p => p.classList.remove('used'));
+
+        // Heal Logic (Spend Hit Dice)
+        const max = parseInt(document.getElementById('max-hp').innerText);
+        const curInput = document.getElementById('current-hp');
+        let current = parseInt(curInput.value);
+
+        if(current < max) {
+            // Roll a hit die (d10) + CON mod
+            const conMod = getMod(parseInt(document.getElementById('con').innerText));
+            const heal = Math.floor(Math.random() * 10) + 1 + conMod;
+            curInput.value = Math.min(max, current + heal);
+            logMsg(`Short Rest: Recovered Action Surge, Second Wind & healed ${heal} HP (1d10+${conMod}).`);
+        } else {
+            logMsg(`Short Rest: Recovered Action Surge & Second Wind.`);
+        }
+    }
+
+    // --- Dice Roller Logic ---
+    function rollAttack(name, hitId, dmgId) {
+        const hitText = document.getElementById(hitId).innerText;
+        const hitMod = parseInt(hitText.replace(/[^0-9-]/g, ''));
+        let dmgText = document.getElementById(dmgId).innerText.split(' ')[0];
+
+        const d20 = Math.floor(Math.random() * 20) + 1;
+        let hitTotal = d20 + hitMod;
+
+        let isCrit = (d20 === 20);
+        let isFail = (d20 === 1);
+
+        // Check Fighting Spirit for advantage
+        const hasFightingSpirit = document.getElementById('buffFighting').checked;
+        let advantageRoll = null;
+        if (hasFightingSpirit && !isCrit && !isFail) {
+            advantageRoll = Math.floor(Math.random() * 20) + 1;
+            if (advantageRoll > d20) {
+                hitTotal = advantageRoll + hitMod;
+                isCrit = (advantageRoll === 20);
+                isFail = (advantageRoll === 1);
+            }
+        }
+
+        // Roll Damage
+        const regex = /(\d+)d(\d+)([+-]\d+)?/;
+        const match = dmgText.match(regex);
+
+        if (match) {
+            let count = parseInt(match[1]);
+            let faces = parseInt(match[2]);
+            let mod = match[3] ? parseInt(match[3]) : 0;
+
+            if (isCrit) count *= 2;
+
+            let rolls = [];
+            for(let i=0; i<count; i++) {
+                let r = Math.floor(Math.random() * faces) + 1;
+                // Great Weapon Fighting: Reroll 1s and 2s
+                if (faces >= 6 && (r === 1 || r === 2)) {
+                    r = Math.floor(Math.random() * faces) + 1;
+                }
+                rolls.push(r);
+            }
+            let dmgTotal = rolls.reduce((a,b) => a+b, 0) + mod;
+
+            let hitClass = isCrit ? 'log-crit' : (isFail ? 'log-fail' : '');
+            let hitDisplay = isCrit ? 'NAT 20!' : (isFail ? 'MISS (1)' : hitTotal);
+
+            let advText = '';
+            if (advantageRoll !== null) {
+                advText = ` (Adv: ${d20}/${advantageRoll})`;
+            }
+
+            logMsg(`<strong>${name}:</strong> Attack <span class="${hitClass}">[${hitDisplay}]</span>${advText} | Dmg: <strong>${dmgTotal}</strong> (${rolls.join('+')}${mod >=0 ? '+'+mod : mod})`);
+        } else {
+            logMsg(`Error parsing damage: ${dmgText}`);
+        }
+    }
+
+    function rollBreathWeapon() {
+        const dc = document.getElementById('breath-dc').innerText;
+        const dmgText = document.getElementById('breath-dmg').innerText;
+
+        const regex = /(\d+)d(\d+)/;
+        const match = dmgText.match(regex);
+
+        if (match) {
+            let count = parseInt(match[1]);
+            let faces = parseInt(match[2]);
+
+            let rolls = [];
+            for(let i=0; i<count; i++) {
+                rolls.push(Math.floor(Math.random() * faces) + 1);
+            }
+            let dmgTotal = rolls.reduce((a,b) => a+b, 0);
+
+            logMsg(`<strong>Breath Weapon:</strong> ${dc} DEX Save | Dmg: <strong style="color:var(--magic)">${dmgTotal}</strong> Force (${rolls.join('+')})`);
+        }
+    }
+
+    function logMsg(html) {
+        const log = document.getElementById('combat-log');
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.innerHTML = `> ${html}`;
+        log.prepend(entry);
+    }
+
+    // Initialize
+    updateDashboard(5);
+</script>
+
 </body>
 </html>
