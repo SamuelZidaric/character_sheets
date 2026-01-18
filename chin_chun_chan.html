@@ -6,16 +6,45 @@
     <title>Chin Chun Chan - Samurai Fighter</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --accent: #a855f7; /* Amethyst Purple for Dragonborn */
-            --gold: #38bdf8;
-            --magic: #c084fc;
-            --success: #4ade80;
-            --warning: #f87171;
-            --samurai-highlight: #ef4444; /* Red for Samurai theme */
+            /* 1. BACKGROUNDS: The biggest change. 
+            Moved from "Blue Slate" (#0f172a) to "Warm Charcoal/Iron" (#1c1917). 
+            This immediately makes it feel earthy and grounded. */
+            --bg-color: #1c1917;      
+            --card-bg: #292524;       
+            
+            /* 2. TEXT: Changed from "Cold White" to "Parchment/Bone".
+            Softens the contrast so it looks like paper, not a screen. */
+            --text-main: #e7e5e4;     
+            --text-muted: #a8a29e;    
+
+            /* 3. PRIMARY ACCENT (Amethyst): 
+            Slightly brighter to glow against the warm dark background. */
+            --accent: #c084fc;        
+            
+            /* 4. GOLD ACCENT (The Hilt): 
+            Your previous gold was too "yellow". This is "Amber" (#d97706),
+            which looks like the actual metal on his katana. */
+            --gold: #d97706;          
+            
+            /* 5. ATTACK BARS (The "Blue" elements in your screenshot):
+            This was the main offender. Now they are a deep, dark violet.
+            This links his attacks to his dragon heritage. */
+            --attack-bar-bg: #581c87; 
+            
+            /* 6. STATUS COLORS (Muted to fit the theme) */
+            --magic: #d8b4fe;         
+            --success: #4ade80;       
+            --warning: #ef4444;       
+            
+            /* 7. SAMURAI RED: 
+            Deepened to match the reddish-brown leather of his armor. */
+            --samurai-highlight: #9a3412; 
+        }
+
+        /* Add this small override to color your attack bars specifically */
+        .attack-card {
+            background-color: #2e1065; /* Dark purple background for attacks */
+            border: 1px solid var(--accent); /* Thin amethyst border */
         }
 
         body {
@@ -293,8 +322,8 @@
     </div>
     <div class="level-control">
         <label>LEVEL</label>
-        <input type="range" id="levelRange" min="1" max="8" value="5" oninput="updateDashboard(this.value)">
-        <div class="level-badge" id="lvl-badge">5</div>
+        <input type="range" id="levelRange" min="1" max="8" value="1" oninput="updateDashboard(this.value)">
+        <div class="level-badge" id="lvl-badge">1</div>
         <button class="rest-btn" onclick="shortRest()">SHORT REST</button>
     </div>
 </header>
@@ -306,7 +335,7 @@
             <div class="card-title">Identity</div>
 
             <div class="char-img-container">
-                <img src="images/chin-chun-chan.png" alt="Chin Chun Chan" class="char-img">
+                <img src="images/chin_chun_chan.png" alt="Chin Chun Chan" class="char-img">
             </div>
 
             <div class="rp-block">
@@ -495,7 +524,7 @@
         <div class="card" id="pet-resource">
             <div class="card-title">Companion</div>
             <div class="pet-img-container">
-                <img src="images/baby-hook-horror.png" alt="Kagi the Baby Hook Horror" class="pet-img">
+                <img src="images/baby_hook_horror.png" alt="Kagi the Baby Hook Horror" class="pet-img">
             </div>
             <div style="text-align:center; margin-bottom:10px;">
                 <span style="color:var(--accent); font-weight:bold; font-size:1.1em;">Kagi</span><br>
@@ -885,7 +914,7 @@
     }
 
     // Initialize
-    updateDashboard(5);
+    updateDashboard(1);
 </script>
 
 </body>
