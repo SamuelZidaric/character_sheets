@@ -605,12 +605,11 @@
             ]
         },
         5: {
-            str: 18, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 3, hp: 49,
+            str: 16, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 3, hp: 49,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
             features: [
-                {name: "Extra Attack", source: "Fighter 5", desc: "Attack twice when taking the Attack action."},
-                {name: "Gem Flight", source: "Amethyst Dragonborn 5", desc: "<span class='kw-bonus'>Bonus Action</span>. Manifest spectral wings and gain 30ft fly speed for 10 minutes. 1 use, recharges on Long Rest."},
-                {name: "Weapon Mastery (4)", source: "Fighter 5", desc: "Learn one additional weapon mastery."}
+                {name: "Extra Attack", source: "Fighter 5", desc: "You can attack twice, instead of once, whenever you take the Attack action on your turn."},
+                {name: "Gem Flight", source: "Amethyst Dragonborn 5", desc: "<span class='kw-bonus'>Bonus Action</span>. Gain 30ft fly speed for 10 minutes. 1 use, recharges on Long Rest."}
             ]
         },
         6: {
@@ -621,11 +620,10 @@
             ]
         },
         7: {
-            str: 20, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 3, hp: 67,
+            str: 18, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 3, hp: 67,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
             features: [
-                {name: "Elegant Courtier", source: "Samurai 7", desc: "Add WIS modifier to Persuasion checks. Proficiency in WIS saves. If already proficient, choose INT or CHA saves instead."},
-                {name: "Weapon Mastery (5)", source: "Fighter 7", desc: "Learn one additional weapon mastery."}
+                {name: "Elegant Courtier", source: "Samurai 7", desc: "Add your Wisdom modifier to Persuasion checks. You also gain proficiency in Wisdom saving throws."}
             ]
         },
         8: {
@@ -715,10 +713,8 @@
 
         // --- Combat Stats ---
         const hasShield = document.getElementById('toggleShield') ? document.getElementById('toggleShield').checked : false;
-
-        // Base AC: Chain Mail (16) + Defense Style (1) = 17
-        // High Level AC (6+): Plate (18) + Defense (1) = 19
-        let baseAc = (lvl >= 6) ? 19 : 17;
+9
+        let baseAc = 17;
         
         // Add Shield Bonus
         let totalAc = baseAc + (hasShield ? 2 : 0);
