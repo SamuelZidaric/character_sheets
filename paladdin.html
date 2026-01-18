@@ -284,6 +284,32 @@
         }
         .buff-lbl:hover { border-color: var(--dex-highlight); color:#fff; }
         .buff-chk { margin-right: 5px; accent-color: var(--success); }
+
+        /* --- NEW CSS SNIPPETS --- */
+
+        /* Make attack cards look clickable */
+        .attack-card { cursor: pointer; transition: transform 0.1s, border-color 0.1s; }
+        .attack-card:active { transform: scale(0.98); }
+        .attack-card:hover { border-color: #fff; }
+
+        /* Short Rest Button */
+        .rest-btn {
+            background: #1e293b; border: 1px solid var(--dex-highlight);
+            color: var(--dex-highlight); padding: 5px 15px; border-radius: 20px;
+            font-weight: bold; cursor: pointer; margin-left: 15px;
+            transition: all 0.2s;
+        }
+        .rest-btn:hover { background: var(--dex-highlight); color: #000; box-shadow: 0 0 10px var(--dex-highlight); }
+
+        /* Combat Log Console */
+        #combat-log {
+            background: #000; color: #4ade80; font-family: 'Consolas', monospace;
+            font-size: 0.85em; padding: 10px; border-radius: 6px; border: 1px solid #334155;
+            height: 120px; overflow-y: auto; margin-bottom: 20px; display: flex; flex-direction: column-reverse;
+        }
+        .log-entry { margin-bottom: 4px; border-bottom: 1px solid #333; padding-bottom: 2px; }
+        .log-crit { color: #facc15; font-weight: bold; text-shadow: 0 0 5px #facc15; }
+        .log-fail { color: #f87171; }
     </style>
 </head>
 <body>
@@ -297,6 +323,7 @@
         <label>LEVEL</label>
         <input type="range" id="levelRange" min="1" max="8" value="1" oninput="updateDashboard(this.value)">
         <div class="level-badge" id="lvl-badge">1</div>
+        <button class="rest-btn" onclick="shortRest()">SHORT REST</button>
     </div>
 </header>
 
@@ -368,6 +395,12 @@
     </div>
 
     <div class="col-2">
+        <div class="card" style="padding:10px; background:#0f172a;">
+            <div class="card-title" style="margin:0 0 5px 0; border:none; font-size:0.8em;">Combat Log</div>
+            <div id="combat-log">
+                <div class="log-entry">> System Ready...</div>
+            </div>
+        </div>
         <div class="card">
             <div class="combat-bar">
                 <div class="combat-stat"><span class="c-lbl">AC</span><span class="c-val" id="ac-val">15</span></div>
@@ -389,7 +422,7 @@
                 <label class="buff-lbl"><input type="checkbox" id="buffDivine" class="buff-chk" onchange="updateDashboard(document.getElementById('levelRange').value)"> Divine Favor (+1d4 Dmg)</label>
             </div>
 
-            <div class="attack-card">
+            <div class="attack-card" onclick="rollAttack('Scimitar', 'wep1-hit', 'wep1-dmg')">
                 <div class="attack-header">
                     <span>SCIMITAR <span style="font-size:0.8em; color:#888;">(Light, Nick)</span></span>
                     <span id="wep1-hit" style="color:var(--success);">+5 Hit</span>
@@ -400,7 +433,7 @@
                 </div>
             </div>
 
-            <div class="attack-card">
+            <div class="attack-card" onclick="rollAttack('Shortsword', 'wep2-hit', 'wep2-dmg')">
                 <div class="attack-header">
                     <span>SHORTSWORD <span style="font-size:0.8em; color:#888;">(Light, Vex)</span></span>
                     <span id="wep2-hit" style="color:var(--success);">+5 Hit</span>
@@ -411,7 +444,7 @@
                 </div>
             </div>
 
-            <div class="attack-card" style="border-left-color: var(--magic);">
+            <div class="attack-card" style="border-left-color: var(--magic);" onclick="rollAttack('Chromatic Orb', 'spell-hit', 'corb-dmg')">
                 <div class="attack-header">
                     <span>CHROMATIC ORB <span style="font-size:0.8em; color:#888;">(Genie, 27m)</span></span>
                     <span id="spell-hit" style="color:var(--magic);">+5 Hit</span>
@@ -958,8 +991,90 @@
         </div>`;
     }
 
+    // --- NEW JS LOGIC ---
+
+    // 1. Short Rest Logic
+    function shortRest() {
+        // Reset Channel Divinity Pips
+        const pips = document.querySelectorAll('.cd-pip');
+        pips.forEach(p => p.classList.remove('used'));
+
+        // Heal Logic (Optional: Paladins usually heal on Long Rest, but let's simulate spending hit dice)
+        const max = parseInt(document.getElementById('max-hp').innerText);
+        const curInput = document.getElementById('current-hp');
+        let current = parseInt(curInput.value);
+
+        // Simple logic: Heal 50% of missing health on Short Rest
+        if(current < max) {
+            let heal = Math.floor((max - current) / 2);
+            if(heal < 1) heal = 1;
+            curInput.value = Math.min(max, current + heal);
+            logMsg(`Short Rest: Recovered CD & ${heal} HP.`);
+        } else {
+            logMsg(`Short Rest: Recovered Channel Divinity.`);
+        }
+    }
+
+    // 2. Dice Roller Logic
+    function rollAttack(name, hitId, dmgId) {
+        // Get Hit Mod (e.g., "+5 Hit" -> 5)
+        const hitText = document.getElementById(hitId).innerText;
+        const hitMod = parseInt(hitText.replace(/[^0-9-]/g, '')); // Extracts number
+
+        // Get Dmg String (e.g., "1d6+3")
+        let dmgText = document.getElementById(dmgId).innerText.split(' ')[0]; // Take first part "1d6+3"
+
+        // Roll d20
+        const d20 = Math.floor(Math.random() * 20) + 1;
+        let hitTotal = d20 + hitMod;
+
+        // Crit Logic
+        let isCrit = (d20 === 20);
+        let isFail = (d20 === 1);
+
+        // Roll Damage
+        let dmgTotal = 0;
+
+        // Parse "1d6+3" or "2d6"
+        // Regex matches: (Count)d(Faces)(Modifier)
+        const regex = /(\d+)d(\d+)([+-]\d+)?/;
+        const match = dmgText.match(regex);
+
+        if (match) {
+            let count = parseInt(match[1]);
+            let faces = parseInt(match[2]);
+            let mod = match[3] ? parseInt(match[3]) : 0;
+
+            if (isCrit) count *= 2; // Double dice on crit
+
+            let rolls = [];
+            for(let i=0; i<count; i++) {
+                let r = Math.floor(Math.random() * faces) + 1;
+                rolls.push(r);
+                dmgTotal += r;
+            }
+            dmgTotal += mod;
+
+            // Log Formatting
+            let hitClass = isCrit ? 'log-crit' : (isFail ? 'log-fail' : '');
+            let hitDisplay = isCrit ? 'NAT 20!' : (isFail ? 'MISS (1)' : hitTotal);
+
+            logMsg(`<strong>${name}:</strong> Attack <span class="${hitClass}">[${hitDisplay}]</span> | Dmg: <strong>${dmgTotal}</strong> (${rolls.join('+')}${mod >=0 ? '+'+mod : mod})`);
+        } else {
+            logMsg(`Error parsing damage: ${dmgText}`);
+        }
+    }
+
+    function logMsg(html) {
+        const log = document.getElementById('combat-log');
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.innerHTML = `> ${html}`;
+        log.prepend(entry); // Add to top
+    }
+
     // Initialize
-    updateDashboard(1); 
+    updateDashboard(1);
 </script>
 
 </body>
