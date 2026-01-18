@@ -292,6 +292,15 @@
         .attack-card:active { transform: scale(0.98); }
         .attack-card:hover { border-color: #fff; }
 
+        /* Back Button */
+        .back-btn {
+            background: #1e293b; border: 1px solid var(--accent);
+            color: var(--accent); padding: 8px 16px; border-radius: 20px;
+            font-weight: bold; cursor: pointer; text-decoration: none;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .back-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 0 10px var(--accent); }
+
         /* Short Rest Button */
         .rest-btn {
             background: #1e293b; border: 1px solid var(--dex-highlight);
@@ -315,6 +324,7 @@
 <body>
 
 <header>
+    <a href="index.html" class="back-btn">← Back</a>
     <div class="header-info">
         <h1>Paiman "Paladdin" Aladdin <span class="rules-badge">Dexadin</span></h1>
         <h2>Oath of Noble Genies • Human Merchant • <span style="color:var(--dex-highlight)">Elemental Duelist</span></h2>
@@ -549,24 +559,34 @@
     const preparedSpellsByLevel = { 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 6, 7: 7, 8: 7 };
 
     const magicInitiateSpells = [
-        {name: "Fire Bolt", level: 0, school: "Evoc", note: "36m, 1d10 Fire", desc: "Ranged spell attack. 1d10 Fire damage. (Alchemy Vial)", upcast: "Damage increases to 2d10 (5th), 3d10 (11th), 4d10 (17th)."},
-        {name: "Minor Illusion", level: 0, school: "Illu", note: "Utility", desc: "Create a sound or image of an object (1 min).", upcast: null},
-        {name: "Shield", level: 1, school: "Abjur", note: "+5 AC Reaction", desc: "Reaction when hit. +5 AC until next turn. Magic Missile immunity. (Crystal Barrier)", upcast: null}
+        {name: "Fire Bolt", level: 0, school: "Evoc", note: "36m, 1d10 Fire", desc: "Ranged spell attack. 1d10 Fire damage. (Alchemy Vial)", upcast: "Damage increases to 2d10 (5th), 3d10 (11th), 4d10 (17th).",
+         roll: {type: "attack", dice: "1d10", dmgType: "Fire"}},
+        {name: "Minor Illusion", level: 0, school: "Illu", note: "Utility", desc: "Create a sound or image of an object (1 min).", upcast: null,
+         roll: {type: "info", desc: "Created an illusion (12m range)."}},
+        {name: "Shield", level: 1, school: "Abjur", note: "+5 AC Reaction", desc: "Reaction when hit. +5 AC until next turn. Magic Missile immunity. (Crystal Barrier)", upcast: null,
+         roll: {type: "buff", desc: "Shield! +5 AC until next turn."}}
     ];
 
     const genieSpellsByLevel = {
         3: [
-            {name: "Chromatic Orb", level: 1, desc: "3d8 damage (Acid/Cold/Fire/Light/Poison/Thunder). Attack roll. Range 27m.", note: "Ranged 27m", upcast: "+1d8 damage per slot level."}, 
-            {name: "Elementalism", level: 0, desc: "Create harmless elemental effects (breeze, light, spray, dust).", note: "Utility", upcast: null}, 
-            {name: "Thunderous Smite", level: 1, desc: "Bonus Action. Hit deals +2d6 Thunder. Str save or push 3m + Prone.", note: "2d6 Thunder + Push", upcast: null}
+            {name: "Chromatic Orb", level: 1, desc: "3d8 damage (Acid/Cold/Fire/Light/Poison/Thunder). Attack roll. Range 27m.", note: "Ranged 27m", upcast: "+1d8 damage per slot level.",
+             roll: {type: "attack", dice: "3d8", dmgType: "Elemental"}},
+            {name: "Elementalism", level: 0, desc: "Create harmless elemental effects (breeze, light, spray, dust).", note: "Utility", upcast: null,
+             roll: {type: "info", desc: "Created elemental effect."}},
+            {name: "Thunderous Smite", level: 1, desc: "Bonus Action. Hit deals +2d6 Thunder. Str save or push 3m + Prone.", note: "2d6 Thunder + Push", upcast: null,
+             roll: {type: "buff", desc: "Active: Next hit deals +2d6 Thunder + STR Save or Push 3m."}}
         ],
         5: [
-            {name: "Mirror Image", level: 2, desc: "Create 3 duplicates. Roll d20 to redirect attack to duplicate.", note: "Defense", upcast: null}, 
-            {name: "Phantasmal Force", level: 2, desc: "Illusion in mind (INT Save). 1d6 Psychic/turn.", note: "INT save", upcast: null}
+            {name: "Mirror Image", level: 2, desc: "Create 3 duplicates. Roll d20 to redirect attack to duplicate.", note: "Defense", upcast: null,
+             roll: {type: "buff", desc: "3 duplicates active. Attacks may target duplicates."}},
+            {name: "Phantasmal Force", level: 2, desc: "Illusion in mind (INT Save). 1d6 Psychic/turn.", note: "INT save", upcast: null,
+             roll: {type: "save", save: "INT", desc: "1d6 Psychic/turn if target fails."}}
         ],
         9: [
-            {name: "Fly", level: 3, desc: "Target gains 18m fly speed.", note: "Concentration", upcast: "Target +1 creature per slot level."}, 
-            {name: "Gaseous Form", level: 3, desc: "Turn willing creature into mist. Resist nonmagical dmg.", note: "Escape", upcast: null}
+            {name: "Fly", level: 3, desc: "Target gains 18m fly speed.", note: "Concentration", upcast: "Target +1 creature per slot level.",
+             roll: {type: "buff", desc: "Target gains 18m fly speed (Concentration)."}},
+            {name: "Gaseous Form", level: 3, desc: "Turn willing creature into mist. Resist nonmagical dmg.", note: "Escape", upcast: null,
+             roll: {type: "buff", desc: "Target is now mist. Resist nonmagical damage."}}
         ]
     };
 
@@ -596,8 +616,10 @@
                 {name: "Spellcasting", source: "Paladin 1", desc: "Prepare Paladin spells. CHA is spellcasting ability."}
             ],
             prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "Bonus Action. Weapon attacks deal +1d4 Radiant.", upcast: null}, 
-                {name: "Heroism", level: 1, school: "Conc", desc: "Immunity to Frightened. Gain Temp HP each turn.", upcast: "Target one additional creature for each slot level above 1st."}
+                {name: "Divine Favor", level: 1, school: "Conc", desc: "Bonus Action. Weapon attacks deal +1d4 Radiant.", upcast: null,
+                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
+                {name: "Heroism", level: 1, school: "Conc", desc: "Immunity to Frightened. Gain Temp HP each turn.", upcast: "Target one additional creature for each slot level above 1st.",
+                 roll: {type: "buff", desc: "Target immune to Frightened + gains Temp HP."}}
             ]
         },
         2: {
@@ -607,9 +629,12 @@
                 {name: "Paladin's Smite", source: "Paladin 2", desc: "<span class='kw-bonus'>Bonus Action</span> after hit: 2d8 Radiant. 1 free cast/LR."}
             ],
             prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "Bonus Action. +1d4 Radiant.", upcast: null}, 
-                {name: "Heroism", level: 1, school: "Conc", desc: "Immune Frightened + Temp HP.", upcast: "Target one additional creature for each slot level above 1st."}, 
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC to one creature.", upcast: null}
+                {name: "Divine Favor", level: 1, school: "Conc", desc: "Bonus Action. +1d4 Radiant.", upcast: null,
+                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
+                {name: "Heroism", level: 1, school: "Conc", desc: "Immune Frightened + Temp HP.", upcast: "Target one additional creature for each slot level above 1st.",
+                 roll: {type: "buff", desc: "Target immune to Frightened + gains Temp HP."}},
+                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC to one creature.", upcast: null,
+                 roll: {type: "buff", desc: "Target gains +2 AC."}}
             ]
         },
         3: {
@@ -620,10 +645,14 @@
                 {name: "Genie's Splendor", source: "Noble Genies 3", desc: "AC = 10 + DEX + CHA. Works with Shield! Gain skill: Acrobatics."}
             ],
             prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "Bonus Action. +1d4 Radiant.", upcast: null}, 
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null}, 
-                {name: "Command", level: 1, school: "Ench", desc: "WIS save or obey one-word command.", upcast: "Target one additional creature for each slot level above 1st."}, 
-                {name: "Cure Wounds", level: 1, school: "Evoc", desc: "Heal 2d8 + CHA Mod.", upcast: "Heal increases by 1d8 for each slot level above 1st."}
+                {name: "Divine Favor", level: 1, school: "Conc", desc: "Bonus Action. +1d4 Radiant.", upcast: null,
+                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
+                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null,
+                 roll: {type: "buff", desc: "Target gains +2 AC."}},
+                {name: "Command", level: 1, school: "Ench", desc: "WIS save or obey one-word command.", upcast: "Target one additional creature for each slot level above 1st.",
+                 roll: {type: "save", save: "WIS", desc: "Halt, Drop, or Flee."}},
+                {name: "Cure Wounds", level: 1, school: "Evoc", desc: "Heal 2d8 + CHA Mod.", upcast: "Heal increases by 1d8 for each slot level above 1st.",
+                 roll: {type: "heal", dice: "2d8+MOD"}}
             ]
         },
         4: {
@@ -632,11 +661,16 @@
                 {name: "Feat: Defensive Duelist", source: "Paladin 4", desc: "+1 DEX. <span class='kw-react'>Reaction</span> to add Prof to AC against one attack."}
             ],
             prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "Bonus Action. +1d4 Radiant.", upcast: null}, 
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null}, 
-                {name: "Command", level: 1, school: "Ench", desc: "WIS save or obey command.", upcast: "Target one additional creature for each slot level above 1st."}, 
-                {name: "Cure Wounds", level: 1, school: "Evoc", desc: "Heal 2d8 + Mod.", upcast: "+1d8 healing per level."}, 
-                {name: "Wrathful Smite", level: 1, school: "Conc", desc: "Bonus Action. +1d6 Psychic + Frightened.", upcast: null}
+                {name: "Divine Favor", level: 1, school: "Conc", desc: "Bonus Action. +1d4 Radiant.", upcast: null,
+                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
+                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null,
+                 roll: {type: "buff", desc: "Target gains +2 AC."}},
+                {name: "Command", level: 1, school: "Ench", desc: "WIS save or obey command.", upcast: "Target one additional creature for each slot level above 1st.",
+                 roll: {type: "save", save: "WIS", desc: "Halt, Drop, or Flee."}},
+                {name: "Cure Wounds", level: 1, school: "Evoc", desc: "Heal 2d8 + Mod.", upcast: "+1d8 healing per level.",
+                 roll: {type: "heal", dice: "2d8+MOD"}},
+                {name: "Wrathful Smite", level: 1, school: "Conc", desc: "Bonus Action. +1d6 Psychic + Frightened.", upcast: null,
+                 roll: {type: "buff", desc: "Next hit: +1d6 Psychic + WIS Save or Frightened."}}
             ]
         },
         5: {
@@ -647,12 +681,18 @@
                 {name: "Defensive Duelist Upgrade", source: "Feat", desc: "Reaction AC bonus is now +3 (Prof Bonus)."}
             ],
             prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "+1d4 Radiant on hits.", upcast: null}, 
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null}, 
-                {name: "Aid", level: 2, school: "Abjur", desc: "Increase Max HP of 3 creatures by 5 (8 hours).", upcast: "HP increases by 5 for each slot level above 2nd."}, 
-                {name: "Magic Weapon", level: 2, school: "Conc", desc: "Weapon becomes +1.", upcast: "Becomes +2 at 4th level, +3 at 6th level."}, 
-                {name: "Lesser Restoration", level: 2, school: "Abjur", desc: "Cure condition (Blind/Deaf/Paralyze/Poison).", upcast: null}, 
-                {name: "Misty Step", level: 2, school: "Conj", desc: "BA Teleport 9m.", upcast: null}
+                {name: "Divine Favor", level: 1, school: "Conc", desc: "+1d4 Radiant on hits.", upcast: null,
+                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
+                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null,
+                 roll: {type: "buff", desc: "Target gains +2 AC."}},
+                {name: "Aid", level: 2, school: "Abjur", desc: "Increase Max HP of 3 creatures by 5 (8 hours).", upcast: "HP increases by 5 for each slot level above 2nd.",
+                 roll: {type: "buff", desc: "3 creatures gain +5 Max HP for 8 hours."}},
+                {name: "Magic Weapon", level: 2, school: "Conc", desc: "Weapon becomes +1.", upcast: "Becomes +2 at 4th level, +3 at 6th level.",
+                 roll: {type: "buff", desc: "Weapon is now +1 (magic)."}},
+                {name: "Lesser Restoration", level: 2, school: "Abjur", desc: "Cure condition (Blind/Deaf/Paralyze/Poison).", upcast: null,
+                 roll: {type: "buff", desc: "Removed a condition from target."}},
+                {name: "Misty Step", level: 2, school: "Conj", desc: "BA Teleport 9m.", upcast: null,
+                 roll: {type: "info", desc: "Teleported 9m!"}}
             ]
         },
         6: {
@@ -661,38 +701,58 @@
                 {name: "Aura of Protection (3m)", source: "Paladin 6", desc: "Add CHA mod to all saves for you and allies within 3m."}
             ],
             prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "+1d4 Radiant on hits.", upcast: null}, 
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null}, 
-                {name: "Aid", level: 2, school: "Abjur", desc: "+5 Max HP.", upcast: "+5 HP per level."}, 
-                {name: "Magic Weapon", level: 2, school: "Conc", desc: "Weapon becomes +1.", upcast: "+2 at 4th, +3 at 6th."}, 
-                {name: "Lesser Restoration", level: 2, school: "Abjur", desc: "Cure condition.", upcast: null}, 
-                {name: "Warding Bond", level: 2, school: "Abjur", desc: "Share damage with ally +1 AC/Save.", upcast: null}
+                {name: "Divine Favor", level: 1, school: "Conc", desc: "+1d4 Radiant on hits.", upcast: null,
+                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
+                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null,
+                 roll: {type: "buff", desc: "Target gains +2 AC."}},
+                {name: "Aid", level: 2, school: "Abjur", desc: "+5 Max HP.", upcast: "+5 HP per level.",
+                 roll: {type: "buff", desc: "3 creatures gain +5 Max HP for 8 hours."}},
+                {name: "Magic Weapon", level: 2, school: "Conc", desc: "Weapon becomes +1.", upcast: "+2 at 4th, +3 at 6th.",
+                 roll: {type: "buff", desc: "Weapon is now +1 (magic)."}},
+                {name: "Lesser Restoration", level: 2, school: "Abjur", desc: "Cure condition.", upcast: null,
+                 roll: {type: "buff", desc: "Removed a condition from target."}},
+                {name: "Warding Bond", level: 2, school: "Abjur", desc: "Share damage with ally +1 AC/Save.", upcast: null,
+                 roll: {type: "buff", desc: "Bonded to ally: +1 AC/Save, share damage."}}
             ]
         },
         7: {
             str: 8, dex: 18, con: 14, int: 10, wis: 12, cha: 17, prof: 3, hp: 60,
             features: [{name: "Aura of Elemental Shielding", source: "Noble Genies 7", desc: "Resistance to chosen element for Aura allies."}],
             prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "+1d4 Radiant.", upcast: null}, 
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null}, 
-                {name: "Aid", level: 2, school: "Abjur", desc: "+5 Max HP.", upcast: "+5 HP per level."}, 
-                {name: "Magic Weapon", level: 2, school: "Conc", desc: "Weapon +1.", upcast: "+2 at 4th, +3 at 6th."}, 
-                {name: "Warding Bond", level: 2, school: "Abjur", desc: "Share damage.", upcast: null}, 
-                {name: "Zone of Truth", level: 2, school: "Ench", desc: "4.5m Sphere. No lies allowed (CHA Save).", upcast: null}, 
-                {name: "Shining Smite", level: 2, school: "Conc", desc: "+2d6 Radiant + Advantage on target.", upcast: "+1d6 damage for each slot level above 2nd."}
+                {name: "Divine Favor", level: 1, school: "Conc", desc: "+1d4 Radiant.", upcast: null,
+                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
+                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null,
+                 roll: {type: "buff", desc: "Target gains +2 AC."}},
+                {name: "Aid", level: 2, school: "Abjur", desc: "+5 Max HP.", upcast: "+5 HP per level.",
+                 roll: {type: "buff", desc: "3 creatures gain +5 Max HP for 8 hours."}},
+                {name: "Magic Weapon", level: 2, school: "Conc", desc: "Weapon +1.", upcast: "+2 at 4th, +3 at 6th.",
+                 roll: {type: "buff", desc: "Weapon is now +1 (magic)."}},
+                {name: "Warding Bond", level: 2, school: "Abjur", desc: "Share damage.", upcast: null,
+                 roll: {type: "buff", desc: "Bonded to ally: +1 AC/Save, share damage."}},
+                {name: "Zone of Truth", level: 2, school: "Ench", desc: "4.5m Sphere. No lies allowed (CHA Save).", upcast: null,
+                 roll: {type: "save", save: "CHA", desc: "4.5m sphere where no lies can be spoken."}},
+                {name: "Shining Smite", level: 2, school: "Conc", desc: "+2d6 Radiant + Advantage on target.", upcast: "+1d6 damage for each slot level above 2nd.",
+                 roll: {type: "buff", desc: "Next hit: +2d6 Radiant + Advantage on target."}}
             ]
         },
         8: {
             str: 8, dex: 20, con: 14, int: 10, wis: 12, cha: 17, prof: 3, hp: 68,
             features: [{name: "ASI: Dexterity +2", source: "Paladin 8", desc: "DEX capped at 20. AC = 18."}],
             prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "+1d4 Radiant.", upcast: null}, 
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null}, 
-                {name: "Aid", level: 2, school: "Abjur", desc: "+5 Max HP.", upcast: "+5 HP per level."}, 
-                {name: "Magic Weapon", level: 2, school: "Conc", desc: "Weapon +1.", upcast: "+2 at 4th, +3 at 6th."}, 
-                {name: "Warding Bond", level: 2, school: "Abjur", desc: "Share damage.", upcast: null}, 
-                {name: "Lesser Restoration", level: 2, school: "Abjur", desc: "Cure condition.", upcast: null}, 
-                {name: "Shining Smite", level: 2, school: "Conc", desc: "+2d6 Radiant + Advantage.", upcast: "+1d6 damage per level."}
+                {name: "Divine Favor", level: 1, school: "Conc", desc: "+1d4 Radiant.", upcast: null,
+                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
+                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null,
+                 roll: {type: "buff", desc: "Target gains +2 AC."}},
+                {name: "Aid", level: 2, school: "Abjur", desc: "+5 Max HP.", upcast: "+5 HP per level.",
+                 roll: {type: "buff", desc: "3 creatures gain +5 Max HP for 8 hours."}},
+                {name: "Magic Weapon", level: 2, school: "Conc", desc: "Weapon +1.", upcast: "+2 at 4th, +3 at 6th.",
+                 roll: {type: "buff", desc: "Weapon is now +1 (magic)."}},
+                {name: "Warding Bond", level: 2, school: "Abjur", desc: "Share damage.", upcast: null,
+                 roll: {type: "buff", desc: "Bonded to ally: +1 AC/Save, share damage."}},
+                {name: "Lesser Restoration", level: 2, school: "Abjur", desc: "Cure condition.", upcast: null,
+                 roll: {type: "buff", desc: "Removed a condition from target."}},
+                {name: "Shining Smite", level: 2, school: "Conc", desc: "+2d6 Radiant + Advantage.", upcast: "+1d6 damage per level.",
+                 roll: {type: "buff", desc: "Next hit: +2d6 Radiant + Advantage on target."}}
             ]
         }
     };
@@ -906,17 +966,33 @@
         
         function drawSpell(s, typeClass) {
             let note = s.note ? `<span class="spell-note">${s.note}</span>` : '';
+
+            // OnClick Logic for interactive spells
+            let clickAttr = '';
+            let hoverClass = '';
+
+            if (s.roll) {
+                const safeName = s.name.replace(/'/g, "\\'");
+                const safeType = s.roll.type;
+                const safeDice = s.roll.dice || '';
+                const safeDesc = (s.roll.desc || s.desc || '').replace(/'/g, "\\'");
+                const safeSave = s.roll.save || '';
+
+                clickAttr = `onclick="castSpell('${safeName}', '${safeType}', '${safeDice}', '${safeDesc}', '${safeSave}')"`;
+                hoverClass = 'attack-card';
+            }
+
             let tooltipContent = `<strong style="color:var(--dex-highlight)">${s.name}</strong><br>${s.desc || ''}`;
             if (s.upcast) {
                 tooltipContent += `<div style="margin-top:8px; padding-top:8px; border-top:1px solid #475569; font-style:italic; color:#fff;">At Higher Levels:<br><span style="color:#cbd5e1; font-style:normal;">${s.upcast}</span></div>`;
             }
             let tooltip = `<span class="spell-tooltip">${tooltipContent}</span>`;
-            
-            let rightSide = s.usage 
-                ? `<span class="spell-usage">${s.usage}</span>` 
+
+            let rightSide = s.usage
+                ? `<span class="spell-usage">${s.usage}</span>`
                 : `<span class="spell-meta">${s.school || 'Spell'}</span>`;
-            
-            return `<div class="spell-item ${typeClass}">
+
+            return `<div class="spell-item ${typeClass} ${hoverClass}" ${clickAttr}>
                         <span class="spell-name">${s.name}</span>
                         ${rightSide}
                         ${tooltip}
@@ -1071,6 +1147,76 @@
         entry.className = 'log-entry';
         entry.innerHTML = `> ${html}`;
         log.prepend(entry); // Add to top
+    }
+
+    // --- SPELLCASTING LOGIC ---
+
+    function castSpell(name, type, diceStr, desc, saveStat) {
+        // Get current Stats
+        const spellAtk = parseInt(document.getElementById('spell-atk').innerText.replace('+',''));
+        const spellDC = document.getElementById('spell-dc').innerText;
+        const chaMod = parseInt(document.getElementById('cha-mod').innerText.replace('+',''));
+
+        // Replace "MOD" in dice string with actual Charisma Modifier (e.g. "2d8+MOD" -> "2d8+3")
+        let actualDice = diceStr.replace('MOD', chaMod);
+
+        if (type === 'attack') {
+            // Logic similar to weapon attack
+            const d20 = Math.floor(Math.random() * 20) + 1;
+            const isCrit = (d20 === 20);
+            const isFail = (d20 === 1);
+            const totalHit = d20 + spellAtk;
+
+            // Calculate Damage
+            let dmgResult = parseAndRoll(actualDice, isCrit);
+
+            let hitClass = isCrit ? 'log-crit' : (isFail ? 'log-fail' : '');
+            let hitDisplay = isCrit ? 'NAT 20!' : (isFail ? 'MISS (1)' : totalHit);
+
+            logMsg(`<strong>${name}:</strong> Spell Attack <span class="${hitClass}">[${hitDisplay}]</span> | Dmg: <strong>${dmgResult.total}</strong> (${dmgResult.formula})`);
+
+        } else if (type === 'save') {
+            logMsg(`<strong>${name}:</strong> Cast! DC <span style="color:var(--magic); font-weight:bold;">${spellDC}</span> ${saveStat} Save. <br><span style="color:#cbd5e1; font-size:0.9em;">Effect: ${desc}</span>`);
+
+        } else if (type === 'heal') {
+            let healResult = parseAndRoll(actualDice, false);
+            logMsg(`<strong>${name}:</strong> <span style="color:var(--success)">Healed <strong>${healResult.total}</strong> HP</span> (${healResult.formula})`);
+
+            // Auto-update current HP input
+            const curEl = document.getElementById('current-hp');
+            const max = parseInt(document.getElementById('max-hp').innerText);
+            curEl.value = Math.min(max, parseInt(curEl.value) + healResult.total);
+
+        } else if (type === 'buff' || type === 'info') {
+            logMsg(`<strong>${name}:</strong> ${desc}`);
+        }
+    }
+
+    // Helper to roll dice strings like "2d8+3" or "1d10"
+    function parseAndRoll(diceStr, isCrit) {
+        const regex = /(\d+)d(\d+)([+-]\d+)?/;
+        const match = diceStr.match(regex);
+
+        if (!match) return { total: 0, formula: 'error' };
+
+        let count = parseInt(match[1]);
+        let faces = parseInt(match[2]);
+        let mod = match[3] ? parseInt(match[3]) : 0;
+
+        if (isCrit) count *= 2;
+
+        let total = 0;
+        let rolls = [];
+        for(let i=0; i<count; i++) {
+            let r = Math.floor(Math.random() * faces) + 1;
+            rolls.push(r);
+            total += r;
+        }
+        total += mod;
+
+        // Format: "4+2+3"
+        let formula = rolls.join('+') + (mod !== 0 ? (mod > 0 ? `+${mod}` : mod) : '');
+        return { total, formula };
     }
 
     // Initialize
