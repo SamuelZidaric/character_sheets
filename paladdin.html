@@ -78,9 +78,9 @@
 
         .dashboard {
             display: grid;
-            grid-template-columns: 300px 1fr 320px;
+            grid-template-columns: 320px 1fr 320px;
             gap: 20px;
-            max-width: 1450px;
+            max-width: 1500px;
             margin: 0 auto;
         }
 
@@ -107,6 +107,43 @@
             justify-content: space-between;
             align-items: center;
         }
+
+        /* --- IMAGES --- */
+        .char-img-container {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 2px solid var(--accent);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            background: #000;
+        }
+        .char-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the image fills the box without distortion */
+            object-position: top center;
+        }
+
+        .steed-img-container {
+            width: 100%;
+            height: 150px;
+            overflow: hidden;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--accent);
+        }
+        .steed-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- ROLEPLAY TEXT --- */
+        .rp-block { margin-bottom: 12px; font-size: 0.85em; color: #cbd5e1; line-height: 1.4; }
+        .rp-label { color: var(--gold); font-weight: bold; display: block; margin-bottom: 2px; font-size: 0.9em; text-transform: uppercase; }
+        .rp-text { font-style: italic; }
 
         .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
         .stat-box {
@@ -184,7 +221,7 @@
             border-left: 3px solid #64748b; font-size: 0.9em; position: relative; cursor: help;
         }
 
-        /* Highlight Logic: ONLY Prepared Spells get Blue BG */
+        /* Highlight Logic */
         .spell-item.paladin { 
             border-left-color: var(--dex-highlight); 
             background: rgba(45, 212, 191, 0.2) !important; 
@@ -218,9 +255,11 @@
         /* Steed Hover */
         .steed-tooltip {
             visibility: hidden; width: 300px; background-color: #0f172a; border: 2px solid var(--accent);
-            border-radius: 8px; padding: 12px; position: absolute; bottom: 110%; right: 0; z-index: 200;
+            border-radius: 8px; padding: 0; position: absolute; bottom: 110%; right: 0; z-index: 200;
             box-shadow: 0 10px 25px rgba(0,0,0,1); opacity: 0; transition: opacity 0.2s; pointer-events: none; text-align: left;
+            overflow: hidden;
         }
+        .steed-content { padding: 12px; }
         #steed-resource { position: relative; cursor: help; }
         #steed-resource:hover .steed-tooltip { visibility: visible; opacity: 1; }
 
@@ -251,8 +290,8 @@
 
 <header>
     <div class="header-info">
-        <h1>Noble Genies Dexadin <span class="rules-badge">D&D 2024</span></h1>
-        <h2>Oath of Noble Genies • Human • <span style="color:var(--dex-highlight)">Unarmored Elemental Duelist</span></h2>
+        <h1>Paiman "Paladdin" Aladdin <span class="rules-badge">Dexadin</span></h1>
+        <h2>Oath of Noble Genies • Human Merchant • <span style="color:var(--dex-highlight)">Elemental Duelist</span></h2>
     </div>
     <div class="level-control">
         <label>LEVEL</label>
@@ -264,6 +303,35 @@
 <div class="dashboard">
 
     <div class="col-1">
+        <div class="card">
+            <div class="card-title">Identity</div>
+            
+            <div class="char-img-container">
+                <img src="images/paladdin.png" alt="Paiman Aladdin" class="char-img">
+            </div>
+
+            <div class="rp-block">
+                <span class="rp-label">Physical</span>
+                <span class="rp-text">Mixed Chinese/Persian descent. Wears reinforced silk robes of Tyrian purple. No metal armor. Carries a "Bandolier of Essences" as a focus. Smell of ozone and sandalwood.</span>
+            </div>
+            <div class="rp-block">
+                <span class="rp-label">Personality</span>
+                <span class="rp-text">"The Nose Knows." Experiences the world through scent. Aggressively sophisticated; refuses trail rations. Refers to himself as "The Paladdin."</span>
+            </div>
+            <div class="rp-block">
+                <span class="rp-label">Ideals (Lawful/Good)</span>
+                <span class="rp-text"><strong>Refinement & Synthesis:</strong> The world is raw; I must distill it into something pure. Strength comes from mixing cultures.</span>
+            </div>
+            <div class="rp-block">
+                <span class="rp-label">Bonds</span>
+                <span class="rp-text">Seek the ingredients for the "Breath of Heaven" to restore my family fortune. My Steed is the spirit of my grandfather's prize bird.</span>
+            </div>
+            <div class="rp-block" style="margin-bottom:0;">
+                <span class="rp-label">Flaws</span>
+                <span class="rp-text" style="color:var(--warning)">Sensory Overload (Bad smells). Materialistic. Combat Vanity (Must look good fighting).</span>
+            </div>
+        </div>
+
         <div class="card">
             <div class="card-title">
                 Attributes
@@ -402,28 +470,35 @@
                 <div class="attack-header"><span>Shield (Magic Initiate)</span> <span>1 / LR</span></div>
                 <div class="attack-detail"><span class="kw-react">Reaction</span>. +5 AC until start of next turn.</div>
             </div>
+            
             <div class="attack-card" style="border-left-color: var(--accent);" id="steed-resource">
                 <div class="attack-header"><span>Find Steed (Free)</span> <span>1 / LR</span></div>
                 <div class="attack-detail">Summon Golden Stormstrider.</div>
                 
                 <div class="steed-tooltip">
-                    <div class="sb-header">
-                        <div class="sb-title">Golden Stormstrider</div>
-                        <div class="sb-meta">Large Fey (Yellow Ostrich)</div>
+                    <div class="steed-img-container">
+                         <img src="images/ostrich.png" alt="Golden Ostrich" class="steed-img">
                     </div>
-                    <div class="sb-stats">
-                        <div style="text-align:center"><span class="sb-lbl">AC</span><br><span class="sb-val" id="sb-ac">15</span></div>
-                        <div style="text-align:center"><span class="sb-lbl">HP</span><br><span class="sb-val" id="sb-hp">25</span></div>
-                        <div style="text-align:center"><span class="sb-lbl">SPD</span><br><span class="sb-val">18m</span></div>
-                    </div>
-                    <div class="sb-action">
-                        <strong>Kweh Kick:</strong> <span id="sb-atk">+5</span> Hit, <span id="sb-dmg">1d8+5</span> Bludgeoning.
-                    </div>
-                    <div class="sb-action">
-                        <strong>Fey Step (BA):</strong> Teleport 18m to unoccupied space.
-                    </div>
-                    <div class="sb-action" style="font-style:italic; font-size:0.8em; color:#94a3b8; margin-top:5px;">
-                        *Shared Spells: Spells targeting only you also target the steed.
+                    
+                    <div class="steed-content">
+                        <div class="sb-header">
+                            <div class="sb-title">Golden Stormstrider</div>
+                            <div class="sb-meta">Large Fey (Yellow Ostrich)</div>
+                        </div>
+                        <div class="sb-stats">
+                            <div style="text-align:center"><span class="sb-lbl">AC</span><br><span class="sb-val" id="sb-ac">15</span></div>
+                            <div style="text-align:center"><span class="sb-lbl">HP</span><br><span class="sb-val" id="sb-hp">25</span></div>
+                            <div style="text-align:center"><span class="sb-lbl">SPD</span><br><span class="sb-val">18m</span></div>
+                        </div>
+                        <div class="sb-action">
+                            <strong>Kweh Kick:</strong> <span id="sb-atk">+5</span> Hit, <span id="sb-dmg">1d8+5</span> Bludgeoning.
+                        </div>
+                        <div class="sb-action">
+                            <strong>Fey Step (BA):</strong> Teleport 18m to unoccupied space.
+                        </div>
+                        <div class="sb-action" style="font-style:italic; font-size:0.8em; color:#94a3b8; margin-top:5px;">
+                            *Shared Spells: Spells targeting only you also target the steed.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -441,9 +516,9 @@
     const preparedSpellsByLevel = { 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 6, 7: 7, 8: 7 };
 
     const magicInitiateSpells = [
-        {name: "Fire Bolt", level: 0, school: "Evoc", note: "36m, 1d10 Fire", desc: "Ranged spell attack. 1d10 Fire damage.", upcast: "Damage increases to 2d10 (5th), 3d10 (11th), 4d10 (17th)."},
+        {name: "Fire Bolt", level: 0, school: "Evoc", note: "36m, 1d10 Fire", desc: "Ranged spell attack. 1d10 Fire damage. (Alchemy Vial)", upcast: "Damage increases to 2d10 (5th), 3d10 (11th), 4d10 (17th)."},
         {name: "Minor Illusion", level: 0, school: "Illu", note: "Utility", desc: "Create a sound or image of an object (1 min).", upcast: null},
-        {name: "Shield", level: 1, school: "Abjur", note: "+5 AC Reaction", desc: "Reaction when hit. +5 AC until next turn. Magic Missile immunity.", upcast: null}
+        {name: "Shield", level: 1, school: "Abjur", note: "+5 AC Reaction", desc: "Reaction when hit. +5 AC until next turn. Magic Missile immunity. (Crystal Barrier)", upcast: null}
     ];
 
     const genieSpellsByLevel = {
@@ -482,7 +557,7 @@
                 {name: "Human: Resourceful", source: "Species", desc: "Gain Heroic Inspiration on Long Rest."},
                 {name: "Human: Skillful", source: "Species", desc: "Gain one extra skill proficiency (Athletics)."},
                 {name: "Human: Versatile (Magic Initiate)", source: "Species", desc: "Fire Bolt, Minor Illusion + Shield 1/LR (CHA-based)."},
-                {name: "Background: Alert", source: "Criminal", desc: "Add Proficiency Bonus to Initiative. Can swap Initiative with willing ally."},
+                {name: "Background: Alert", source: "Merchant", desc: "Add Proficiency Bonus to Initiative. Can swap Initiative with willing ally."},
                 {name: "Lay on Hands", source: "Paladin 1", desc: "<span class='kw-bonus'>Bonus Action</span> to heal. 5 HP removes Poisoned."},
                 {name: "Weapon Mastery (2)", source: "Paladin 1", desc: "<b>Scimitar (Nick):</b> Light attack is part of Attack action.<br><b>Shortsword (Vex):</b> Advantage on next attack."},
                 {name: "Spellcasting", source: "Paladin 1", desc: "Prepare Paladin spells. CHA is spellcasting ability."}
