@@ -364,16 +364,14 @@
             <div class="card-title">Attributes</div>
             <div class="stat-grid">
                 <div class="stat-box" style="border-color:var(--samurai-highlight)"><span class="stat-label" style="color:var(--samurai-highlight)">STR</span><span class="stat-val" id="str">16</span><span class="stat-mod" id="str-mod">+3</span></div>
-                <div class="stat-box"><span class="stat-label">DEX</span><span class="stat-val" id="dex">12</span><span class="stat-mod" id="dex-mod">+1</span></div>
+                <div class="stat-box"><span class="stat-label">DEX</span><span class="stat-val" id="dex">14</span><span class="stat-mod" id="dex-mod">+2</span></div>
                 <div class="stat-box" style="border-color:var(--success)"><span class="stat-label" style="color:var(--success)">CON</span><span class="stat-val" id="con">16</span><span class="stat-mod" id="con-mod">+3</span></div>
-                <div class="stat-box"><span class="stat-label">INT</span><span class="stat-val" id="int">8</span><span class="stat-mod" id="int-mod">-1</span></div>
-
-                <div class="stat-box" id="wis-box"><span class="stat-label" id="wis-label">WIS</span><span class="stat-val" id="wis">14</span><span class="stat-mod" id="wis-mod">+2</span></div>
-
-                <div class="stat-box"><span class="stat-label">CHA</span><span class="stat-val" id="cha">8</span><span class="stat-mod" id="cha-mod">-1</span></div>
+                <div class="stat-box"><span class="stat-label">INT</span><span class="stat-val" id="int">10</span><span class="stat-mod" id="int-mod">+0</span></div>
+                <div class="stat-box" style="border-color:var(--accent)"><span class="stat-label" style="color:var(--accent)">WIS</span><span class="stat-val" id="wis">14</span><span class="stat-mod" id="wis-mod">+2</span></div>
+                <div class="stat-box"><span class="stat-label">CHA</span><span class="stat-val" id="cha">10</span><span class="stat-mod" id="cha-mod">+0</span></div>
             </div>
             <div style="text-align:center; font-size:0.9em; color:#888;">
-                Proficiency: <strong style="color:var(--text-main)" id="prof-bonus">+2</strong>
+                Proficiency: <strong style="color:var(--text-main)" id="prof-bonus">+3</strong>
             </div>
         </div>
 
@@ -415,17 +413,22 @@
             <div class="card-title">Attacks</div>
 
             <div class="buff-panel">
-                <label class="buff-lbl"><input type="checkbox" id="buffFighting" class="buff-chk" onchange="updateDashboard(document.getElementById('levelRange').value)"> Fighting Spirit (Advantage)</label>
+                <label class="buff-lbl">
+                    <input type="checkbox" id="buffFighting" class="buff-chk" onchange="updateDashboard(document.getElementById('levelRange').value)"> Fighting Spirit
+                </label>
+                <label class="buff-lbl">
+                    <input type="checkbox" id="toggleShield" class="buff-chk" onchange="updateDashboard(document.getElementById('levelRange').value)"> Shield Equipped (+2 AC)
+                </label>
             </div>
 
-            <div class="attack-card" onclick="rollAttack('Katana (Longsword)', 'wep1-hit', 'wep1-dmg')">
+            <div class="attack-card" onclick="rollAttack('Katana', 'wep1-hit', 'wep1-dmg')">
                 <div class="attack-header">
-                    <span>KATANA <span style="font-size:0.8em; color:#888;">(Longsword, Versatile)</span></span>
+                    <span>KATANA <span style="font-size:0.8em; color:#888;">(Longsword)</span></span>
                     <span id="wep1-hit" style="color:var(--success);">+6 Hit</span>
                 </div>
                 <div class="attack-detail">
-                    Damage: <span class="dmg-text" id="wep1-dmg">1d10+3</span> Slashing (2H)<br>
-                    <span class="kw-action">Mastery (Flex):</span> 1d8+3 one-handed, 1d10+3 two-handed.
+                    Damage: <span class="dmg-text" id="wep1-dmg">1d10+3</span> <span id="wep1-type">Slashing</span><br>
+                    <span id="wep1-desc" style="font-size:0.9em; color:#cbd5e1">Two-handed versatile grip.</span>
                 </div>
             </div>
 
@@ -567,61 +570,66 @@
 
     const levels = {
         1: {
-            str: 16, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 2, hp: 13,
+            str: 16, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 2, hp: 13,
             fightingSpirit: 3, actionSurge: 0, secondWind: 1,
             features: [
                 {name: "Amethyst Dragonborn", source: "Species", desc: "Force Resistance. Breath Weapon (15ft cone, 2d10 Force, DEX save). Psionic Mind (9m telepathy)."},
-                {name: "Outlander", source: "Background", desc: "Wanderer: Excellent memory for maps and geography. Can find food and water for 5 people."},
-                {name: "Fighting Style: Defense", source: "Fighter 1", desc: "+1 bonus to AC while wearing armor."},
-                {name: "Second Wind", source: "Fighter 1", desc: "<span class='kw-bonus'>Bonus Action</span>. Heal 1d10 + Fighter level. Recharges on Short Rest."}
+                {name: "Outlander", source: "Background", desc: "Wanderer: Excellent memory for maps and geography. Can find food and fresh water for yourself and up to five others each day."},
+                {name: "Fighting Style: Great Weapon Fighting", source: "Fighter 1", desc: "Reroll 1s and 2s on damage dice with two-handed weapons."},
+                {name: "Second Wind", source: "Fighter 1", desc: "<span class='kw-bonus'>Bonus Action</span>. Heal 1d10 + Fighter level. Recharges on Short Rest."},
+                {name: "Weapon Mastery (2)", source: "Fighter 1", desc: "<b>Longsword (Flex):</b> Use different damage die based on grip.<br><b>Shortsword (Vex):</b> Advantage on next attack after hit."}
             ]
         },
         2: {
-            str: 16, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 2, hp: 22,
+            str: 16, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 2, hp: 22,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1,
             features: [
-                {name: "Action Surge", source: "Fighter 2", desc: "Take one additional Action on your turn. Recharges on Short Rest."}
+                {name: "Action Surge", source: "Fighter 2", desc: "Take one additional Action on your turn. Recharges on Short Rest."},
+                {name: "Tactical Mind", source: "Fighter 2", desc: "When you fail an ability check, expend a use of Second Wind to add 1d10 to the roll. If still fails, Second Wind isn't expended."}
             ]
         },
         3: {
-            str: 16, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 2, hp: 31,
+            str: 16, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 2, hp: 31,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1,
             features: [
                 {name: "Fighting Spirit", source: "Samurai 3", desc: "<span class='kw-bonus'>Bonus Action</span>. Gain Advantage on all weapon attacks and 5 Temp HP until end of turn. 3 uses, recharges on Long Rest."},
-                {name: "Bonus Proficiency", source: "Samurai 3", desc: "Gain proficiency in Persuasion."}
+                {name: "Bonus Proficiency", source: "Samurai 3", desc: "Gain proficiency in one of: History, Insight, Performance, or Persuasion. (Persuasion chosen)"},
+                {name: "Weapon Mastery (3)", source: "Fighter 3", desc: "Learn one additional weapon mastery. Can change one mastery when you level up."}
             ]
         },
         4: {
-            str: 16, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 2, hp: 40,
+            str: 18, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 2, hp: 40,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1,
             features: [
-                {name: "Feat: Sentinel", source: "Fighter 4", desc: "1. OA hits reduce speed to 0.<br>2. OA triggered even if enemy Disengages.<br>3. Reaction attack if enemy hits ally within 5ft."}
+                {name: "Feat: Great Weapon Master", source: "Fighter 4", desc: "+1 STR. Heavy Hew: On crit or reducing creature to 0 HP, make one extra attack as BA. Graze: On miss, deal STR mod damage."}
             ]
         },
         5: {
-            str: 16, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 3, hp: 49,
+            str: 18, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 3, hp: 49,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
             features: [
                 {name: "Extra Attack", source: "Fighter 5", desc: "Attack twice when taking the Attack action."},
-                {name: "Gem Flight", source: "Amethyst Dragonborn 5", desc: "<span class='kw-bonus'>Bonus Action</span>. Gain 30ft fly speed for 10 minutes. 1 use, recharges on Long Rest."}
+                {name: "Gem Flight", source: "Amethyst Dragonborn 5", desc: "<span class='kw-bonus'>Bonus Action</span>. Manifest spectral wings and gain 30ft fly speed for 10 minutes. 1 use, recharges on Long Rest."},
+                {name: "Weapon Mastery (4)", source: "Fighter 5", desc: "Learn one additional weapon mastery."}
             ]
         },
         6: {
-            str: 18, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 3, hp: 58,
+            str: 20, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 3, hp: 58,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
             features: [
-                {name: "Ability Score Improvement", source: "Fighter 6", desc: "+2 STR (now 18)."}
+                {name: "Ability Score Improvement", source: "Fighter 6", desc: "+2 STR (now 20). Maximum melee damage potential."}
             ]
         },
         7: {
-            str: 18, dex: 12, con: 16, int: 8, wis: 14, cha: 8, prof: 3, hp: 67,
+            str: 20, dex: 14, con: 16, int: 10, wis: 14, cha: 10, prof: 3, hp: 67,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
             features: [
-                {name: "Elegant Courtier", source: "Samurai 7", desc: "Add WIS mod to Persuasion checks. Gain Proficiency in WIS saves."}
+                {name: "Elegant Courtier", source: "Samurai 7", desc: "Add WIS modifier to Persuasion checks. Proficiency in WIS saves. If already proficient, choose INT or CHA saves instead."},
+                {name: "Weapon Mastery (5)", source: "Fighter 7", desc: "Learn one additional weapon mastery."}
             ]
         },
         8: {
-            str: 18, dex: 12, con: 18, int: 8, wis: 14, cha: 8, prof: 3, hp: 78,
+            str: 20, dex: 14, con: 18, int: 10, wis: 14, cha: 10, prof: 3, hp: 78,
             fightingSpirit: 3, actionSurge: 1, secondWind: 1, gemFlight: true,
             features: [
                 {name: "Feat: Tough", source: "Fighter 8", desc: "HP increases by 2 per level (retroactive). +2 CON (now 18)."}
@@ -668,19 +676,8 @@
         const savesContainer = document.getElementById('saves-container');
         savesContainer.innerHTML = '';
 
-        // Elegant Courtier grants WIS save proficiency at Level 7
+        // At level 7, Elegant Courtier grants WIS save proficiency
         const hasWisSave = (lvl >= 7);
-
-        // UPDATE VISUALS FOR WISDOM BOX
-        const wisBox = document.getElementById('wis-box');
-        const wisLbl = document.getElementById('wis-label');
-        if(hasWisSave) {
-            wisBox.style.borderColor = "var(--accent)";
-            wisLbl.style.color = "var(--accent)";
-        } else {
-            wisBox.style.borderColor = "#334155";
-            wisLbl.style.color = "#a8a29e"; // muted
-        }
 
         const saves = [
             {name: "Strength", mod: mods.str, prof: true},
@@ -717,22 +714,34 @@
         });
 
         // --- Combat Stats ---
-        // Chain Mail (16) + Defense Style (1) = 17
-        let ac = 17;
-        if (lvl >= 6) ac = 19; // Assumes Plate Armor (18) + Defense (1)
-        document.getElementById('ac-val').innerText = ac;
+        const hasShield = document.getElementById('toggleShield') ? document.getElementById('toggleShield').checked : false;
+
+        // Base AC: Chain Mail (16) + Defense Style (1) = 17
+        // High Level AC (6+): Plate (18) + Defense (1) = 19
+        let baseAc = (lvl >= 6) ? 19 : 17;
+        
+        // Add Shield Bonus
+        let totalAc = baseAc + (hasShield ? 2 : 0);
+        document.getElementById('ac-val').innerText = totalAc;
 
         // Attack Math
         const hitMod = mods.str + data.prof;
         const dmgMod = mods.str;
 
+        // Katana Logic (Versatile)
+        // If Shield is ON, use 1d8 (One-handed). If OFF, use 1d10 (Two-handed).
+        const katanaDie = hasShield ? "1d8" : "1d10";
+        const katanaDesc = hasShield ? "One-handed (Versatile) w/ Shield." : "Two-handed (Versatile) grip.";
+        
         document.getElementById('wep1-hit').innerText = fmtSign(hitMod) + " Hit";
-        document.getElementById('wep1-dmg').innerText = `1d10${fmtSign(dmgMod)}`;
+        document.getElementById('wep1-dmg').innerText = `${katanaDie}${fmtSign(dmgMod)}`;
+        document.getElementById('wep1-desc').innerText = katanaDesc;
 
+        // Wakizashi Logic (Stays 1d6)
         document.getElementById('wep2-hit').innerText = fmtSign(hitMod) + " Hit";
         document.getElementById('wep2-dmg').innerText = `1d6${fmtSign(dmgMod)}`;
 
-        // Ranged (DEX based)
+        // Ranged Logic
         const rangedHit = mods.dex + data.prof;
         document.getElementById('wep3-hit').innerText = fmtSign(rangedHit) + " Hit";
         document.getElementById('wep3-dmg').innerText = `1d8${fmtSign(mods.dex)}`;
