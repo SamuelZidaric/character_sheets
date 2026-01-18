@@ -349,9 +349,6 @@
     <a href="index.html" class="back-btn">← Back</a>
     <div class="header-info">
         <h1>Chin Chun Chan <span class="rules-badge">Samurai</span></h1>
-        <button class="rest-btn" onclick="toggleModal('backstory-modal')" style="border-color:var(--accent); color:var(--accent)">
-            BOOK OF WISDOM
-        </button>
         <h2>Fighter (Samurai) • Amethyst Dragonborn Outlander • <span style="color:var(--samurai-highlight)">w/ Baby Hook Horror</span></h2>
     </div>
     <div class="level-control">
@@ -419,6 +416,14 @@
             <div id="skills-container"></div>
             <div style="font-size:0.75em; color:#888; margin-top:8px;">
                 ★ = Proficient
+            </div>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, #1e1b1a 0%, #2e1065 100%); border: 2px solid var(--gold); cursor: pointer; transition: all 0.3s;" onclick="toggleModal('backstory-modal')" onmouseover="this.style.boxShadow='0 0 20px var(--gold)'; this.style.transform='scale(1.02)';" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)';">
+            <div style="text-align: center; padding: 15px 0;">
+                <div style="color: var(--gold); font-size: 1.3em; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">BOOK OF WISDOM</div>
+                <div style="color: var(--accent); font-style: italic; font-size: 0.9em;">"The Definitely True and Not At All Embellished Story"</div>
+                <div style="color: #94a3b8; font-size: 0.8em; margin-top: 10px;">Click to read the full backstory</div>
             </div>
         </div>
     </div>
@@ -587,37 +592,198 @@
     </div>
 
     <div id="backstory-modal" class="modal-overlay" onclick="if(event.target === this) toggleModal('backstory-modal')">
-        <div class="modal-content">
+        <div class="modal-content" style="width: 900px;">
             <div class="modal-header">
                 <span style="font-weight:bold; color:var(--gold); text-transform:uppercase;">The Book of Infinite Wisdom</span>
                 <button class="modal-close" onclick="toggleModal('backstory-modal')">×</button>
             </div>
             <div class="modal-body">
-                <div class="story-title">The Definitely True Story of Chin Chun Chan </div>
-                
+                <div class="story-title">THE DEFINITELY TRUE AND NOT AT ALL EMBELLISHED STORY OF CHIN CHUN CHAN</div>
+
                 <div class="story-quote">
-                    "If you think about it, breathing is just mouth wind but on the inside." [cite: 2]
+                    "If you think about it, breathing is just mouth wind but on the inside."<br>
+                    <span style="font-size:0.9em; color:#94a3b8;">- Chin Chun Chan, age 7, right before almost drowning</span>
                 </div>
 
-                <h3 class="story-h3">Chapter 1: The Oopsie [cite: 4]</h3>
-                <p>Chin's parents were wealthy merchants who got so distracted by a jade salesman's pitch that they left the tavern without him[cite: 9, 10]. They traveled three kingdoms away before realizing they had forgotten the "purple scaly thing that called us mama and papa"[cite: 14, 16]. They did not turn back[cite: 18].</p>
+                <h3 class="story-h3">Chapter 1: The Oopsie</h3>
+                <p>So there were these two dragonborn, right? Chin's parents. Wealthy merchants. Real fancy types. The kind of people who would absolutely, definitely, 100% remember to bring their child with them when leaving a tavern. Except, plot twist: they didn't.</p>
 
-                <h3 class="story-h3">Chapter 2: Raised by Dwarves [cite: 21]</h3>
-                <p>Found by the Clan of the Iron Blossom, Chin's first words to a dwarf poking him with a stick were: <em>"Stick is long rock."</em>[cite: 24]. The dwarves tried to find his parents with posters reading "FOUND: One (1) Purple Baby Dragon. Very Stupid. Please Claim," but eventually adopted him[cite: 26, 27].</p>
+                <p>Now, you might be thinking, "How do you forget a whole baby dragon?" And that's a great question. The answer is: they were REALLY into this jade salesman's pitch. Like, really into it. The guy was describing the jade and Chin's dad just kept saying "wow" and nodding. For three hours. Chin's mom had already fallen asleep standing up.</p>
 
-                <h3 class="story-h3">Chapter 3: The Way of the Blade [cite: 35]</h3>
-                <p>Master Thorin Ironwhisker, a dwarf who had been to Kara-Tur (and was "kind of a weeb"), taught Chin the samurai arts[cite: 36, 37]. Chin was surprisingly a prodigy at fighting, physically grasping what his mind could not. Thorin taught him that "The blade is an extension of your soul," leading Chin to believe that if he drops his sword, his soul is on the floor[cite: 43, 44].</p>
+                <p>Baby Chin was in the corner, wrapped in a blanket that was frankly too expensive for a tavern floor, doing what baby dragons do best: existing quietly and being very easy to forget about. He wasn't even crying. He was just... vibing. Already showing signs of his future philosophical prowess by staring at a wall and probably thinking something like "wall is wall because it is not not-wall."</p>
 
-                <h3 class="story-h3">Chin's Philosophy [cite: 113]</h3>
+                <p>His parents left at dawn. They got THREE KINGDOMS AWAY before Chin's mom went, "Wait, didn't we have a thing?"</p>
+
+                <p><em>"What thing?"</em></p>
+
+                <p><em>"You know... a small thing. A purple scaly thing that called us mama and papa."</em></p>
+
+                <p><em>"Oh. OH. OH NO."</em></p>
+
+                <p>They did not go back. Instead, they convinced themselves that the dwarves would probably do a better job anyway. This is what we call "coping" and also "being terrible parents." But it's fine. Everything's fine. Chin's fine. Probably. Let's continue.</p>
+
+                <h3 class="story-h3">Chapter 2: The Dwarves Were Confused But They Had Spirit</h3>
+                <p>The dwarves found baby Chin the next morning. He was still staring at the wall. One of them, a dwarf named Grungi, poked him with a stick. Chin turned around and said his first words: <strong>"Stick is long rock."</strong></p>
+
+                <p>The dwarves looked at each other. "Well," said Grungi, "he's not wrong."</p>
+
+                <p>And so the Clan of the Iron Blossom adopted Chin. They tried to find his parents. They asked around. They put up posters. The posters said <em>"FOUND: One (1) Purple Baby Dragon. Very Stupid. Please Claim."</em> Nobody claimed him. The dwarves shrugged and decided he was theirs now.</p>
+
+                <p>Growing up, Chin was... special. While other dwarven children learned to count ore, Chin would announce things like "One is the first number, but zero comes before it, which means nothing is the most important something." The dwarves would nod slowly and back away.</p>
+
+                <p>When he was 8, Chin discovered philosophy. Or rather, he discovered what he thought was philosophy but was actually just saying obvious things in a dramatic voice. "Father Thorin," he once said, standing on a rock dramatically, "have you ever noticed that when you're hungry, it's because you haven't eaten?"</p>
+
+                <p>Thorin, who had become his reluctant guardian/teacher, stared into the middle distance. "Yes, Chin. That's... that's what hunger is."</p>
+
+                <p>"Fascinating," Chin whispered, writing it down in his "Book of Infinite Wisdom" (which was just a notebook he'd stolen from the tavern).</p>
+
+                <h3 class="story-h3">Chapter 3: The Samurai Arc (This Is Where It Gets Weird)</h3>
+                <p>Master Thorin Ironwhisker was the one dwarf who had traveled to distant lands. He'd been to Kara-Tur. He'd learned the way of the samurai. He had a katana. He was, in dwarf terms, "kind of a weeb." But nobody said that to his face because he would absolutely kick your ass.</p>
+
+                <p>Thorin looked at teenage Chin - tall, purple, scales gleaming, already talking about how "swords are just sharp waiting sticks" - and thought, "You know what? This kid needs discipline. And a weapon. Preferably one he can't hurt himself with, but we'll work with what we got."</p>
+
+                <p>So Thorin taught Chin the way of the samurai. Sort of. Mostly he taught him how to swing a sword without cutting his own tail off. Chin took to it like a duck to water, if the duck was very confident but also very stupid and the water was actually a complicated martial art.</p>
+
+                <p><em>"The blade is an extension of your soul,"</em> Thorin would say.</p>
+
+                <p>"Yes, Master," Chin would respond, nodding sagely. "So if I drop my sword, I've dropped my soul. Which means my soul is on the floor. Which means the floor has my soul. The floor is me."</p>
+
+                <p>"That's not—" Thorin would start, then stop, sigh deeply, and just continue the lesson.</p>
+
+                <p>But here's the thing: Chin was actually GOOD at fighting. Really good. His body understood what his brain couldn't. He could parry, strike, dodge, and counter like he'd been born with a sword in his hand. Which he hadn't been, obviously, because that would be a serious medical emergency. But you get the point.</p>
+
+                <p>The dwarves would watch him train and go, "How is he so good at this but also so... like that?" Nobody had an answer. It was one of life's great mysteries. Like why the tavern ale was both terrible and also everyone's favorite drink.</p>
+
+                <h3 class="story-h3">Chapter 4: The Greatest Hits (Chin's Dumbest Moments)</h3>
+
+                <p><strong style="color:var(--gold)">Age 12: The Meditation Incident</strong><br>
+                Chin decided to meditate to "become one with the universe." He sat in the meditation pose for six hours. Everyone thought he'd achieved enlightenment. Turned out he'd just forgotten how to stand up and was too embarrassed to ask for help.</p>
+
+                <p><strong style="color:var(--gold)">Age 15: The Breathing Revelation</strong><br>
+                Chin burst into the tavern and announced, "I have discovered the secret of life!" Everyone stopped. He had their full attention. He took a deep breath and said: "If you stop breathing, you die. But if you keep breathing, you don't. This is the way."<br>
+                Someone threw a boot at him.</p>
+
+                <p><strong style="color:var(--gold)">Age 18: The Flute Situation</strong><br>
+                A traveling bard left a flute at the tavern. Chin found it. Chin decided he was now a flute player. He was not a flute player. He is still not a flute player. But he plays that flute with the confidence of a man who thinks making noise is the same as making music. The dwarves have learned to leave the area when he pulls it out.</p>
+
+                <p><strong style="color:var(--gold)">Age 19: The "Deep Thoughts" Phase</strong><br>
+                Chin started sharing daily wisdom with anyone who would listen (and many who wouldn't):</p>
                 <ul>
-                    <li><strong>On Hunger:</strong> "Have you ever noticed that when you're hungry, it's because you haven't eaten?" [cite: 32]</li>
-                    <li><strong>On Combat:</strong> "The enemy cannot defeat you if you defeat them first." [cite: 117]</li>
-                    <li><strong>On Strategy:</strong> "Every battle is a surprise party. Except I'm the one surprising them. By hitting them." [cite: 128]</li>
-                    <li><strong>On The Underdark:</strong> "If it was above things, it would be the Overdark." [cite: 121]</li>
+                    <li>"The mountain is high because the ground is low."</li>
+                    <li>"If you're not here, you're somewhere else. Unless you're nowhere. But nowhere is somewhere. I think."</li>
+                    <li>"Doors are just walls that know when to move."</li>
+                    <li>"Sleep is just time travel but slower and you can't choose where you go. Which is your bed. You go to your bed."</li>
+                </ul>
+                <p>The dwarves started pretending to be busy whenever they saw him approaching with "the look" - you know, that look someone gets when they're about to say something they think is profound.</p>
+
+                <h3 class="story-h3">Chapter 5: The Terrible Decision (Or: How Chin Ended Up In The Literal Worst Place)</h3>
+                <p>At age 20-something (Chin had lost count because "time is just now happening repeatedly"), he decided he needed to see the world. The dwarves were sad but also slightly relieved. Master Thorin gave him his blessing, his katana, and a very long list of things not to do, which Chin immediately lost.</p>
+
+                <p>Chin became a caravan guard. He was actually pretty good at it. Bandits would attack, Chin would fight them off while saying things like "Violence is just aggressive peace," and everyone would be very confused but also safe, so it worked out.</p>
+
+                <p>Then came The Incident.</p>
+
+                <p>The caravan was camped near a massive cave system. The locals called it the "Throat of the World" and warned everyone to stay away because it was dangerous and went down into the Underdark and probably had demons and definitely had things that wanted to eat you.</p>
+
+                <p>Chin, staring at the cave entrance, had a thought. This was already concerning.</p>
+
+                <p><em>"To know light,"</em> he announced to nobody in particular, <em>"one must also know darkness."</em></p>
+
+                <p>"That's... actually kind of right?" said one of the merchants.</p>
+
+                <p>"Therefore," Chin continued, pulling out his katana and his one torch, "I must go into this cave."</p>
+
+                <p>"Wait, that doesn't follow—" the merchant started.</p>
+
+                <p>But Chin was already walking into the cave, his torch held high, probably humming off-key on his flute. His last words to the surface world were: <em>"I shall return with enlightenment! Or I will not return! One of these will definitely happen! Perhaps both! Can you return without returning? I will contemplate this in the cave!"</em></p>
+
+                <h3 class="story-h3">Chapter 6: Chin's Excellent Underdark Adventure (It Was Not Excellent)</h3>
+                <p>So here's the thing about the Underdark: it's really big, really dark, and really easy to get lost in. Especially if you're Chin and your navigation strategy is "follow the vibes."</p>
+
+                <p><strong>Day 1:</strong> "This cave goes down. Down is a direction. I am going in a direction. Therefore, I am not lost."</p>
+
+                <p><strong>Day 5:</strong> "I have not seen the sun. But I have also not seen the moon. This means I am in perfect balance."</p>
+
+                <p><strong>Day 12:</strong> "If I can't find the way back, does that mean I'm on a new path forward? This is wisdom."</p>
+
+                <p><strong>Day 20:</strong> "Why is there a mushroom that's glowing? Why are there so many mushrooms? Am I in a mushroom? Is the world a mushroom? I should write this down."</p>
+
+                <p>Chin survived through a combination of luck, skill, and the fact that even Underdark monsters looked at him and went "...you know what, this one's not worth it." He'd try to communicate with them using his Psionic Mind, sending telepathic messages like "Violence is just spicy peace" or "Do you also think about how rocks are just the earth's teeth?"</p>
+
+                <p>A hook horror once received a telepathic message from Chin that said "What if water is just really wet air?" and simply walked away. Just turned around and left. Didn't even try to eat him.</p>
+
+                <p>Chin ate strange mushrooms (some were poisonous, he got better), fought off cave fishers (while yelling "Your fishing techniques lack honor!"), and once had a very confusing conversation with a flumph who afterwards went to therapy.</p>
+
+                <h3 class="story-h3">Chapter 7: The Present (Where We Find Our "Hero")</h3>
+                <p>Currently, Chin Chun Chan is still in the Underdark. He has been there for approximately 40 days, though he's lost count because he doesn't really understand how calendars work. He carries with him:</p>
+                <ul>
+                    <li>His katana, which he's named "Sharp Friend"</li>
+                    <li>A falcon feather from his dwarf family, which he sometimes talks to</li>
+                    <li>His flute, which has caused more damage to enemy morale than his sword</li>
+                    <li>A notebook full of "wisdom" that would make any philosopher weep</li>
+                    <li>Approximately 47 rations (he keeps finding more in his bag and has no idea where they came from)</li>
+                    <li>A bear trap that he's forgotten he's carrying</li>
                 </ul>
 
-                <h3 class="story-h3">Inventory & Facts [cite: 99]</h3>
-                <p>Chin carries <strong>"Sharp Friend"</strong> (his katana, named because it is the sharp part) [cite: 100, 123] and a <strong>flute</strong> which he plays with the confidence of a man who thinks making noise is the same as making music[cite: 63]. He navigates the Underdark using "vibes" [cite: 87] and sends telepathic messages to monsters like "Violence is just spicy peace"[cite: 93].</p>
+                <p>He has recently stumbled upon what appears to be other prisoners or refugees or possibly very lost adventurers. He has decided they are his new friends, whether they like it or not. He has already shared three pieces of wisdom with them:</p>
+                <ol>
+                    <li>"We are in the dark, but we have eyes, so we are not truly blind. Unless we close our eyes. Then we are blind. But we can open them again. This is the cycle."</li>
+                    <li>"Demons are just angry friends we haven't befriended yet. We should try to befriend them. With swords."</li>
+                    <li>"If we die down here, we will be very dead. But if we don't die, we won't be dead. I think we should choose the second one."</li>
+                </ol>
+                <p>His new companions are already exhausted.</p>
+
+                <h3 class="story-h3">Chin's Actual Philosophy (The Real Stupid Stuff)</h3>
+
+                <p><strong style="color:var(--accent)">On Death:</strong><br>
+                "When you die, you stop being alive, which is basically the same as being not alive, which is death. So death is death. I am very smart."</p>
+
+                <p><strong style="color:var(--accent)">On Combat:</strong><br>
+                "The enemy cannot defeat you if you defeat them first. This is because they will be defeated. By you. Who defeated them."</p>
+
+                <p><strong style="color:var(--accent)">On Food:</strong><br>
+                "Eating is just chewing until the food is gone into your stomach. The stomach is like a food jail. But the food wanted to go there. Or did it? I will think about this while I eat."</p>
+
+                <p><strong style="color:var(--accent)">On The Underdark:</strong><br>
+                "The Underdark is called the Underdark because it is under things and dark. If it was above things, it would be the Overdark. If it was bright, it would be the Underlight. But it is neither. This proves something. I'm not sure what."</p>
+
+                <p><strong style="color:var(--accent)">On His Sword:</strong><br>
+                "Sharp Friend is very sharp. This is why I named them Sharp Friend. The sharp part. Not the friend part. Although they are my friend. Because I said so. We are friends, right Sharp Friend?" (He then holds the sword to his ear like it's answering.)</p>
+
+                <p><strong style="color:var(--accent)">On Being Lost:</strong><br>
+                "I am not lost. I am exactly where I am. Which is here. Here is a place. Therefore I am in a place. Checkmate, geography."</p>
+
+                <p><strong style="color:var(--accent)">On Strategy:</strong><br>
+                "Master Thorin said 'Know your enemy.' But I don't know any of these enemies. Therefore, every battle is a surprise party. Except I'm the one surprising them. By hitting them."</p>
+
+                <p><strong style="color:var(--accent)">On Why He's Really Down Here:</strong><br>
+                "I came to the cave to find enlightenment. I have not found it yet. But I have found many mushrooms and some scary creatures. Perhaps the enlightenment was the mushrooms we ate along the way. No wait, those made me sick. Nevermind."</p>
+
+                <h3 class="story-h3">Fun Facts About Chin</h3>
+                <ul>
+                    <li>He thinks his breath weapon is him "breathing really hard" and doesn't understand it's actually a magical ability</li>
+                    <li>He once tried to meditate for three days but actually just fell asleep standing up</li>
+                    <li>He calls his Psionic Mind ability "thinking really loudly at people"</li>
+                    <li>He doesn't know what his parents look like and at this point he's too embarrassed to ask</li>
+                    <li>The dwarves gave him that falcon feather as a tracking device but he thinks it's a sacred symbol</li>
+                    <li>He has never successfully played a song on the flute but believes he has played thousands</li>
+                    <li>When he uses Action Surge, he yells "DOUBLE TIME!" because he thinks he's moving twice as fast (he's not, he just gets an extra action)</li>
+                    <li>He bows to everyone, including enemies, mushrooms, and once to a particularly interesting rock</li>
+                </ul>
+
+                <h3 class="story-h3">Epilogue: What Even Is This Story</h3>
+                <p>So yeah. That's Chin Chun Chan. A purple dragonborn samurai who was abandoned at a tavern, raised by dwarves who taught him to fight but couldn't teach him to think, and who walked into one of the most dangerous places in the world because he had a vaguely philosophical thought one evening.</p>
+
+                <p>He's honorable but stupid. He's skilled but clueless. He speaks in what he thinks is profound wisdom but is actually just observations about how reality works, except somehow dumber.</p>
+
+                <p>He will protect his friends with his life. He will face demons with courage. He will share his wisdom with anyone who asks (and everyone who doesn't). And he will absolutely, definitely, 100% not understand what's going on at any given moment.</p>
+
+                <p style="text-align:center; margin-top:30px; font-size:1.1em; color:var(--gold);">Welcome to the Out of the Abyss campaign. Chin Chun Chan is ready to not understand it.</p>
+
+                <div class="story-quote" style="margin-top:30px; text-align:center;">
+                    "The journey of a thousand miles begins with a single step. Then another step. Then more steps. That's how walking works. This is wisdom."<br>
+                    <span style="font-size:0.9em; color:#94a3b8;">- Chin Chun Chan, probably right now</span>
+                </div>
             </div>
         </div>
     </div>
