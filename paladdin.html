@@ -405,7 +405,7 @@
     </div>
     <div class="level-control">
         <label>LEVEL</label>
-        <input type="range" id="levelRange" min="1" max="20" value="8" oninput="updateDashboard(this.value)">
+        <input type="range" id="levelRange" min="1" max="20" value="1" oninput="updateDashboard(this.value)">
         <div class="level-badge" id="lvl-badge">1</div>
         <button class="rest-btn" onclick="shortRest()">SHORT REST</button>
     </div>
@@ -857,7 +857,7 @@
             // Inject Image (Pegasus visual at lvl 13)
             const imgContainer = steedCard.querySelector('.steed-img-container');
             if(isGreater) {
-                imgContainer.innerHTML = `<img src="https://image.pollinations.ai/prompt/majestic%20pegasus%20with%20golden%20ostrich%20plumage%20dnd%20art%20fantasy%20style?width=300&height=150&nologo=true" class="steed-img" alt="Ascended Ostrich">`;
+                imgContainer.innerHTML = `<img src="images/ostrich_ascended.png" class="steed-img" alt="Ascended Ostrich">`;
             } else {
                 imgContainer.innerHTML = `<img src="images/ostrich.png" class="steed-img" alt="Ostrich">`;
             }
