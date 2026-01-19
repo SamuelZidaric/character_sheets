@@ -107,9 +107,9 @@
 
         .dashboard {
             display: grid;
-            grid-template-columns: 320px 1fr 320px;
+            grid-template-columns: 350px 1fr 350px;
             gap: 20px;
-            max-width: 1500px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
@@ -255,6 +255,7 @@
         .pet-content { padding: 12px; }
         #pet-resource { position: relative; cursor: help; }
         #pet-resource:hover .pet-tooltip { visibility: visible; opacity: 1; }
+        #pet-resource {height: auto; min-height: 300px; transition: all 0.3s ease; }
 
         /* Stat Block inside Tooltip */
         .sb-header { border-bottom: 1px solid var(--accent); margin-bottom: 8px; padding-bottom: 5px; }
@@ -341,6 +342,67 @@
             padding-left: 15px; margin: 20px 0; background: rgba(88, 28, 135, 0.2); padding: 10px; border-radius: 4px;
         }
         .story-h3 { color: var(--samurai-highlight); margin-top: 25px; border-bottom: 1px solid #444; padding-bottom: 5px; }
+    
+        /* --- PET SLIDER STYLES --- */
+        .pet-nav-container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* Arrows */
+        .pet-arrow {
+            position: absolute;
+            top: 40%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            font-weight: bold;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .pet-arrow:hover { background: var(--gold); color: #000; box-shadow: 0 0 10px var(--gold); }
+        .pet-arrow.left { left: 10px; }
+        .pet-arrow.right { right: 10px; }
+
+        /* The Spheres (Dots) */
+        .pet-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .pet-dot {
+            width: 12px;
+            height: 12px;
+            background: #334155;
+            border: 1px solid #475569;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .pet-dot:hover { border-color: var(--accent); }
+        .pet-dot.active {
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+            transform: scale(1.2);
+        }
+
+        /* Size labels for the spheres */
+        .pet-stage-label {
+            text-align: center; 
+            font-size: 0.8em; 
+            color: var(--text-muted); 
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -383,39 +445,11 @@
             </div>
             <div class="rp-block">
                 <span class="rp-label">Bonds</span>
-                <span class="rp-text">My katana, <strong>"Sharp Friend"</strong>[cite: 100]. My adoptive dwarf family. Kagi (my baby Hook Horror).</span>
+                <span class="rp-text">My katana, <strong>"Sharp Friend"</strong>[cite: 100]. My adoptive dwarf family. Marcus Gallus (my baby Hook Horror).</span>
             </div>
             <div class="rp-block" style="margin-bottom:0;">
                 <span class="rp-label">Flaws</span>
                 <span class="rp-text" style="color:var(--warning)">Believes he is a master flute player (he is terrible)[cite: 62]. Thinks his breath weapon is just "breathing really hard"[cite: 132].</span>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">Attributes</div>
-            <div class="stat-grid">
-                <div class="stat-box" style="border-color:var(--samurai-highlight)"><span class="stat-label" style="color:var(--samurai-highlight)">STR</span><span class="stat-val" id="str">16</span><span class="stat-mod" id="str-mod">+3</span></div>
-                <div class="stat-box"><span class="stat-label">DEX</span><span class="stat-val" id="dex">14</span><span class="stat-mod" id="dex-mod">+2</span></div>
-                <div class="stat-box" style="border-color:var(--success)"><span class="stat-label" style="color:var(--success)">CON</span><span class="stat-val" id="con">16</span><span class="stat-mod" id="con-mod">+3</span></div>
-                <div class="stat-box"><span class="stat-label">INT</span><span class="stat-val" id="int">10</span><span class="stat-mod" id="int-mod">+0</span></div>
-                <div class="stat-box" style="border-color:var(--accent)"><span class="stat-label" style="color:var(--accent)">WIS</span><span class="stat-val" id="wis">14</span><span class="stat-mod" id="wis-mod">+2</span></div>
-                <div class="stat-box"><span class="stat-label">CHA</span><span class="stat-val" id="cha">10</span><span class="stat-mod" id="cha-mod">+0</span></div>
-            </div>
-            <div style="text-align:center; font-size:0.9em; color:#888;">
-                Proficiency: <strong style="color:var(--text-main)" id="prof-bonus">+3</strong>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">Saving Throws</div>
-            <div id="saves-container"></div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">Skills</div>
-            <div id="skills-container"></div>
-            <div style="font-size:0.75em; color:#888; margin-top:8px;">
-                ★ = Proficient
             </div>
         </div>
 
@@ -424,6 +458,12 @@
                 <div style="color: var(--gold); font-size: 1.3em; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">BOOK OF WISDOM</div>
                 <div style="color: var(--accent); font-style: italic; font-size: 0.9em;">"The Definitely True and Not At All Embellished Story"</div>
                 <div style="color: #94a3b8; font-size: 0.8em; margin-top: 10px;">Click to read the full backstory</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">Active Features & Feats</div>
+            <div class="feature-list" id="features-container">
             </div>
         </div>
     </div>
@@ -504,14 +544,6 @@
         </div>
 
         <div class="card">
-            <div class="card-title">Active Features & Feats</div>
-            <div class="feature-list" id="features-container">
-            </div>
-        </div>
-    </div>
-
-    <div class="col-3">
-        <div class="card">
             <div class="card-title">Resources</div>
 
             <div class="attack-card" style="border-left-color: var(--samurai-highlight);" id="fighting-spirit-resource">
@@ -556,6 +588,14 @@
         </div>
 
         <div class="card">
+            <div class="card-title">Psionic Mind</div>
+            <div style="font-size:0.9em; color:#cbd5e1;">
+                <span style="color:var(--accent); font-weight:bold;">"Thinking Loudly" (Telepathy 9m)</span><br>
+                <span style="font-size:0.85em; color:#94a3b8;">You can send telepathic messages to creatures within 9m. Chin calls this "thinking really loudly at people". Often used to tell monsters that "Violence is just spicy peace"[cite: 93].</span>
+            </div>
+        </div>
+
+        <div class="card">
             <div class="card-title">Resistances & Immunities</div>
             <div style="font-size:0.9em; color:#cbd5e1;">
                 <div style="margin-bottom:8px;">
@@ -564,29 +604,87 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="card" id="pet-resource">
-            <div class="card-title">Companion</div>
-            <div class="pet-img-container">
-                <img src="images/baby_hook_horror.png" alt="Kagi the Baby Hook Horror" class="pet-img">
+    <div class="col-3">
+        
+        <div class="card">
+            <div class="card-title">Attributes</div>
+            <div class="stat-grid">
+                <div class="stat-box" style="border-color:var(--samurai-highlight)"><span class="stat-label" style="color:var(--samurai-highlight)">STR</span><span class="stat-val" id="str">16</span><span class="stat-mod" id="str-mod">+3</span></div>
+                <div class="stat-box"><span class="stat-label">DEX</span><span class="stat-val" id="dex">14</span><span class="stat-mod" id="dex-mod">+2</span></div>
+                <div class="stat-box" style="border-color:var(--success)"><span class="stat-label" style="color:var(--success)">CON</span><span class="stat-val" id="con">16</span><span class="stat-mod" id="con-mod">+3</span></div>
+                <div class="stat-box"><span class="stat-label">INT</span><span class="stat-val" id="int">10</span><span class="stat-mod" id="int-mod">+0</span></div>
+                <div class="stat-box" style="border-color:var(--accent)"><span class="stat-label" style="color:var(--accent)">WIS</span><span class="stat-val" id="wis">14</span><span class="stat-mod" id="wis-mod">+2</span></div>
+                <div class="stat-box"><span class="stat-label">CHA</span><span class="stat-val" id="cha">10</span><span class="stat-mod" id="cha-mod">+0</span></div>
             </div>
-            <div style="text-align:center; margin-bottom:10px;">
-                <span style="color:var(--accent); font-weight:bold; font-size:1.1em;">Kagi</span><br>
-                <span style="font-size:0.85em; color:#94a3b8;">Baby Hook Horror</span>
+            <div style="text-align:center; font-size:0.9em; color:#888;">
+                Proficiency: <strong style="color:var(--text-main)" id="prof-bonus">+3</strong>
             </div>
-            <div class="attack-detail" style="background:transparent; border:none; padding:0;">
-                <div style="margin-bottom:6px;"><strong style="color:var(--gold)">AC:</strong> 13 | <strong style="color:var(--gold)">HP:</strong> 15</div>
-                <div style="margin-bottom:6px;"><strong style="color:var(--gold)">Speed:</strong> 6m, Climb 6m</div>
-                <div style="margin-bottom:6px;"><strong style="color:#fff">Hook:</strong> +4 Hit, 1d6+2 Piercing</div>
-                <div style="font-size:0.85em; color:#94a3b8; font-style:italic;">Echolocation, Blindsight 18m</div>
-            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">Saving Throws</div>
+            <div id="saves-container"></div>
         </div>
 
         <div class="card">
-            <div class="card-title">Psionic Mind</div>
-            <div style="font-size:0.9em; color:#cbd5e1;">
-                <span style="color:var(--accent); font-weight:bold;">"Thinking Loudly" (Telepathy 9m)</span><br>
-                <span style="font-size:0.85em; color:#94a3b8;">You can send telepathic messages to creatures within 9m. Chin calls this "thinking really loudly at people". Often used to tell monsters that "Violence is just spicy peace"[cite: 93].</span>
+            <div class="card-title">Skills</div>
+            <div id="skills-container"></div>
+            <div style="font-size:0.75em; color:#888; margin-top:8px;">
+                ★ = Proficient
+            </div>
+        </div>
+
+        <div class="card" id="pet-resource">
+            <div class="card-title" style="display:flex; justify-content:space-between;">
+                <span>Companion</span>
+                <span id="pet-stage-name" style="color:var(--text-muted); font-size:0.7em;">INFANT</span>
+            </div>
+
+            <div class="pet-nav-container">
+                <div class="pet-arrow left" onclick="changePetStage(-1)">❮</div>
+                <div class="pet-arrow right" onclick="changePetStage(1)">❯</div>
+
+                <div class="pet-img-container" style="height: 250px;">
+                    <img src="images/hook_horror_infant.png" id="pet-img" alt="Marcus Gallus" class="pet-img">
+                </div>
+            </div>
+
+            <div class="pet-dots">
+                <div class="pet-dot active" onclick="setPetStage(0)" title="Infant (Tiny)"></div>
+                <div class="pet-dot" onclick="setPetStage(1)" title="Young (Small)"></div>
+                <div class="pet-dot" onclick="setPetStage(2)" title="Juvenile (Medium)"></div>
+                <div class="pet-dot" onclick="setPetStage(3)" title="Adult (Large)"></div>
+            </div>
+
+            <div style="text-align:center; margin-bottom:10px;">
+                <span style="color:var(--accent); font-weight:bold; font-size:1.1em;">Marcus Gallus</span><br>
+                <span id="pet-size-age" style="font-size:0.85em; color:#94a3b8;">Tiny Monstrosity (1 month)</span>
+            </div>
+
+            <div class="attack-detail" style="background:transparent; border:none; padding:0;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; padding:5px; background:#0f172a; border-radius:4px; border:1px solid #334155;">
+                    <div><strong style="color:var(--gold)">AC</strong> <span id="pet-ac">10</span></div>
+                    <div><strong style="color:var(--success)">HP</strong> <span id="pet-hp">4</span></div>
+                    <div><strong style="color:#cbd5e1)">SPD</strong> <span id="pet-spd">10ft</span></div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:5px; margin-bottom:10px; text-align:center; background:#1e293b; padding:8px; border-radius:4px; font-size:0.9em;">
+                    <div><span style="color:#94a3b8; font-size:0.8em; display:block;">STR</span><span id="pet-str" style="color:#fff; font-weight:bold;">9 (-1)</span></div>
+                    <div><span style="color:#94a3b8; font-size:0.8em; display:block;">DEX</span><span id="pet-dex" style="color:#fff; font-weight:bold;">10 (+0)</span></div>
+                    <div><span style="color:#94a3b8; font-size:0.8em; display:block;">CON</span><span id="pet-con" style="color:#fff; font-weight:bold;">10 (+0)</span></div>
+                    
+                    <div><span style="color:#94a3b8; font-size:0.8em; display:block;">INT</span><span id="pet-int" style="color:#fff; font-weight:bold;">4 (-3)</span></div>
+                    <div><span style="color:#94a3b8; font-size:0.8em; display:block;">WIS</span><span id="pet-wis" style="color:#fff; font-weight:bold;">6 (-2)</span></div>
+                    <div><span style="color:#94a3b8; font-size:0.8em; display:block;">CHA</span><span id="pet-cha" style="color:#fff; font-weight:bold;">3 (-4)</span></div>
+                </div>
+                
+                <div style="border-top:1px solid #334155; padding-top:8px;">
+                    <div id="pet-attack-line" style="margin-bottom:4px; font-size:0.95em;">
+                        <span style="color:#94a3b8;">No effective attacks.</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1161,6 +1259,121 @@
         const el = document.getElementById(id);
         el.style.display = (el.style.display === 'flex') ? 'none' : 'flex';
     }
+
+    /* --- COMPANION SLIDER LOGIC --- */
+
+    // 1. The Data (Based on your text + Monster Manual for Adult)
+    const petStages = [
+        {
+            stage: "INFANT",
+            age: "Up to 1 month",
+            size: "Tiny",
+            img: "images/hook_horror_infant.png",
+            ac: "10",
+            hp: "4 (1d4+2)",
+            spd: "10 ft",
+            // Stats: Weak physical, very low mental
+            str: "9 (-1)", dex: "10 (+0)", con: "10 (+0)",
+            int: "2 (-4)", wis: "6 (-2)", cha: "3 (-4)",
+            attackHTML: `<span style="color:#94a3b8;">No effective attacks.</span>`
+        },
+        {
+            stage: "YOUNG",
+            age: "1–3 months",
+            size: "Small",
+            img: "images/hook_horror_young.png",
+            ac: "11",
+            hp: "11 (2d6+4)",
+            spd: "15 ft",
+            // Stats: Getting stronger
+            str: "12 (+1)", dex: "10 (+0)", con: "12 (+1)",
+            int: "3 (-4)", wis: "8 (-1)", cha: "4 (-3)",
+            attackHTML: `<strong style="color:#fff">Hook:</strong> <span style="color:var(--success)">+3 Hit</span>, <span style="color:var(--samurai-highlight)">1d4+1</span> Piercing.`
+        },
+        {
+            stage: "JUVENILE",
+            age: "3–6 months",
+            size: "Medium",
+            img: "images/hook_horror_juvenile.png",
+            ac: "13",
+            hp: "39 (6d8+12)",
+            spd: "20 ft",
+            // Stats: Approaching adult levels
+            str: "15 (+2)", dex: "10 (+0)", con: "14 (+2)",
+            int: "5 (-3)", wis: "10 (+0)", cha: "6 (-2)",
+            attackHTML: `<strong style="color:#fff">Hook:</strong> <span style="color:var(--success)">+4 Hit</span>, <span style="color:var(--samurai-highlight)">1d6+2</span> Piercing.`
+        },
+        {
+            stage: "ADULT",
+            age: "6+ months",
+            size: "Large",
+            img: "images/hook_horror_adult.png",
+            ac: "15 (Natural)",
+            hp: "75 (10d10+20)",
+            spd: "30 ft, Climb 30 ft",
+            // Stats: Full Stat Block
+            str: "18 (+4)", dex: "10 (+0)", con: "15 (+2)",
+            int: "6 (-2)", wis: "12 (+1)", cha: "7 (-2)",
+            attackHTML: `
+                <div style="text-align:left; margin-bottom:6px; padding-bottom:6px; border-bottom:1px solid #334155;">
+                    <div style="font-size:0.85em; color:#cbd5e1; margin-bottom:2px;">
+                        <strong>Skills:</strong> Perception +3
+                    </div>
+                    <div style="font-size:0.85em; color:#cbd5e1; margin-bottom:2px;">
+                        <strong>Senses:</strong> Blindsight 60ft (Blind beyond), Darkvision 120ft
+                    </div>
+                    <div style="font-size:0.8em; color:#94a3b8; font-style:italic;">
+                        <strong>Traits:</strong> Echolocation (No blindsight if deafened), Keen Hearing (Adv. on hearing Perception).
+                    </div>
+                </div>
+                <div style="text-align:left;">
+                    <div style="margin-bottom:4px;"><strong style="color:#fff">Multiattack:</strong> Two hook attacks.</div>
+                    <div>
+                        <strong style="color:#fff">Hook:</strong> 
+                        <span style="color:var(--success)">+6 Hit</span>, Reach 10ft.
+                        <span style="color:var(--samurai-highlight)">11 (2d6+4)</span> Piercing.
+                    </div>
+                </div>`
+        }
+    ];
+
+    let currentStageIdx = 0; // Default to Infant
+
+    function setPetStage(index) {
+        // Boundary checks
+        if (index < 0) index = petStages.length - 1;
+        if (index >= petStages.length) index = 0;
+        
+        currentStageIdx = index;
+        const data = petStages[index];
+
+        // Update Text & Stats
+        document.getElementById('pet-stage-name').innerText = data.stage;
+        document.getElementById('pet-size-age').innerText = `${data.size} Monstrosity (${data.age})`;
+        document.getElementById('pet-ac').innerText = data.ac;
+        document.getElementById('pet-hp').innerText = data.hp;
+        document.getElementById('pet-spd').innerText = data.spd.split(',')[0]; // Shorten for the box
+        document.getElementById('pet-str').innerText = data.str;
+        document.getElementById('pet-attack-line').innerHTML = data.attackHTML;
+
+        // Update Image
+        // NOTE: If you don't have 4 images, you can comment this line out to keep one static image
+        document.getElementById('pet-img').src = data.img;
+
+        // Update Dots Active State
+        const dots = document.querySelectorAll('.pet-dot');
+        dots.forEach((d, i) => {
+            if (i === index) d.classList.add('active');
+            else d.classList.remove('active');
+        });
+    }
+
+    function changePetStage(direction) {
+        setPetStage(currentStageIdx + direction);
+    }
+
+    // Initialize Pet on Load
+    setPetStage(0);
 
     // Initialize
     updateDashboard(1);
