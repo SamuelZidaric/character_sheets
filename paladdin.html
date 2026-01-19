@@ -393,6 +393,57 @@
             background: rgba(0,0,0,0.3);
             border-radius: 4px;
         }
+
+        /* Weapon Mastery Badges */
+        .mastery-badge {
+            font-size: 0.7em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            text-transform: uppercase;
+            font-weight: bold;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .mastery-nick { background: #0ea5e9; color: #fff; } /* Light Blue */
+        .mastery-vex { background: #a855f7; color: #fff; }  /* Purple */
+
+        /* Heroic Inspiration Toggle */
+        .heroic-container {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%);
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-left: 15px;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+        .heroic-lbl { font-weight: bold; color: white; font-size: 0.9em; margin-right: 8px; }
+        .heroic-chk { width: 16px; height: 16px; accent-color: #fff; cursor: pointer; }
+
+        /* Custom Scrollbar for Webkit (Chrome/Safari/Edge) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--dex-highlight);
+        }
+
+        /* Make the Combat Log Sticky on Desktop */
+        @media (min-width: 1100px) {
+            .col-2 {
+                position: sticky;
+                top: 20px;
+                height: fit-content;
+            }
+        }
     </style>
 </head>
 <body>
@@ -404,10 +455,15 @@
         <h2>Oath of Noble Genies • Human Merchant • <span style="color:var(--dex-highlight)">Elemental Duelist</span></h2>
     </div>
     <div class="level-control">
+        <div class="heroic-container" title="Reroll any d20 (Human Species Feature)">
+            <span class="heroic-lbl">HEROIC</span>
+            <input type="checkbox" class="heroic-chk">
+        </div>
         <label>LEVEL</label>
         <input type="range" id="levelRange" min="1" max="20" value="1" oninput="updateDashboard(this.value)">
         <div class="level-badge" id="lvl-badge">1</div>
         <button class="rest-btn" onclick="shortRest()">SHORT REST</button>
+        <button class="rest-btn" style="border-color:var(--gold); color:var(--gold);" onclick="longRest()">LONG REST</button>
     </div>
 </header>
 
@@ -476,12 +532,28 @@
             </div>
 
             <div class="attack-card" onclick="rollAttack('Scimitar', 'wep1-hit', 'wep1-dmg')">
-                <div class="attack-header"><span>SCIMITAR <span style="font-size:0.8em; color:#888;">(Nick)</span></span><span id="wep1-hit" style="color:var(--success);">+5 Hit</span></div>
-                <div class="attack-detail">Damage: <span class="dmg-text" id="wep1-dmg">1d6+3</span> Slashing</div>
+                <div class="attack-header">
+                    <span>SCIMITAR <span class="mastery-badge mastery-nick">Nick</span></span>
+                    <span id="wep1-hit" style="color:var(--success);">+5 Hit</span>
+                </div>
+                <div class="attack-detail">
+                    Damage: <span class="dmg-text" id="wep1-dmg">1d6+3</span> Slashing
+                    <div style="font-size:0.8em; color:#94a3b8; margin-top:2px;">
+                        *Extra attack is part of Action (saves BA).
+                    </div>
+                </div>
             </div>
             <div class="attack-card" onclick="rollAttack('Shortsword', 'wep2-hit', 'wep2-dmg')">
-                <div class="attack-header"><span>SHORTSWORD <span style="font-size:0.8em; color:#888;">(Vex)</span></span><span id="wep2-hit" style="color:var(--success);">+5 Hit</span></div>
-                <div class="attack-detail">Damage: <span class="dmg-text" id="wep2-dmg">1d6</span> Piercing <span id="twf-mod" style="font-size:0.8em; color:var(--dex-highlight); display:none;">(+DEX)</span></div>
+                <div class="attack-header">
+                    <span>SHORTSWORD <span class="mastery-badge mastery-vex">Vex</span></span>
+                    <span id="wep2-hit" style="color:var(--success);">+5 Hit</span>
+                </div>
+                <div class="attack-detail">
+                    Damage: <span class="dmg-text" id="wep2-dmg">1d6</span> Piercing <span id="twf-mod" style="font-size:0.8em; color:var(--dex-highlight); display:none;">(+DEX)</span>
+                    <div style="font-size:0.8em; color:#c084fc; margin-top:2px;">
+                        *If hit: Advantage on next attack.
+                    </div>
+                </div>
             </div>
             <div class="attack-card" style="border-left-color: var(--magic);" onclick="rollAttack('Chromatic Orb', 'spell-hit', 'corb-dmg')">
                 <div class="attack-header"><span>CHROMATIC ORB</span><span id="spell-hit" style="color:var(--magic);">+5 Hit</span></div>
@@ -492,7 +564,10 @@
         <div class="card">
             <div class="card-title">Resources</div>
             <div class="attack-card" style="border-left-color: var(--gold);">
-                <div class="attack-header"><span>Lay on Hands</span> <span><span id="loh-val">5</span> HP</span></div>
+                <div class="attack-header"><span>Lay on Hands <span class="kw-bonus">(BA)</span></span> <span><span id="loh-val">5</span> HP</span></div>
+            </div>
+            <div class="attack-card" style="border-left-color: var(--warning); cursor:pointer;" onclick="logMsg('Drank Potion: Healed <strong>2d4+2</strong> HP (Bonus Action)')">
+                <div class="attack-header"><span>Potion of Healing</span> <span class="kw-bonus">BA</span></div>
             </div>
             <div class="attack-card" style="border-left-color: #fff; display:none;" id="cd-resource">
                 <div class="attack-header"><span>Channel Divinity</span> <div></div></div> </div>
@@ -516,7 +591,11 @@
 
     <div class="col-3">
         <div class="card">
-            <div class="card-title">Spellcasting</div>
+            <div class="card-title">Spellcasting
+                <input type="text" placeholder="Filter spells..."
+                       style="background:#0f172a; border:1px solid #334155; color:#fff; padding:4px; border-radius:4px; font-size:0.7em; width:100px;"
+                       onkeyup="filterSpells(this.value)">
+            </div>
             <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
                 <div style="text-align:center;"><span style="display:block; font-size:1.2em; font-weight:bold; color:var(--magic);" id="spell-dc">13</span><span style="font-size:0.7em;">Save DC</span></div>
                 <div style="text-align:center;"><span style="display:block; font-size:1.2em; font-weight:bold; color:var(--magic);" id="spell-atk">+5</span><span style="font-size:0.7em;">Attack Mod</span></div>
@@ -542,8 +621,10 @@
         17: [4,3,3,3,1], 18: [4,3,3,3,1], 19: [4,3,3,3,2], 20: [4,3,3,3,2]
     };
 
-    // Paladin Prepared: Level / 2 + CHA Mod
-    function getPrepLimit(lvl, chaMod) { return Math.floor(lvl / 2) + Math.max(1, chaMod); }
+    // 5.24 Rule: Level + CHA Mod (Minimum 1)
+    function getPrepLimit(lvl, chaMod) {
+        return lvl + Math.max(1, chaMod);
+    }
 
     const magicInitiateSpells = [
         {name: "Fire Bolt", level: 0, school: "Evoc", note: "36m, 1d10 Fire", desc: "Ranged spell attack. 1d10 Fire damage. (Alchemy Vial)", upcast: "Damage increases to 2d10 (5th), 3d10 (11th), 4d10 (17th).",
@@ -592,8 +673,8 @@
 
     const levels = {
         1: { str:8, dex:17, con:14, int:10, wis:12, cha:16, prof:2, hp:12, features: [
-            {name:"Human: Magic Initiate", source:"Species", desc:"Fire Bolt, Shield (1/LR)."},
-            {name:"Nick & Vex Mastery", source:"Paladin 1", desc:"Extra Light attack included in Action; Advantage on hits."}
+            {name:"Human: Heroic Inspiration", source:"Species", desc:"Gain Inspiration after Long Rest. Reroll any die."},
+            {name:"Weapon Mastery", source:"Paladin 1", desc:"Scimitar (Nick): Extra attack is part of Action.<br>Shortsword (Vex): Adv on next hit."}
         ], prepared: [{name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}] },
 
         2: { str:8, dex:17, con:14, int:10, wis:12, cha:16, prof:2, hp:20, features: [
@@ -948,16 +1029,19 @@
         if (lvl >= 2) {
             allSpells.push({
                 name: "Divine Smite", level: 1, school: "Evoc", typeClass: "always", usage: "1 Free/LR",
-                note: "BA after hit. 2d8 Radiant.", 
-                desc: "Bonus Action immediately after hitting a creature. Expend a spell slot to deal 2d8 Radiant damage.",
-                upcast: "+1d8 damage per slot level above 1st (Max 5d8)."
+                note: "Bonus Action. 2d8 Radiant.",
+                desc: "Bonus Action (which you have free thanks to Nick mastery!). Expend a slot to deal 2d8 Radiant. +1d8 per slot level.",
+                upcast: "Max 5d8 damage."
             });
+
+            // 5.24: Find Steed is now a spell you always have prepared (doesn't count against limit)
+            // and you can cast it once for Free per Long Rest.
             if (lvl >= 5) {
                 allSpells.push({
                     name: "Find Steed", level: 2, school: "Conj", typeClass: "always", usage: "1 Free/LR",
-                    note: "Faithful Steed", 
-                    desc: "Summon a spirit (Camel, Elk, Mastiff, etc). Long Rest cast.",
-                    upcast: "Spells targeting only you also target your steed."
+                    note: "Otherworldly Steed",
+                    desc: "Summon an Otherworldly Steed (Stat block in Resources). Lasts until you die.",
+                    upcast: "Cast at higher levels for better stats (Combat Log logic required)."
                 });
             }
         }
@@ -1029,6 +1113,46 @@
         } else {
             logMsg(`Short Rest: Recovered Channel Divinity.`);
         }
+    }
+
+    // Long Rest Logic
+    function longRest() {
+        // 1. Reset HP
+        const max = parseInt(document.getElementById('max-hp').innerText);
+        document.getElementById('current-hp').value = max;
+        document.getElementById('temp-hp').value = 0;
+
+        // 2. Reset Spell Slots (Visual Pips)
+        document.querySelectorAll('.slot-pip').forEach(p => p.classList.remove('used'));
+
+        // 3. Reset Channel Divinity & other toggles
+        document.querySelectorAll('.cd-pip').forEach(p => p.classList.remove('used'));
+
+        // 4. Reset Heroic Inspiration (Human 5.24 Feature)
+        const heroicChk = document.querySelector('.heroic-chk');
+        if (heroicChk) heroicChk.checked = true;
+
+        updateHpBar();
+        logMsg("Long Rest: HP, Slots, CDs, and Heroic Inspiration fully restored.");
+    }
+
+    // Spell Filter Logic
+    function filterSpells(query) {
+        const term = query.toLowerCase();
+        const items = document.querySelectorAll('.spell-item');
+
+        items.forEach(item => {
+            const name = item.querySelector('.spell-name').innerText.toLowerCase();
+            // Also search the tooltip content (description)
+            const tooltip = item.querySelector('.spell-tooltip');
+            const desc = tooltip ? tooltip.innerText.toLowerCase() : '';
+
+            if (name.includes(term) || desc.includes(term)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
     }
 
     // 2. Dice Roller Logic
