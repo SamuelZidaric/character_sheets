@@ -881,60 +881,60 @@
         document.getElementById('loh-val').innerText = lvl * 5;
         document.getElementById('smite-resource').style.display = (lvl >= 2) ? 'block' : 'none';
         
-        // --- STEED / OSTRICH (Hover Logic Updated) ---
+        // --- 6. STEED (The Flying Ostrich Logic) ---
         const steedCard = document.getElementById('steed-resource');
         if (lvl >= 5) {
             steedCard.style.display = 'block';
+            const isGreater = lvl >= 13;
             
-            const slotLvl = 2; 
-            const steedHP = 5 + (10 * slotLvl); // 25
-            const steedAC = 13 + slotLvl;       // 15
-            const steedDmg = `1d8+${mods.cha + slotLvl}`;
+            // It's always the Ostrich, but it evolves
+            const sName = "Golden Stormstrider";
+            const sMeta = isGreater ? "Large Fey (Flying)" : "Large Fey";
             
-            document.getElementById('sb-ac').innerText = steedAC;
-            document.getElementById('sb-hp').innerText = steedHP;
-            document.getElementById('sb-atk').innerText = fmtSign(spellAtk);
-            document.getElementById('sb-dmg').innerText = steedDmg;
-        } else {
-            steedCard.style.display = 'none';
-        }
-
-        // --- Channel Divinity (Interactive Pips) ---
-        const cdCard = document.getElementById('cd-resource');
-        if (lvl >= 3) {
-            const totalCD = 2 + (hasAmulet ? 1 : 0);
-            cdCard.style.display = 'block';
+            // Stats (Pegasus stats at lvl 13, Warhorse/Elk hybrid stats at lvl 5)
+            const sHP = isGreater ? 59 : (5 + (10 * 2)); 
+            const sAC = isGreater ? 12 : 15;
+            // The upgrade: 90ft Fly Speed
+            const sSpeed = isGreater ? "<span style='color:var(--gold)'>27m Fly</span>" : "15m Run";
             
-            // Generate Pips HTML
-            let pipHTML = '';
-            for(let i=0; i<totalCD; i++) {
-                pipHTML += `<div class="cd-pip" onclick="this.classList.toggle('used')"></div>`;
+            const sAtk = isGreater ? "+6" : fmtSign(spellAtk);
+            const sDmg = isGreater ? "2d6+4" : `1d8+${mods.cha + 2}`;
+            
+            // Build the actions
+            let actionsHtml = "";
+            if(isGreater) {
+                // S-Tier Greater Steed (Pegasus) stats re-flavored
+                actionsHtml = `
+                    <div class="sb-action"><strong>Aerial Charge:</strong> ${sAtk} Hit, ${sDmg} Bludgeoning.<br><span style="font-size:0.85em; color:#aaa">If moving 6m straight before hit, target DC 14 STR save or Prone.</span></div>
+                    <div class="sb-action"><strong>Golden Plumage:</strong> Grant resistance to Radiance/Necrotic (Passive).</div>
+                `;
+            } else {
+                actionsHtml = `
+                    <div class="sb-action"><strong>Kweh Kick:</strong> ${sAtk} Hit, ${sDmg} Bludgeoning.</div>
+                    <div class="sb-action"><strong>Fey Step (BA):</strong> Teleport 9m.</div>
+                `;
             }
-            
-            cdCard.innerHTML = `
-                <div class="attack-header">
-                    <span>Channel Divinity</span> 
-                    <div>${pipHTML}</div>
+
+            // Inject HTML
+            const contentDiv = steedCard.querySelector('.steed-content');
+            contentDiv.innerHTML = `
+                <div class="sb-header">
+                    <div class="sb-title">${sName}</div>
+                    <div class="sb-meta">${sMeta}</div>
                 </div>
-                <div class="attack-detail" style="margin-top:8px;">
-                    <div style="margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid #475569;">
-                        <strong style="color:var(--text-main);">1. Divine Sense</strong> <span class="kw-bonus">(Bonus Action)</span><br>
-                        <span style="color:#94a3b8;">Detect Celestials, Fiends, Undead (10 min).</span>
-                    </div>
-                    <div>
-                        <strong style="color:var(--text-main);">2. Elemental Smite</strong> <span style="font-style:italic; color:#94a3b8;">(No Action)</span><br>
-                        <span style="color:#94a3b8;">Trigger after using Divine Smite:</span>
-                        <ul style="margin:4px 0 0 18px; padding:0; list-style-type:disc; color:#cbd5e1; line-height:1.4;">
-                            <li><b style="color:var(--dex-highlight)">Dao:</b> Grappled + Restrained (Str Save).</li>
-                            <li><b style="color:var(--dex-highlight)">Djinni:</b> Teleport 9m + Resist B/P/S.</li>
-                            <li><b style="color:var(--dex-highlight)">Efreeti:</b> +2d4 Fire damage.</li>
-                            <li><b style="color:var(--dex-highlight)">Marid:</b> Push 4.5m + Prone AOE (Str Save).</li>
-                        </ul>
-                    </div>
+                <div class="sb-stats">
+                    <div style="text-align:center"><span class="sb-lbl">AC</span><br><span class="sb-val">${sAC}</span></div>
+                    <div style="text-align:center"><span class="sb-lbl">HP</span><br><span class="sb-val">${sHP}</span></div>
+                    <div style="text-align:center"><span class="sb-lbl">SPD</span><br><span class="sb-val">${sSpeed}</span></div>
+                </div>
+                ${actionsHtml}
+                <div class="sb-action" style="font-style:italic; font-size:0.8em; color:#94a3b8; margin-top:5px;">
+                   *Shared Spells: Spells targeting only you also target the steed.
                 </div>
             `;
+            
         } else {
-            cdCard.style.display = 'none';
+            steedCard.style.display = 'none';
         }
 
         // --- Slots ---
