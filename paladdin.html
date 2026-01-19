@@ -331,7 +331,7 @@
     </div>
     <div class="level-control">
         <label>LEVEL</label>
-        <input type="range" id="levelRange" min="1" max="8" value="1" oninput="updateDashboard(this.value)">
+        <input type="range" id="levelRange" min="1" max="20" value="8" oninput="updateDashboard(this.value)">
         <div class="level-badge" id="lvl-badge">1</div>
         <button class="rest-btn" onclick="shortRest()">SHORT REST</button>
     </div>
@@ -342,33 +342,10 @@
     <div class="col-1">
         <div class="card">
             <div class="card-title">Identity</div>
-            
-            <div class="char-img-container">
-                <img src="images/paladdin.png" alt="Paiman Aladdin" class="char-img">
-            </div>
-
-            <div class="rp-block">
-                <span class="rp-label">Physical</span>
-                <span class="rp-text">Mixed Chinese/Persian descent. Wears reinforced silk robes of Tyrian purple. No metal armor. Carries a "Bandolier of Essences" as a focus. Smell of ozone and sandalwood.</span>
-            </div>
-            <div class="rp-block">
-                <span class="rp-label">Personality</span>
-                <span class="rp-text">"The Nose Knows." Experiences the world through scent. Aggressively sophisticated; refuses trail rations. Refers to himself as "The Paladdin."</span>
-            </div>
-            <div class="rp-block">
-                <span class="rp-label">Ideals (Lawful/Good)</span>
-                <span class="rp-text"><strong>Refinement & Synthesis:</strong> The world is raw; I must distill it into something pure. Strength comes from mixing cultures.</span>
-            </div>
-            <div class="rp-block">
-                <span class="rp-label">Bonds</span>
-                <span class="rp-text">Seek the ingredients for the "Breath of Heaven" to restore my family fortune. My Steed is the spirit of my grandfather's prize bird.</span>
-            </div>
-            <div class="rp-block" style="margin-bottom:0;">
-                <span class="rp-label">Flaws</span>
-                <span class="rp-text" style="color:var(--warning)">Sensory Overload (Bad smells). Materialistic. Combat Vanity (Must look good fighting).</span>
-            </div>
+            <div class="char-img-container"><img src="images/paladdin.png" alt="Paiman Aladdin" class="char-img"></div>
+            <div class="rp-block"><span class="rp-label">Ideals</span><span class="rp-text">Refinement & Synthesis.</span></div>
+            <div class="rp-block" style="margin-bottom:0;"><span class="rp-label">Flaws</span><span class="rp-text" style="color:var(--warning)">Sensory Overload. Combat Vanity.</span></div>
         </div>
-
         <div class="card">
             <div class="card-title">
                 Attributes
@@ -385,32 +362,18 @@
                 <div class="stat-box"><span class="stat-label">WIS</span><span class="stat-val" id="wis">12</span><span class="stat-mod" id="wis-mod">+1</span></div>
                 <div class="stat-box" style="border-color:var(--accent)"><span class="stat-label" style="color:var(--accent)">CHA</span><span class="stat-val" id="cha">16</span><span class="stat-mod" id="cha-mod">+3</span></div>
             </div>
-            <div style="text-align:center; font-size:0.9em; color:#888;">
-                Proficiency: <strong style="color:var(--text-main)" id="prof-bonus">+2</strong>
-            </div>
+            <div style="text-align:center; font-size:0.9em; color:#888;">Proficiency: <strong style="color:var(--text-main)" id="prof-bonus">+2</strong></div>
         </div>
-
-        <div class="card">
-            <div class="card-title">Saving Throws <span style="font-size:0.7em; font-weight:normal;">(Aura at 6+)</span></div>
-            <div id="saves-container"></div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">Skills</div>
-            <div id="skills-container"></div>
-            <div style="font-size:0.75em; color:#888; margin-top:8px;">
-                ★ = Proficient
-            </div>
-        </div>
+        <div class="card"><div class="card-title">Saving Throws</div><div id="saves-container"></div></div>
+        <div class="card"><div class="card-title">Skills</div><div id="skills-container"></div></div>
     </div>
 
     <div class="col-2">
         <div class="card" style="padding:10px; background:#0f172a;">
             <div class="card-title" style="margin:0 0 5px 0; border:none; font-size:0.8em;">Combat Log</div>
-            <div id="combat-log">
-                <div class="log-entry">> System Ready...</div>
-            </div>
+            <div id="combat-log"><div class="log-entry">> System Ready...</div></div>
         </div>
+
         <div class="card">
             <div class="combat-bar">
                 <div class="combat-stat"><span class="c-lbl">AC</span><span class="c-val" id="ac-val">15</span></div>
@@ -422,52 +385,49 @@
                     </div>
                 </div>
                 <div class="combat-stat"><span class="c-lbl">Init</span><span class="c-val" id="init-val">+5</span></div>
-                <div class="combat-stat"><span class="c-lbl">Speed</span><span class="c-val">9m</span></div>
             </div>
-            
-            <div class="card-title">Action Economy (Nick Mastery)</div>
-            
+
+            <div class="card-title">Attacks</div>
             <div class="buff-panel">
-                <label class="buff-lbl"><input type="checkbox" id="buffBless" class="buff-chk" onchange="updateDashboard(document.getElementById('levelRange').value)"> Bless (+1d4 Hit/Save)</label>
-                <label class="buff-lbl"><input type="checkbox" id="buffDivine" class="buff-chk" onchange="updateDashboard(document.getElementById('levelRange').value)"> Divine Favor (+1d4 Dmg)</label>
+                <label class="buff-lbl"><input type="checkbox" id="buffBless" class="buff-chk" onchange="updateDashboard(document.getElementById('levelRange').value)"> Bless</label>
+                <label class="buff-lbl"><input type="checkbox" id="buffDivine" class="buff-chk" onchange="updateDashboard(document.getElementById('levelRange').value)"> Divine Favor</label>
             </div>
 
             <div class="attack-card" onclick="rollAttack('Scimitar', 'wep1-hit', 'wep1-dmg')">
-                <div class="attack-header">
-                    <span>SCIMITAR <span style="font-size:0.8em; color:#888;">(Light, Nick)</span></span>
-                    <span id="wep1-hit" style="color:var(--success);">+5 Hit</span>
-                </div>
-                <div class="attack-detail">
-                    Damage: <span class="dmg-text" id="wep1-dmg">1d6+3</span> Slashing<br>
-                    <span class="kw-action">Mastery (Nick):</span> Extra light attack is part of Action.
-                </div>
+                <div class="attack-header"><span>SCIMITAR <span style="font-size:0.8em; color:#888;">(Nick)</span></span><span id="wep1-hit" style="color:var(--success);">+5 Hit</span></div>
+                <div class="attack-detail">Damage: <span class="dmg-text" id="wep1-dmg">1d6+3</span> Slashing</div>
             </div>
-
             <div class="attack-card" onclick="rollAttack('Shortsword', 'wep2-hit', 'wep2-dmg')">
-                <div class="attack-header">
-                    <span>SHORTSWORD <span style="font-size:0.8em; color:#888;">(Light, Vex)</span></span>
-                    <span id="wep2-hit" style="color:var(--success);">+5 Hit</span>
-                </div>
-                <div class="attack-detail">
-                    Damage: <span class="dmg-text" id="wep2-dmg">1d6</span> Piercing <span id="twf-mod" style="font-size:0.8em; color:var(--dex-highlight); display:none;">(+DEX)</span><br>
-                    <span class="kw-action">Mastery (Vex):</span> Hit grants Advantage.
-                </div>
+                <div class="attack-header"><span>SHORTSWORD <span style="font-size:0.8em; color:#888;">(Vex)</span></span><span id="wep2-hit" style="color:var(--success);">+5 Hit</span></div>
+                <div class="attack-detail">Damage: <span class="dmg-text" id="wep2-dmg">1d6</span> Piercing <span id="twf-mod" style="font-size:0.8em; color:var(--dex-highlight); display:none;">(+DEX)</span></div>
             </div>
-
             <div class="attack-card" style="border-left-color: var(--magic);" onclick="rollAttack('Chromatic Orb', 'spell-hit', 'corb-dmg')">
-                <div class="attack-header">
-                    <span>CHROMATIC ORB <span style="font-size:0.8em; color:#888;">(Genie, 27m)</span></span>
-                    <span id="spell-hit" style="color:var(--magic);">+5 Hit</span>
-                </div>
-                <div class="attack-detail">
-                    Damage: <span class="dmg-text" id="corb-dmg" style="color:var(--magic)">3d8</span> (Acid/Cold/Fire/Lightning/Poison/Thunder)
-                </div>
+                <div class="attack-header"><span>CHROMATIC ORB</span><span id="spell-hit" style="color:var(--magic);">+5 Hit</span></div>
+                <div class="attack-detail">Damage: <span class="dmg-text" id="corb-dmg" style="color:var(--magic)">3d8</span> Elemental</div>
             </div>
         </div>
 
         <div class="card">
-            <div class="card-title">Active Features & Feats</div>
-            <div class="feature-list" id="features-container">
+            <div class="card-title">Resources</div>
+            <div class="attack-card" style="border-left-color: var(--gold);">
+                <div class="attack-header"><span>Lay on Hands</span> <span><span id="loh-val">5</span> HP</span></div>
+            </div>
+            <div class="attack-card" style="border-left-color: #fff; display:none;" id="cd-resource">
+                <div class="attack-header"><span>Channel Divinity</span> <div></div></div> </div>
+            <div class="attack-card" style="border-left-color: var(--success);" id="smite-resource">
+                <div class="attack-header"><span>Free Divine Smite</span> <span>1 / LR</span></div>
+            </div>
+            <div class="attack-card" style="border-left-color: var(--magic);" id="shield-resource">
+                <div class="attack-header"><span>Shield (Reaction)</span> <span>1 / LR</span></div>
+            </div>
+
+            <div class="attack-card" style="border-left-color: var(--accent);" id="steed-resource">
+                <div class="attack-header"><span>Find Steed</span> <span>1 / LR</span></div>
+                <div class="attack-detail">Summon Golden Stormstrider.</div>
+                <div class="steed-tooltip">
+                    <div class="steed-img-container"></div>
+                    <div class="steed-content"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -476,87 +436,32 @@
         <div class="card">
             <div class="card-title">Spellcasting</div>
             <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <div style="text-align:center;">
-                    <span style="display:block; font-size:1.2em; font-weight:bold; color:var(--magic);" id="spell-dc">13</span>
-                    <span style="font-size:0.7em;">Save DC</span>
-                </div>
-                <div style="text-align:center;">
-                    <span style="display:block; font-size:1.2em; font-weight:bold; color:var(--magic);" id="spell-atk">+5</span>
-                    <span style="font-size:0.7em;">Attack Mod</span>
-                </div>
-                <div style="text-align:center;">
-                    <span style="display:block; font-size:1.2em; font-weight:bold; color:var(--text-main);"><span id="prep-count">2</span> / <span id="prep-limit">2</span></span>
-                    <span style="font-size:0.7em;">Prepared</span>
-                </div>
+                <div style="text-align:center;"><span style="display:block; font-size:1.2em; font-weight:bold; color:var(--magic);" id="spell-dc">13</span><span style="font-size:0.7em;">Save DC</span></div>
+                <div style="text-align:center;"><span style="display:block; font-size:1.2em; font-weight:bold; color:var(--magic);" id="spell-atk">+5</span><span style="font-size:0.7em;">Attack Mod</span></div>
+                <div style="text-align:center;"><span style="display:block; font-size:1.2em; font-weight:bold; color:var(--text-main);"><span id="prep-count">2</span> / <span id="prep-limit">2</span></span><span style="font-size:0.7em;">Prepared</span></div>
             </div>
-
             <div class="slot-display" id="slot-container"></div>
-
-            <div class="card-title" style="border:none; margin-top:15px;">Spellbook</div>
             <div id="spells-list"></div>
         </div>
-        
         <div class="card">
-            <div class="card-title">Resources</div>
-            <div class="attack-card" style="border-left-color: var(--gold);">
-                <div class="attack-header"><span>Lay on Hands</span> <span><span id="loh-val">5</span> HP Pool</span></div>
-                <div class="attack-detail"><span class="kw-bonus">Bonus Action</span>. 5 HP removes Poisoned.</div>
-            </div>
-            
-            <div class="attack-card" style="border-left-color: #fff; display:none;" id="cd-resource"></div>
-            
-            <div class="attack-card" style="border-left-color: var(--success);" id="smite-resource">
-                <div class="attack-header"><span>Free Divine Smite</span> <span>1 / LR</span></div>
-                <div class="attack-detail"><span class="kw-bonus">Bonus Action</span> after hit. 2d8 Radiant. Once/turn.</div>
-            </div>
-            <div class="attack-card" style="border-left-color: var(--magic);" id="shield-resource">
-                <div class="attack-header"><span>Shield (Magic Initiate)</span> <span>1 / LR</span></div>
-                <div class="attack-detail"><span class="kw-react">Reaction</span>. +5 AC until start of next turn.</div>
-            </div>
-            
-            <div class="attack-card" style="border-left-color: var(--accent);" id="steed-resource">
-                <div class="attack-header"><span>Find Steed (Free)</span> <span>1 / LR</span></div>
-                <div class="attack-detail">Summon Golden Stormstrider.</div>
-                
-                <div class="steed-tooltip">
-                    <div class="steed-img-container">
-                         <img src="images/ostrich.png" alt="Golden Ostrich" class="steed-img">
-                    </div>
-                    
-                    <div class="steed-content">
-                        <div class="sb-header">
-                            <div class="sb-title">Golden Stormstrider</div>
-                            <div class="sb-meta">Large Fey (Yellow Ostrich)</div>
-                        </div>
-                        <div class="sb-stats">
-                            <div style="text-align:center"><span class="sb-lbl">AC</span><br><span class="sb-val" id="sb-ac">15</span></div>
-                            <div style="text-align:center"><span class="sb-lbl">HP</span><br><span class="sb-val" id="sb-hp">25</span></div>
-                            <div style="text-align:center"><span class="sb-lbl">SPD</span><br><span class="sb-val">18m</span></div>
-                        </div>
-                        <div class="sb-action">
-                            <strong>Kweh Kick:</strong> <span id="sb-atk">+5</span> Hit, <span id="sb-dmg">1d8+5</span> Bludgeoning.
-                        </div>
-                        <div class="sb-action">
-                            <strong>Fey Step (BA):</strong> Teleport 18m to unoccupied space.
-                        </div>
-                        <div class="sb-action" style="font-style:italic; font-size:0.8em; color:#94a3b8; margin-top:5px;">
-                            *Shared Spells: Spells targeting only you also target the steed.
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="card-title">Features & Feats</div>
+            <div class="feature-list" id="features-container"></div>
         </div>
     </div>
-
 </div>
 
 <script>
-    // --- DATA ---
+    // --- EXPANDED DATA (1-20) ---
     const spellSlotsByLevel = {
-        1: [2, 0, 0], 2: [2, 0, 0], 3: [3, 0, 0], 4: [3, 0, 0], 
-        5: [4, 2, 0], 6: [4, 2, 0], 7: [4, 3, 0], 8: [4, 3, 0]
+        1: [2,0,0,0,0], 2: [2,0,0,0,0], 3: [3,0,0,0,0], 4: [3,0,0,0,0],
+        5: [4,2,0,0,0], 6: [4,2,0,0,0], 7: [4,3,0,0,0], 8: [4,3,0,0,0],
+        9: [4,3,2,0,0], 10: [4,3,2,0,0], 11: [4,3,3,0,0], 12: [4,3,3,0,0],
+        13: [4,3,3,1,0], 14: [4,3,3,1,0], 15: [4,3,3,2,0], 16: [4,3,3,2,0],
+        17: [4,3,3,3,1], 18: [4,3,3,3,1], 19: [4,3,3,3,2], 20: [4,3,3,3,2]
     };
-    const preparedSpellsByLevel = { 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 6, 7: 7, 8: 7 };
+
+    // Paladin Prepared: Level / 2 + CHA Mod
+    function getPrepLimit(lvl, chaMod) { return Math.floor(lvl / 2) + Math.max(1, chaMod); }
 
     const magicInitiateSpells = [
         {name: "Fire Bolt", level: 0, school: "Evoc", note: "36m, 1d10 Fire", desc: "Ranged spell attack. 1d10 Fire damage. (Alchemy Vial)", upcast: "Damage increases to 2d10 (5th), 3d10 (11th), 4d10 (17th).",
@@ -569,24 +474,24 @@
 
     const genieSpellsByLevel = {
         3: [
-            {name: "Chromatic Orb", level: 1, desc: "3d8 damage (Acid/Cold/Fire/Light/Poison/Thunder). Attack roll. Range 27m.", note: "Ranged 27m", upcast: "+1d8 damage per slot level.",
-             roll: {type: "attack", dice: "3d8", dmgType: "Elemental"}},
-            {name: "Elementalism", level: 0, desc: "Create harmless elemental effects (breeze, light, spray, dust).", note: "Utility", upcast: null,
-             roll: {type: "info", desc: "Created elemental effect."}},
-            {name: "Thunderous Smite", level: 1, desc: "Bonus Action. Hit deals +2d6 Thunder. Str save or push 3m + Prone.", note: "2d6 Thunder + Push", upcast: null,
-             roll: {type: "buff", desc: "Active: Next hit deals +2d6 Thunder + STR Save or Push 3m."}}
+            {name: "Chromatic Orb", level: 1, desc: "3d8 Elemental Dmg. 27m.", note: "Genie Spells", upcast: "+1d8 damage per slot.", roll: {type: "attack", dice: "3d8", dmgType: "Elemental"}},
+            {name: "Thunderous Smite", level: 1, desc: "BA. +2d6 Thunder + Push/Prone.", note: "Genie Spells", upcast: null, roll: {type: "buff", desc: "Next hit: +2d6 Thunder + Push/Prone."}}
         ],
         5: [
-            {name: "Mirror Image", level: 2, desc: "Create 3 duplicates. Roll d20 to redirect attack to duplicate.", note: "Defense", upcast: null,
-             roll: {type: "buff", desc: "3 duplicates active. Attacks may target duplicates."}},
-            {name: "Phantasmal Force", level: 2, desc: "Illusion in mind (INT Save). 1d6 Psychic/turn.", note: "INT save", upcast: null,
-             roll: {type: "save", save: "INT", desc: "1d6 Psychic/turn if target fails."}}
+            {name: "Mirror Image", level: 2, desc: "Create 3 duplicates (Defense).", note: "Genie Spells", upcast: null, roll: {type: "buff", desc: "3 duplicates active."}},
+            {name: "Phantasmal Force", level: 2, desc: "1d6 Psychic/turn (INT Save).", note: "Genie Spells", roll: {type: "save", save: "INT", desc: "Illusion creates 1d6 Psychic/turn."}}
         ],
         9: [
-            {name: "Fly", level: 3, desc: "Target gains 18m fly speed.", note: "Concentration", upcast: "Target +1 creature per slot level.",
-             roll: {type: "buff", desc: "Target gains 18m fly speed (Concentration)."}},
-            {name: "Gaseous Form", level: 3, desc: "Turn willing creature into mist. Resist nonmagical dmg.", note: "Escape", upcast: null,
-             roll: {type: "buff", desc: "Target is now mist. Resist nonmagical damage."}}
+            {name: "Fly", level: 3, desc: "Gain 18m fly speed.", note: "Genie Spells", upcast: "+1 target per slot level.", roll: {type: "buff", desc: "Target gains Fly Speed (Conc)."}},
+            {name: "Protection from Energy", level: 3, desc: "Resistance to Acid/Cold/Fire/Lightning/Thunder.", note: "Genie Spells", roll: {type: "buff", desc: "Target resists chosen element."}}
+        ],
+        13: [
+            {name: "Freedom of Movement", level: 4, desc: "Ignore difficult terrain/paralysis/restraints.", note: "Genie Spells", roll: {type: "buff", desc: "Active: Immune to movement impairments."}},
+            {name: "Summon Elemental", level: 4, desc: "Summon Ally (Air/Earth/Fire/Water).", note: "Genie Spells", roll: {type: "info", desc: "Elemental Summoned."}}
+        ],
+        17: [
+            {name: "Creation", level: 5, desc: "Pull material from Shadowfell.", note: "Genie Spells", roll: {type: "info", desc: "Object created."}},
+            {name: "Wall of Stone", level: 5, desc: "Create solid wall (AC 15, 30HP/inch).", note: "Genie Spells", roll: {type: "info", desc: "Wall created."}}
         ]
     };
 
@@ -604,157 +509,87 @@
     };
 
     const levels = {
-        1: {
-            str: 8, dex: 17, con: 14, int: 10, wis: 12, cha: 16, prof: 2, hp: 12,
-            features: [
-                {name: "Human: Resourceful", source: "Species", desc: "Gain Heroic Inspiration on Long Rest."},
-                {name: "Human: Skillful", source: "Species", desc: "Gain one extra skill proficiency (Athletics)."},
-                {name: "Human: Versatile (Magic Initiate)", source: "Species", desc: "Fire Bolt, Minor Illusion + Shield 1/LR (CHA-based)."},
-                {name: "Background: Alert", source: "Merchant", desc: "Add Proficiency Bonus to Initiative. Can swap Initiative with willing ally."},
-                {name: "Lay on Hands", source: "Paladin 1", desc: "<span class='kw-bonus'>Bonus Action</span> to heal. 5 HP removes Poisoned."},
-                {name: "Weapon Mastery (2)", source: "Paladin 1", desc: "<b>Scimitar (Nick):</b> Light attack is part of Attack action.<br><b>Shortsword (Vex):</b> Advantage on next attack."},
-                {name: "Spellcasting", source: "Paladin 1", desc: "Prepare Paladin spells. CHA is spellcasting ability."}
-            ],
-            prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "Bonus Action. Weapon attacks deal +1d4 Radiant.", upcast: null,
-                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
-                {name: "Heroism", level: 1, school: "Conc", desc: "Immunity to Frightened. Gain Temp HP each turn.", upcast: "Target one additional creature for each slot level above 1st.",
-                 roll: {type: "buff", desc: "Target immune to Frightened + gains Temp HP."}}
-            ]
-        },
-        2: {
-            str: 8, dex: 17, con: 14, int: 10, wis: 12, cha: 16, prof: 2, hp: 20,
-            features: [
-                {name: "Fighting Style: Two-Weapon Fighting", source: "Paladin 2", desc: "Add ability modifier to damage of Light property extra attack."},
-                {name: "Paladin's Smite", source: "Paladin 2", desc: "<span class='kw-bonus'>Bonus Action</span> after hit: 2d8 Radiant. 1 free cast/LR."}
-            ],
-            prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "Bonus Action. +1d4 Radiant.", upcast: null,
-                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
-                {name: "Heroism", level: 1, school: "Conc", desc: "Immune Frightened + Temp HP.", upcast: "Target one additional creature for each slot level above 1st.",
-                 roll: {type: "buff", desc: "Target immune to Frightened + gains Temp HP."}},
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC to one creature.", upcast: null,
-                 roll: {type: "buff", desc: "Target gains +2 AC."}}
-            ]
-        },
-        3: {
-            str: 8, dex: 17, con: 14, int: 10, wis: 12, cha: 16, prof: 2, hp: 28,
-            features: [
-                {name: "Channel Divinity (2/rest)", source: "Paladin 3", desc: "Shared Pool: <b>Divine Sense</b> (BA) or <b>Elemental Smite</b>."},
-                {name: "Elemental Smite", source: "Noble Genies 3", desc: "After Divine Smite, expend CD for effect. <b>Dao:</b> Restrained (STR Save)."},
-                {name: "Genie's Splendor", source: "Noble Genies 3", desc: "AC = 10 + DEX + CHA. Works with Shield! Gain skill: Acrobatics."}
-            ],
-            prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "Bonus Action. +1d4 Radiant.", upcast: null,
-                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null,
-                 roll: {type: "buff", desc: "Target gains +2 AC."}},
-                {name: "Command", level: 1, school: "Ench", desc: "WIS save or obey one-word command.", upcast: "Target one additional creature for each slot level above 1st.",
-                 roll: {type: "save", save: "WIS", desc: "Halt, Drop, or Flee."}},
-                {name: "Cure Wounds", level: 1, school: "Evoc", desc: "Heal 2d8 + CHA Mod.", upcast: "Heal increases by 1d8 for each slot level above 1st.",
-                 roll: {type: "heal", dice: "2d8+MOD"}}
-            ]
-        },
-        4: {
-            str: 8, dex: 18, con: 14, int: 10, wis: 12, cha: 17, prof: 2, hp: 36,
-            features: [
-                {name: "Feat: Defensive Duelist", source: "Paladin 4", desc: "+1 DEX. <span class='kw-react'>Reaction</span> to add Prof to AC against one attack."}
-            ],
-            prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "Bonus Action. +1d4 Radiant.", upcast: null,
-                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null,
-                 roll: {type: "buff", desc: "Target gains +2 AC."}},
-                {name: "Command", level: 1, school: "Ench", desc: "WIS save or obey command.", upcast: "Target one additional creature for each slot level above 1st.",
-                 roll: {type: "save", save: "WIS", desc: "Halt, Drop, or Flee."}},
-                {name: "Cure Wounds", level: 1, school: "Evoc", desc: "Heal 2d8 + Mod.", upcast: "+1d8 healing per level.",
-                 roll: {type: "heal", dice: "2d8+MOD"}},
-                {name: "Wrathful Smite", level: 1, school: "Conc", desc: "Bonus Action. +1d6 Psychic + Frightened.", upcast: null,
-                 roll: {type: "buff", desc: "Next hit: +1d6 Psychic + WIS Save or Frightened."}}
-            ]
-        },
-        5: {
-            str: 8, dex: 18, con: 14, int: 10, wis: 12, cha: 17, prof: 3, hp: 44,
-            features: [
-                {name: "Extra Attack", source: "Paladin 5", desc: "Attack twice with Action. Total 3 attacks with Nick."},
-                {name: "Faithful Steed", source: "Paladin 5", desc: "Find Steed always prepared + 1 free cast/LR."},
-                {name: "Defensive Duelist Upgrade", source: "Feat", desc: "Reaction AC bonus is now +3 (Prof Bonus)."}
-            ],
-            prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "+1d4 Radiant on hits.", upcast: null,
-                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null,
-                 roll: {type: "buff", desc: "Target gains +2 AC."}},
-                {name: "Aid", level: 2, school: "Abjur", desc: "Increase Max HP of 3 creatures by 5 (8 hours).", upcast: "HP increases by 5 for each slot level above 2nd.",
-                 roll: {type: "buff", desc: "3 creatures gain +5 Max HP for 8 hours."}},
-                {name: "Magic Weapon", level: 2, school: "Conc", desc: "Weapon becomes +1.", upcast: "Becomes +2 at 4th level, +3 at 6th level.",
-                 roll: {type: "buff", desc: "Weapon is now +1 (magic)."}},
-                {name: "Lesser Restoration", level: 2, school: "Abjur", desc: "Cure condition (Blind/Deaf/Paralyze/Poison).", upcast: null,
-                 roll: {type: "buff", desc: "Removed a condition from target."}},
-                {name: "Misty Step", level: 2, school: "Conj", desc: "BA Teleport 9m.", upcast: null,
-                 roll: {type: "info", desc: "Teleported 9m!"}}
-            ]
-        },
-        6: {
-            str: 8, dex: 18, con: 14, int: 10, wis: 12, cha: 17, prof: 3, hp: 52,
-            features: [
-                {name: "Aura of Protection (3m)", source: "Paladin 6", desc: "Add CHA mod to all saves for you and allies within 3m."}
-            ],
-            prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "+1d4 Radiant on hits.", upcast: null,
-                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null,
-                 roll: {type: "buff", desc: "Target gains +2 AC."}},
-                {name: "Aid", level: 2, school: "Abjur", desc: "+5 Max HP.", upcast: "+5 HP per level.",
-                 roll: {type: "buff", desc: "3 creatures gain +5 Max HP for 8 hours."}},
-                {name: "Magic Weapon", level: 2, school: "Conc", desc: "Weapon becomes +1.", upcast: "+2 at 4th, +3 at 6th.",
-                 roll: {type: "buff", desc: "Weapon is now +1 (magic)."}},
-                {name: "Lesser Restoration", level: 2, school: "Abjur", desc: "Cure condition.", upcast: null,
-                 roll: {type: "buff", desc: "Removed a condition from target."}},
-                {name: "Warding Bond", level: 2, school: "Abjur", desc: "Share damage with ally +1 AC/Save.", upcast: null,
-                 roll: {type: "buff", desc: "Bonded to ally: +1 AC/Save, share damage."}}
-            ]
-        },
-        7: {
-            str: 8, dex: 18, con: 14, int: 10, wis: 12, cha: 17, prof: 3, hp: 60,
-            features: [{name: "Aura of Elemental Shielding", source: "Noble Genies 7", desc: "Resistance to chosen element for Aura allies."}],
-            prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "+1d4 Radiant.", upcast: null,
-                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null,
-                 roll: {type: "buff", desc: "Target gains +2 AC."}},
-                {name: "Aid", level: 2, school: "Abjur", desc: "+5 Max HP.", upcast: "+5 HP per level.",
-                 roll: {type: "buff", desc: "3 creatures gain +5 Max HP for 8 hours."}},
-                {name: "Magic Weapon", level: 2, school: "Conc", desc: "Weapon +1.", upcast: "+2 at 4th, +3 at 6th.",
-                 roll: {type: "buff", desc: "Weapon is now +1 (magic)."}},
-                {name: "Warding Bond", level: 2, school: "Abjur", desc: "Share damage.", upcast: null,
-                 roll: {type: "buff", desc: "Bonded to ally: +1 AC/Save, share damage."}},
-                {name: "Zone of Truth", level: 2, school: "Ench", desc: "4.5m Sphere. No lies allowed (CHA Save).", upcast: null,
-                 roll: {type: "save", save: "CHA", desc: "4.5m sphere where no lies can be spoken."}},
-                {name: "Shining Smite", level: 2, school: "Conc", desc: "+2d6 Radiant + Advantage on target.", upcast: "+1d6 damage for each slot level above 2nd.",
-                 roll: {type: "buff", desc: "Next hit: +2d6 Radiant + Advantage on target."}}
-            ]
-        },
-        8: {
-            str: 8, dex: 20, con: 14, int: 10, wis: 12, cha: 17, prof: 3, hp: 68,
-            features: [{name: "ASI: Dexterity +2", source: "Paladin 8", desc: "DEX capped at 20. AC = 18."}],
-            prepared: [
-                {name: "Divine Favor", level: 1, school: "Conc", desc: "+1d4 Radiant.", upcast: null,
-                 roll: {type: "buff", desc: "Active: Add +1d4 Radiant to weapon hits."}},
-                {name: "Shield of Faith", level: 1, school: "Conc", desc: "+2 AC.", upcast: null,
-                 roll: {type: "buff", desc: "Target gains +2 AC."}},
-                {name: "Aid", level: 2, school: "Abjur", desc: "+5 Max HP.", upcast: "+5 HP per level.",
-                 roll: {type: "buff", desc: "3 creatures gain +5 Max HP for 8 hours."}},
-                {name: "Magic Weapon", level: 2, school: "Conc", desc: "Weapon +1.", upcast: "+2 at 4th, +3 at 6th.",
-                 roll: {type: "buff", desc: "Weapon is now +1 (magic)."}},
-                {name: "Warding Bond", level: 2, school: "Abjur", desc: "Share damage.", upcast: null,
-                 roll: {type: "buff", desc: "Bonded to ally: +1 AC/Save, share damage."}},
-                {name: "Lesser Restoration", level: 2, school: "Abjur", desc: "Cure condition.", upcast: null,
-                 roll: {type: "buff", desc: "Removed a condition from target."}},
-                {name: "Shining Smite", level: 2, school: "Conc", desc: "+2d6 Radiant + Advantage.", upcast: "+1d6 damage per level.",
-                 roll: {type: "buff", desc: "Next hit: +2d6 Radiant + Advantage on target."}}
-            ]
-        }
+        1: { str:8, dex:17, con:14, int:10, wis:12, cha:16, prof:2, hp:12, features: [
+            {name:"Human: Magic Initiate", source:"Species", desc:"Fire Bolt, Shield (1/LR)."},
+            {name:"Nick & Vex Mastery", source:"Paladin 1", desc:"Extra Light attack included in Action; Advantage on hits."}
+        ], prepared: [{name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}] },
+
+        2: { str:8, dex:17, con:14, int:10, wis:12, cha:16, prof:2, hp:20, features: [
+            {name:"Divine Smite", source:"Paladin 2", desc:"BA after hit. 2d8 Radiant (slot). 1 Free/LR."}
+        ], prepared: [] },
+
+        3: { str:8, dex:17, con:14, int:10, wis:12, cha:16, prof:2, hp:28, features: [
+            {name:"Genie's Splendor", source:"Oath 3", desc:"AC includes CHA modifier if no heavy armor."},
+            {name:"Channel Divinity", source:"Oath 3", desc:"Elemental Smite (Add effect to Smite) or Divine Sense."}
+        ], prepared: [] },
+
+        4: { str:8, dex:18, con:14, int:10, wis:12, cha:17, prof:2, hp:36, features: [
+            {name:"Feat: Defensive Duelist", source:"Lvl 4", desc:"Reaction: Add PB to AC against one melee attack."}
+        ], prepared: [] },
+
+        5: { str:8, dex:18, con:14, int:10, wis:12, cha:17, prof:3, hp:44, features: [
+            {name:"Extra Attack", source:"Paladin 5", desc:"Attack twice (3x with Nick Mastery)."}
+        ], prepared: [{name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}}] },
+
+        6: { str:8, dex:18, con:14, int:10, wis:12, cha:17, prof:3, hp:52, features: [
+            {name:"Aura of Protection", source:"Paladin 6", desc:"Allies within 3m add +CHA to Saves."}
+        ], prepared: [] },
+
+        7: { str:8, dex:18, con:14, int:10, wis:12, cha:17, prof:3, hp:60, features: [
+            {name:"Aura of Warding", source:"Oath 7", desc:"Resistance to Spell Damage for you and allies in Aura."}
+        ], prepared: [] },
+
+        8: { str:8, dex:20, con:14, int:10, wis:12, cha:17, prof:3, hp:68, features: [
+            {name:"ASI: Dexterity +2", source:"Lvl 8", desc:"DEX capped at 20. +1 AC, +1 Hit/Dmg."}
+        ], prepared: [] },
+
+        // --- TIER 3 (S-TIER META) ---
+        9: { str:8, dex:20, con:14, int:10, wis:12, cha:17, prof:4, hp:76, features: [],
+             prepared: [{name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, {name:"Spirit Shroud", level:3, school:"Necro", desc:"BA. +1d8 Radiant/Cold/Necro to all hits. No heal for enemy.", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}}] },
+
+        10: { str:8, dex:20, con:14, int:10, wis:12, cha:17, prof:4, hp:84, features: [
+            {name:"Aura of Courage", source:"Paladin 10", desc:"Immune to Frightened (3m Aura)."}
+        ], prepared: [] },
+
+        11: { str:8, dex:20, con:14, int:10, wis:12, cha:17, prof:4, hp:92, features: [
+            {name:"Radiant Strikes", source:"Paladin 11", desc:"<b>Improve Divine Smite:</b> All melee hits deal +1d8 Radiant damage."}
+        ], prepared: [] },
+
+        12: { str:8, dex:20, con:14, int:10, wis:12, cha:18, prof:4, hp:100, features: [
+            {name:"Feat: Fey Touched", source:"Lvl 12", desc:"+1 CHA. Learn Misty Step & Silvery Barbs (Free 1/LR)."}
+        ], prepared: [{name:"Silvery Barbs", level:1, school:"Ench", typeClass:"always", desc:"Reaction. Reroll success. Grant Adv.", roll:{type:"buff", desc:"Reroll forced."}}] },
+
+        13: { str:8, dex:20, con:14, int:10, wis:12, cha:18, prof:5, hp:108, features: [
+            {name:"Find Greater Steed", source:"Paladin 13", desc:"Summon Pegasus (Fly 90ft)."}
+        ], prepared: [{name:"Find Greater Steed", level:4, school:"Conj", roll:{type:"info", desc:"Summoning Pegasus..."}}] },
+
+        14: { str:8, dex:20, con:14, int:10, wis:12, cha:18, prof:5, hp:116, features: [
+            {name:"Cleansing Touch", source:"Paladin 14", desc:"Action. End one spell on yourself/willing creature (CHA Mod/LR)."}
+        ], prepared: [] },
+
+        15: { str:8, dex:20, con:14, int:10, wis:12, cha:18, prof:5, hp:124, features: [
+            {name:"Noble Escape", source:"Oath 15", desc:"Reaction to taking dmg: Teleport 18m + Invisible until start of next turn."}
+        ], prepared: [] },
+
+        16: { str:8, dex:20, con:14, int:10, wis:12, cha:20, prof:5, hp:132, features: [
+            {name:"ASI: Charisma +2", source:"Lvl 16", desc:"Max Aura (+5). Spell Save DC increases."}
+        ], prepared: [] },
+
+        // --- TIER 4 (END GAME) ---
+        17: { str:8, dex:20, con:14, int:10, wis:12, cha:20, prof:6, hp:140, features: [],
+             prepared: [{name:"Circle of Power", level:5, school:"Abjur", desc:"Advantage on Save vs Spells + Evasion for Aura.", roll:{type:"buff", desc:"Aura: Adv vs Spells + Evasion."}}, {name:"Holy Weapon", level:5, school:"Evoc", desc:"Weapon deals +2d8 Radiant.", roll:{type:"buff", desc:"Active: +2d8 Radiant."}}] },
+
+        18: { str:8, dex:20, con:14, int:10, wis:12, cha:20, prof:6, hp:148, features: [
+            {name:"Aura Expansion", source:"Paladin 18", desc:"Aura ranges increase to 9m."}
+        ], prepared: [] },
+
+        19: { str:8, dex:20, con:14, int:10, wis:12, cha:20, prof:6, hp:156, features: [
+            {name:"Feat: Tough", source:"Lvl 19", desc:"+40 HP (Retroactive)."}
+        ], prepared: [] }, // HP calc in main logic handles Tough
+
+        20: { str:8, dex:20, con:14, int:10, wis:12, cha:20, prof:6, hp:164, features: [
+            {name:"Elder Genie Champion", source:"Oath 20", desc:"Bonus Action transformation (1 min): Flight 18m, Resist all Dmg from Spells, Enemy starts turn in aura takes 10 Radiant."}
+        ], prepared: [] }
     };
 
     function getMod(score) { return Math.floor((score - 10) / 2); }
@@ -886,24 +721,28 @@
         if (lvl >= 5) {
             steedCard.style.display = 'block';
             const isGreater = lvl >= 13;
-            
+
             // It's always the Ostrich, but it evolves
-            const sName = "Golden Stormstrider";
-            const sMeta = isGreater ? "Large Fey (Flying)" : "Large Fey";
-            
+            const sName = isGreater ? "Golden Stormstrider (Ascended)" : "Golden Stormstrider";
+            const sMeta = isGreater ? "Large Celestial (Pegasus)" : "Large Fey";
+
             // Stats (Pegasus stats at lvl 13, Warhorse/Elk hybrid stats at lvl 5)
-            const sHP = isGreater ? 59 : (5 + (10 * 2)); 
+            const sHP = isGreater ? 59 : (5 + (10 * 2));
             const sAC = isGreater ? 12 : 15;
             // The upgrade: 90ft Fly Speed
             const sSpeed = isGreater ? "<span style='color:var(--gold)'>27m Fly</span>" : "15m Run";
-            
+
             const sAtk = isGreater ? "+6" : fmtSign(spellAtk);
             const sDmg = isGreater ? "2d6+4" : `1d8+${mods.cha + 2}`;
-            
+
             // Build the actions
             let actionsHtml = "";
+            let imgSource = "images/ostrich.png";
+
             if(isGreater) {
                 // S-Tier Greater Steed (Pegasus) stats re-flavored
+                // We use a different image source logic here if you had the file,
+                // but we will stick to the same image for consistency unless you have a pegasus.png
                 actionsHtml = `
                     <div class="sb-action"><strong>Aerial Charge:</strong> ${sAtk} Hit, ${sDmg} Bludgeoning.<br><span style="font-size:0.85em; color:#aaa">If moving 6m straight before hit, target DC 14 STR save or Prone.</span></div>
                     <div class="sb-action"><strong>Golden Plumage:</strong> Grant resistance to Radiance/Necrotic (Passive).</div>
@@ -932,7 +771,15 @@
                    *Shared Spells: Spells targeting only you also target the steed.
                 </div>
             `;
-            
+
+            // Inject Image (Pegasus visual at lvl 13)
+            const imgContainer = steedCard.querySelector('.steed-img-container');
+            if(isGreater) {
+                imgContainer.innerHTML = `<img src="https://image.pollinations.ai/prompt/majestic%20pegasus%20with%20golden%20ostrich%20plumage%20dnd%20art%20fantasy%20style?width=300&height=150&nologo=true" class="steed-img" alt="Ascended Ostrich">`;
+            } else {
+                imgContainer.innerHTML = `<img src="images/ostrich.png" class="steed-img" alt="Ostrich">`;
+            }
+
         } else {
             steedCard.style.display = 'none';
         }
@@ -947,18 +794,15 @@
         if (maxHpEl.innerText != data.hp) curHpEl.value = data.hp;
         maxHpEl.innerText = data.hp;
 
-        if (slots[0] > 0) {
-            let row1 = `<div class="slot-row"><div class="slot-lvl">1st</div>`;
-            for(let i=0; i<slots[0]; i++) row1 += `<div class="slot-pip" onclick="this.classList.toggle('used')"></div>`;
-            row1 += `</div>`;
-            slotContainer.innerHTML += row1;
-        }
-        if (slots[1] > 0) {
-            let row2 = `<div class="slot-row"><div class="slot-lvl">2nd</div>`;
-            for(let i=0; i<slots[1]; i++) row2 += `<div class="slot-pip" onclick="this.classList.toggle('used')"></div>`;
-            row2 += `</div>`;
-            slotContainer.innerHTML += row2;
-        }
+        const slotLabels = ['1st', '2nd', '3rd', '4th', '5th'];
+        slots.forEach((count, idx) => {
+            if (count > 0) {
+                let row = `<div class="slot-row"><div class="slot-lvl">${slotLabels[idx]}</div>`;
+                for(let i=0; i<count; i++) row += `<div class="slot-pip" onclick="this.classList.toggle('used')"></div>`;
+                row += `</div>`;
+                slotContainer.innerHTML += row;
+            }
+        });
 
         // --- Spells Render ---
         const spellListEl = document.getElementById('spells-list');
@@ -1038,7 +882,7 @@
             return a.name.localeCompare(b.name);
         });
 
-        const prepLimit = preparedSpellsByLevel[lvl];
+        const prepLimit = getPrepLimit(lvl, mods.cha);
         document.getElementById('prep-count').innerText = data.prepared.length;
         document.getElementById('prep-limit').innerText = prepLimit;
 
