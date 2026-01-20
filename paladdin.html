@@ -660,7 +660,6 @@
         10:9, 11:10, 12:10, 13:11, 14:11, 15:12, 16:12, 17:14, 18:14, 19:15, 20:15
     };
 
-    // 5.24 Rule: Level + CHA Mod (Minimum 1)
     function getPrepLimit(lvl, chaMod) {
         return paladinPreparedTable[lvl] || 2;
     }
@@ -718,85 +717,288 @@
             {name:"Background: Charlatan (Merchant)", source:"Origin", desc:"Stats: +2 DEX, +1 CHA.<br><b>Feat: Skilled</b> (Gain 3 Skill Proficiencies).<br>Skills: Deception, Sleight of Hand.<br><i>(Mechanically Charlatan, RP as Merchant)</i>"},
             {name:"Human: Heroic Inspiration", source:"Species", desc:"Gain Inspiration after Long Rest. Reroll any die."},
             {name:"Weapon Mastery", source:"Paladin 1", desc:"Scimitar (Nick): Extra attack is part of Action.<br>Shortsword (Vex): Adv on next hit."}
-        ], prepared: [{name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}] },
+        ], prepared: [
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
+            {name:"Heroism", level:1, school:"Ench", desc:"Immune to Frightened + Temp HP.", roll:{type:"buff", desc:"Target gains Temp HP start of turn."}}
+        ] },
 
         2: { str:8, dex:17, con:14, int:8, wis:10, cha:16, prof:2, hp:20, features: [
             {name:"Fighting Style: Two-Weapon Fighting", source:"Paladin 2", desc:"Add Ability Mod to damage of the extra attack of the Light weapon property."},
             {name:"Divine Smite", source:"Paladin 2", desc:"BA after hit. 2d8 Radiant (slot). 1 Free/LR."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
+            {name:"Heroism", level:1, school:"Ench", roll:{type:"buff", desc:"Target gains Temp HP."}},
+            {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}}
+        ] },
 
         3: { str:8, dex:17, con:14, int:8, wis:10, cha:16, prof:2, hp:28, features: [
             {name:"Genie's Splendor", source:"Oath 3", desc:"AC includes CHA modifier if no heavy armor."},
             {name:"Channel Divinity", source:"Oath 3", desc:"Elemental Smite (Add effect to Smite) or Divine Sense."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
+            {name:"Heroism", level:1, school:"Ench", roll:{type:"buff", desc:"Target gains Temp HP."}},
+            {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}},
+            {name:"Shield of Faith", level:1, school:"Abjur", desc:"BA. +2 AC.", roll:{type:"buff", desc:"+2 AC (Conc)."}}
+        ] },
 
         4: { str:8, dex:18, con:14, int:8, wis:10, cha:16, prof:2, hp:36, features: [
             {name:"Feat: Defensive Duelist", source:"Lvl 4", desc:"Reaction: Add PB to AC against one melee attack (+1 DEX)."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
+            {name:"Heroism", level:1, school:"Ench", roll:{type:"buff", desc:"Target gains Temp HP."}},
+            {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}},
+            {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}},
+            {name:"Protection from Evil & Good", level:1, school:"Abjur", desc:"Disadv on attacks against you by Undead/Fiends/Fey.", roll:{type:"buff", desc:"Active: Protection vs Types."}}
+        ] },
 
         5: { str:8, dex:18, con:14, int:8, wis:10, cha:16, prof:3, hp:44, features: [
             {name:"Extra Attack", source:"Paladin 5", desc:"Attack twice (3x with Nick Mastery)."}
-        ], prepared: [{name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}}] },
+        ], prepared: [
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
+            {name:"Aid", level:2, school:"Abjur", desc:"Max HP +5 for 3 creatures.", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}},
+            {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}}
+        ] },
 
         6: { str:8, dex:18, con:14, int:8, wis:10, cha:16, prof:3, hp:52, features: [
             {name:"Aura of Protection", source:"Paladin 6", desc:"Allies within 3m add +CHA to Saves."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}},
+            {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}}
+        ] },
 
         7: { str:8, dex:18, con:14, int:8, wis:10, cha:16, prof:3, hp:60, features: [
             {name:"Aura of Warding", source:"Oath 7", desc:"Resistance to Spell Damage for you and allies in Aura."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}},
+            {name:"Magic Weapon", level:2, school:"Trans", desc:"Weapon becomes +1.", roll:{type:"buff", desc:"Weapon is +1 Magic."}},
+            {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}}
+        ] },
 
         8: { str:8, dex:20, con:14, int:8, wis:10, cha:16, prof:3, hp:68, features: [
             {name:"ASI: Dexterity +2", source:"Lvl 8", desc:"DEX capped at 20. +1 AC, +1 Hit/Dmg."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}},
+            {name:"Magic Weapon", level:2, school:"Trans", roll:{type:"buff", desc:"Weapon is +1 Magic."}},
+            {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}}
+        ] },
 
         // --- TIER 3 (S-TIER META) ---
         9: { str:8, dex:20, con:14, int:8, wis:10, cha:16, prof:4, hp:76, features: [],
-             prepared: [{name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, {name:"Spirit Shroud", level:3, school:"Necro", desc:"BA. +1d8 Radiant/Cold/Necro to all hits. No heal for enemy.", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}}] },
+             prepared: [
+            {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
+            {name:"Spirit Shroud", level:3, school:"Necro", desc:"BA. +1d8 Radiant/Cold/Necro to all hits. No heal for enemy.", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
+            {name:"Dispel Magic", level:3, school:"Abjur", desc:"End spells on target.", roll:{type:"info", desc:"Dispel Magic cast."}},
+            {name:"Aura of Vitality", level:3, school:"Evoc", desc:"2d6 Heal as BA.", roll:{type:"heal", dice:"2d6", desc:"Aura Heal (BA)."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
+            {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}}
+        ] },
 
         10: { str:8, dex:20, con:14, int:8, wis:10, cha:16, prof:4, hp:84, features: [
             {name:"Aura of Courage", source:"Paladin 10", desc:"Immune to Frightened (3m Aura)."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
+            {name:"Spirit Shroud", level:3, school:"Necro", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
+            {name:"Dispel Magic", level:3, school:"Abjur", roll:{type:"info", desc:"Dispel Magic cast."}},
+            {name:"Aura of Vitality", level:3, school:"Evoc", roll:{type:"heal", dice:"2d6", desc:"Aura Heal (BA)."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
+            {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}}
+        ] },
 
         11: { str:8, dex:20, con:14, int:8, wis:10, cha:16, prof:4, hp:92, features: [
             {name:"Radiant Strikes", source:"Paladin 11", desc:"<b>Improve Divine Smite:</b> All melee hits deal +1d8 Radiant damage."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
+            {name:"Spirit Shroud", level:3, school:"Necro", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
+            {name:"Dispel Magic", level:3, school:"Abjur", roll:{type:"info", desc:"Dispel Magic cast."}},
+            {name:"Aura of Vitality", level:3, school:"Evoc", roll:{type:"heal", dice:"2d6", desc:"Aura Heal (BA)."}},
+            {name:"Blinding Smite", level:3, school:"Evoc", desc:"BA. +3d8 Radiant + Blind.", roll:{type:"buff", desc:"Next Hit: 3d8 + Blind."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
+            {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}}
+        ] },
 
         12: { str:8, dex:20, con:14, int:8, wis:10, cha:17, prof:4, hp:100, features: [
             {name:"Feat: Fey Touched", source:"Lvl 12", desc:"+1 CHA. Learn Misty Step & Silvery Barbs (Free 1/LR)."}
-        ], prepared: [{name:"Silvery Barbs", level:1, school:"Ench", typeClass:"always", desc:"Reaction. Reroll success. Grant Adv.", roll:{type:"buff", desc:"Reroll forced."}}] },
+        ], prepared: [
+            {name:"Silvery Barbs", level:1, school:"Ench", typeClass:"always", desc:"Reaction. Reroll success. Grant Adv.", roll:{type:"buff", desc:"Reroll forced."}},
+            {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
+            {name:"Spirit Shroud", level:3, school:"Necro", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
+            {name:"Dispel Magic", level:3, school:"Abjur", roll:{type:"info", desc:"Dispel Magic cast."}},
+            {name:"Aura of Vitality", level:3, school:"Evoc", roll:{type:"heal", dice:"2d6", desc:"Aura Heal (BA)."}},
+            {name:"Blinding Smite", level:3, school:"Evoc", roll:{type:"buff", desc:"Next Hit: 3d8 + Blind."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
+            {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}}
+        ] },
 
         13: { str:8, dex:20, con:14, int:8, wis:10, cha:17, prof:5, hp:108, features: [
             {name:"Find Greater Steed", source:"Paladin 13", desc:"Summon Pegasus (Fly 90ft)."}
-        ], prepared: [{name:"Find Greater Steed", level:4, school:"Conj", roll:{type:"info", desc:"Summoning Pegasus..."}}] },
+        ], prepared: [
+            {name:"Banishment", level:4, school:"Abjur", desc:"CHA Save or banished.", roll:{type:"save", save:"CHA", desc:"Target Banished (Conc)."}},
+            {name:"Death Ward", level:4, school:"Abjur", desc:"Prevent death once (8 hours).", roll:{type:"buff", desc:"Death Ward active."}},
+            {name:"Silvery Barbs", level:1, school:"Ench", typeClass:"always", roll:{type:"buff", desc:"Reroll forced."}},
+            {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
+            {name:"Spirit Shroud", level:3, school:"Necro", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
+            {name:"Dispel Magic", level:3, school:"Abjur", roll:{type:"info", desc:"Dispel Magic cast."}},
+            {name:"Aura of Vitality", level:3, school:"Evoc", roll:{type:"heal", dice:"2d6", desc:"Aura Heal (BA)."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
+        ] },
 
         14: { str:8, dex:20, con:14, int:8, wis:10, cha:17, prof:5, hp:116, features: [
             {name:"Cleansing Touch", source:"Paladin 14", desc:"Action. End one spell on yourself/willing creature (CHA Mod/LR)."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Banishment", level:4, school:"Abjur", roll:{type:"save", save:"CHA", desc:"Target Banished (Conc)."}},
+            {name:"Death Ward", level:4, school:"Abjur", roll:{type:"buff", desc:"Death Ward active."}},
+            {name:"Silvery Barbs", level:1, school:"Ench", typeClass:"always", roll:{type:"buff", desc:"Reroll forced."}},
+            {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
+            {name:"Spirit Shroud", level:3, school:"Necro", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
+            {name:"Dispel Magic", level:3, school:"Abjur", roll:{type:"info", desc:"Dispel Magic cast."}},
+            {name:"Aura of Vitality", level:3, school:"Evoc", roll:{type:"heal", dice:"2d6", desc:"Aura Heal (BA)."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
+        ] },
 
         15: { str:8, dex:20, con:14, int:8, wis:10, cha:17, prof:5, hp:124, features: [
             {name:"Noble Escape", source:"Oath 15", desc:"Reaction to taking dmg: Teleport 18m + Invisible until start of next turn."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Banishment", level:4, school:"Abjur", roll:{type:"save", save:"CHA", desc:"Target Banished (Conc)."}},
+            {name:"Death Ward", level:4, school:"Abjur", roll:{type:"buff", desc:"Death Ward active."}},
+            {name:"Aura of Life", level:4, school:"Abjur", desc:"Resistance to Necrotic.", roll:{type:"buff", desc:"Active: Resist Necrotic."}},
+            {name:"Silvery Barbs", level:1, school:"Ench", typeClass:"always", roll:{type:"buff", desc:"Reroll forced."}},
+            {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
+            {name:"Spirit Shroud", level:3, school:"Necro", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
+            {name:"Dispel Magic", level:3, school:"Abjur", roll:{type:"info", desc:"Dispel Magic cast."}},
+            {name:"Aura of Vitality", level:3, school:"Evoc", roll:{type:"heal", dice:"2d6", desc:"Aura Heal (BA)."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
+        ] },
 
         16: { str:8, dex:20, con:14, int:8, wis:10, cha:19, prof:5, hp:132, features: [
             {name:"ASI: Charisma +2", source:"Lvl 16", desc:"Max Aura (+4). Spell Save DC increases."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Banishment", level:4, school:"Abjur", roll:{type:"save", save:"CHA", desc:"Target Banished (Conc)."}},
+            {name:"Death Ward", level:4, school:"Abjur", roll:{type:"buff", desc:"Death Ward active."}},
+            {name:"Aura of Life", level:4, school:"Abjur", roll:{type:"buff", desc:"Active: Resist Necrotic."}},
+            {name:"Silvery Barbs", level:1, school:"Ench", typeClass:"always", roll:{type:"buff", desc:"Reroll forced."}},
+            {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
+            {name:"Spirit Shroud", level:3, school:"Necro", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
+            {name:"Dispel Magic", level:3, school:"Abjur", roll:{type:"info", desc:"Dispel Magic cast."}},
+            {name:"Aura of Vitality", level:3, school:"Evoc", roll:{type:"heal", dice:"2d6", desc:"Aura Heal (BA)."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
+        ] },
 
         // --- TIER 4 (END GAME) ---
         17: { str:8, dex:20, con:14, int:8, wis:10, cha:19, prof:6, hp:140, features: [],
-             prepared: [{name:"Circle of Power", level:5, school:"Abjur", desc:"Advantage on Save vs Spells + Evasion for Aura.", roll:{type:"buff", desc:"Aura: Adv vs Spells + Evasion."}}, {name:"Holy Weapon", level:5, school:"Evoc", desc:"Weapon deals +2d8 Radiant.", roll:{type:"buff", desc:"Active: +2d8 Radiant."}}] },
+             prepared: [
+            {name:"Circle of Power", level:5, school:"Abjur", desc:"Advantage on Save vs Spells + Evasion for Aura.", roll:{type:"buff", desc:"Aura: Adv vs Spells + Evasion."}}, 
+            {name:"Holy Weapon", level:5, school:"Evoc", desc:"Weapon deals +2d8 Radiant.", roll:{type:"buff", desc:"Active: +2d8 Radiant."}},
+            {name:"Destructive Wave", level:5, school:"Evoc", desc:"10d6 Area Damage.", roll:{type:"attack", dice:"10d6", desc:"Area Damage (Thunder/Radiant)."}},
+            {name:"Banishment", level:4, school:"Abjur", roll:{type:"save", save:"CHA", desc:"Target Banished (Conc)."}},
+            {name:"Death Ward", level:4, school:"Abjur", roll:{type:"buff", desc:"Death Ward active."}},
+            {name:"Silvery Barbs", level:1, school:"Ench", typeClass:"always", roll:{type:"buff", desc:"Reroll forced."}},
+            {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
+            {name:"Spirit Shroud", level:3, school:"Necro", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
+            {name:"Dispel Magic", level:3, school:"Abjur", roll:{type:"info", desc:"Dispel Magic cast."}},
+            {name:"Aura of Vitality", level:3, school:"Evoc", roll:{type:"heal", dice:"2d6", desc:"Aura Heal (BA)."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
+        ] },
 
         18: { str:8, dex:20, con:14, int:8, wis:10, cha:19, prof:6, hp:148, features: [
             {name:"Aura Expansion", source:"Paladin 18", desc:"Aura ranges increase to 9m."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Circle of Power", level:5, school:"Abjur", desc:"Advantage on Save vs Spells + Evasion for Aura.", roll:{type:"buff", desc:"Aura: Adv vs Spells + Evasion."}}, 
+            {name:"Holy Weapon", level:5, school:"Evoc", desc:"Weapon deals +2d8 Radiant.", roll:{type:"buff", desc:"Active: +2d8 Radiant."}},
+            {name:"Destructive Wave", level:5, school:"Evoc", desc:"10d6 Area Damage.", roll:{type:"attack", dice:"10d6", desc:"Area Damage (Thunder/Radiant)."}},
+            {name:"Banishment", level:4, school:"Abjur", roll:{type:"save", save:"CHA", desc:"Target Banished (Conc)."}},
+            {name:"Death Ward", level:4, school:"Abjur", roll:{type:"buff", desc:"Death Ward active."}},
+            {name:"Silvery Barbs", level:1, school:"Ench", typeClass:"always", roll:{type:"buff", desc:"Reroll forced."}},
+            {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
+            {name:"Spirit Shroud", level:3, school:"Necro", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
+            {name:"Dispel Magic", level:3, school:"Abjur", roll:{type:"info", desc:"Dispel Magic cast."}},
+            {name:"Aura of Vitality", level:3, school:"Evoc", roll:{type:"heal", dice:"2d6", desc:"Aura Heal (BA)."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
+        ] },
 
         19: { str:8, dex:20, con:14, int:8, wis:10, cha:20, prof:6, hp:156, features: [
             {name:"Epic Boon: Dimensional Travel", source:"Lvl 19", desc:"+1 CHA. Teleport 9m immediately after Attack or Spell."}
-        ], prepared: [] },
+        ], prepared: [
+            {name:"Circle of Power", level:5, school:"Abjur", desc:"Advantage on Save vs Spells + Evasion for Aura.", roll:{type:"buff", desc:"Aura: Adv vs Spells + Evasion."}}, 
+            {name:"Holy Weapon", level:5, school:"Evoc", desc:"Weapon deals +2d8 Radiant.", roll:{type:"buff", desc:"Active: +2d8 Radiant."}},
+            {name:"Destructive Wave", level:5, school:"Evoc", desc:"10d6 Area Damage.", roll:{type:"attack", dice:"10d6", desc:"Area Damage (Thunder/Radiant)."}},
+            {name:"Summon Celestial", level:5, school:"Conj", desc:"Summon celestial defender.", roll:{type:"info", desc:"Celestial Summoned."}},
+            {name:"Banishment", level:4, school:"Abjur", roll:{type:"save", save:"CHA", desc:"Target Banished (Conc)."}},
+            {name:"Death Ward", level:4, school:"Abjur", roll:{type:"buff", desc:"Death Ward active."}},
+            {name:"Silvery Barbs", level:1, school:"Ench", typeClass:"always", roll:{type:"buff", desc:"Reroll forced."}},
+            {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
+            {name:"Spirit Shroud", level:3, school:"Necro", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
+            {name:"Dispel Magic", level:3, school:"Abjur", roll:{type:"info", desc:"Dispel Magic cast."}},
+            {name:"Aura of Vitality", level:3, school:"Evoc", roll:{type:"heal", dice:"2d6", desc:"Aura Heal (BA)."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
+        ] },
 
         20: { str:8, dex:20, con:14, int:8, wis:10, cha:20, prof:6, hp:164, features: [
             {name:"Elder Genie Champion", source:"Oath 20", desc:"Bonus Action transformation (1 min): Flight 18m, Resist all Dmg from Spells, Enemy starts turn in aura takes 10 Radiant."}
-        ], prepared: [] }
+        ], prepared: [
+            {name:"Circle of Power", level:5, school:"Abjur", desc:"Advantage on Save vs Spells + Evasion for Aura.", roll:{type:"buff", desc:"Aura: Adv vs Spells + Evasion."}}, 
+            {name:"Holy Weapon", level:5, school:"Evoc", desc:"Weapon deals +2d8 Radiant.", roll:{type:"buff", desc:"Active: +2d8 Radiant."}},
+            {name:"Destructive Wave", level:5, school:"Evoc", desc:"10d6 Area Damage.", roll:{type:"attack", dice:"10d6", desc:"Area Damage (Thunder/Radiant)."}},
+            {name:"Summon Celestial", level:5, school:"Conj", desc:"Summon celestial defender.", roll:{type:"info", desc:"Celestial Summoned."}},
+            {name:"Banishment", level:4, school:"Abjur", roll:{type:"save", save:"CHA", desc:"Target Banished (Conc)."}},
+            {name:"Death Ward", level:4, school:"Abjur", roll:{type:"buff", desc:"Death Ward active."}},
+            {name:"Silvery Barbs", level:1, school:"Ench", typeClass:"always", roll:{type:"buff", desc:"Reroll forced."}},
+            {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
+            {name:"Spirit Shroud", level:3, school:"Necro", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
+            {name:"Dispel Magic", level:3, school:"Abjur", roll:{type:"info", desc:"Dispel Magic cast."}},
+            {name:"Aura of Vitality", level:3, school:"Evoc", roll:{type:"heal", dice:"2d6", desc:"Aura Heal (BA)."}},
+            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
+            {name:"Aid", level:2, school:"Abjur", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
+            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
+        ] }
     };
 
     function getMod(score) { return Math.floor((score - 10) / 2); }
