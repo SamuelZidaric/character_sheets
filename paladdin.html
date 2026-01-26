@@ -221,6 +221,17 @@
             background: #334155; box-shadow: none; border: 1px solid #475569;
         }
 
+        /* Channel Divinity Buttons */
+        .cd-options { display: flex; gap: 5px; margin-top: 8px; }
+        .cd-btn {
+            background: #1e293b; border: 1px solid #94a3b8; color: #cbd5e1;
+            border-radius: 4px; padding: 4px 8px; font-size: 0.75em;
+            cursor: pointer; flex: 1; transition: all 0.2s;
+            text-transform: uppercase; font-weight: bold;
+        }
+        .cd-btn:hover {
+            background: #fff; color: #000; box-shadow: 0 0 8px #fff; border-color: #fff;
+        }
         .spell-category { font-size: 0.8em; text-transform: uppercase; color: #94a3b8; margin: 15px 0 5px; border-bottom: 1px solid #475569; }
         
         /* --- Spell Items --- */
@@ -444,6 +455,85 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--dex-highlight);
         }
+
+        /* --- Elemental Smite Buttons --- */
+        .es-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .es-btn {
+            background: #0f172a; /* Dark background */
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative; /* Needed for tooltip positioning */
+        }
+
+        /* --- Elemental Color Coding --- */
+
+        /* EARTH (Dao) - Green */
+        .es-dao { border-color: #15803d; color: #4ade80; }
+        .es-dao:hover { background: #15803d; color: #fff; box-shadow: 0 0 12px #15803d; }
+
+        /* AIR (Djinni) - Cyan/Sky */
+        .es-djinni { border-color: #0ea5e9; color: #7dd3fc; }
+        .es-djinni:hover { background: #0ea5e9; color: #fff; box-shadow: 0 0 12px #0ea5e9; }
+
+        /* FIRE (Efreeti) - Red/Orange */
+        .es-efreeti { border-color: #b91c1c; color: #f87171; }
+        .es-efreeti:hover { background: #b91c1c; color: #fff; box-shadow: 0 0 12px #b91c1c; }
+
+        /* WATER (Marid) - Deep Blue */
+        .es-marid { border-color: #1d4ed8; color: #60a5fa; }
+        .es-marid:hover { background: #1d4ed8; color: #fff; box-shadow: 0 0 12px #1d4ed8; }
+
+        /* --- Tooltip Popup Styles --- */
+        .es-tooltip {
+            visibility: hidden;
+            width: 220px;
+            background-color: #1e293b;
+            color: #f1f5f9;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1000;
+            
+            /* Position above the button */
+            bottom: 110%; 
+            left: 50%;
+            transform: translateX(-50%); /* Center it */
+            
+            box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+            border: 1px solid #475569;
+            font-size: 0.85em;
+            line-height: 1.4;
+            text-transform: none; /* Normal text inside tooltip */
+            font-weight: normal;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none; /* Let clicks pass through */
+        }
+
+        /* Specific Border Colors for Tooltips match the button */
+        .es-dao .es-tooltip { border-color: #4ade80; }
+        .es-djinni .es-tooltip { border-color: #7dd3fc; }
+        .es-efreeti .es-tooltip { border-color: #f87171; }
+        .es-marid .es-tooltip { border-color: #60a5fa; }
+
+        /* Show Tooltip on Hover */
+        .es-btn:hover .es-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -452,7 +542,7 @@
     <a href="index.html" class="back-btn">← Back</a>
     <div class="header-info">
         <h1>Paiman "Paladdin" Aladdin <span class="rules-badge">Dexadin</span></h1>
-        <h2>Oath of Noble Genies • Human Merchant • <span style="color:var(--dex-highlight)">Elemental Duelist</span></h2>
+        <h2>Oath of Noble Genies • Human • <span style="color:var(--dex-highlight)">Elemental Duelist</span></h2>
     </div>
     <div class="level-control">
         <div class="heroic-container" title="Reroll any d20 (Human Species Feature)">
@@ -573,31 +663,74 @@
                     </div>
                 </div>
             </div>
-            <div class="attack-card" style="border-left-color: var(--magic);" onclick="rollAttack('Chromatic Orb', 'spell-hit', 'corb-dmg')">
-                <div class="attack-header"><span>CHROMATIC ORB</span><span id="spell-hit" style="color:var(--magic);">+5 Hit</span></div>
-                <div class="attack-detail">Damage: <span class="dmg-text" id="corb-dmg" style="color:var(--magic)">3d8</span> Elemental</div>
-            </div>
         </div>
 
         <div class="card">
             <div class="card-title">Resources</div>
+
             <div class="attack-card" style="border-left-color: var(--gold);">
                 <div class="attack-header"><span>Lay on Hands <span class="kw-bonus">(BA)</span></span> <span><span id="loh-val">5</span> HP</span></div>
             </div>
+
             <div class="attack-card" style="border-left-color: var(--warning); cursor:pointer;" onclick="logMsg('Drank Potion: Healed <strong>2d4+2</strong> HP (Bonus Action)')">
                 <div class="attack-header"><span>Potion of Healing</span> <span class="kw-bonus">BA</span></div>
             </div>
+
             <div class="attack-card" style="border-left-color: #fff; display:none;" id="cd-resource">
-                <div class="attack-header"><span>Channel Divinity</span> <div></div></div> </div>
+                <div class="attack-header">
+                    <span>CD: Elemental Smite</span> 
+                    <div id="cd-pips-container" style="display:flex;"></div>
+                </div>
+                <div class="attack-detail">Trigger immediately after Divine Smite.</div>
+                
+                <div class="es-grid">
+                    <button class="es-btn es-dao" onclick="useElementalSmite('dao')">
+                        Dao (Earth)
+                        <div class="es-tooltip">
+                            <strong style="color:#4ade80">Dao's Crush</strong><br>
+                            Target is <strong>Grappled + Restrained</strong>.<br>
+                            <span style="font-size:0.8em; color:#94a3b8;">Escape DC = Spell Save DC.</span>
+                        </div>
+                    </button>
+                    
+                    <button class="es-btn es-djinni" onclick="useElementalSmite('djinni')">
+                        Djinni (Air)
+                        <div class="es-tooltip">
+                            <strong style="color:#7dd3fc">Djinni's Escape</strong><br>
+                            Teleport 30ft + <strong>Resistance</strong> (B/P/S) + Immunity (Grapple/Restrain) until end of next turn.
+                        </div>
+                    </button>
+                    
+                    <button class="es-btn es-efreeti" onclick="useElementalSmite('efreeti')">
+                        Efreeti (Fire)
+                        <div class="es-tooltip">
+                            <strong style="color:#f87171">Efreeti's Fury</strong><br>
+                            Target takes <strong>+2d4 Fire</strong>.<br>
+                            Fire jumps to another enemy (30ft) for <strong>2d4 Fire</strong>.
+                        </div>
+                    </button>
+                    
+                    <button class="es-btn es-marid" onclick="useElementalSmite('marid')">
+                        Marid (Water)
+                        <div class="es-tooltip">
+                            <strong style="color:#60a5fa">Marid's Surge</strong><br>
+                            Target + Enemies in 10ft Emanation make <strong>STR Save</strong>.<br>
+                            Fail: Pushed 15ft + <strong>Prone</strong>.
+                        </div>
+                    </button>
+                </div>
+            </div>
+
             <div class="attack-card" style="border-left-color: var(--success); cursor: pointer;" id="smite-resource" onclick="castSmite(true)">
-            <div class="attack-header">
-                <span>Free Divine Smite</span> 
-                <span id="smite-track">1 / LR</span>
+                <div class="attack-header">
+                    <span>Free Divine Smite</span> 
+                    <span id="smite-track">1 / LR</span>
+                </div>
+                <div class="attack-detail" style="font-size:0.8em; color:#cbd5e1;">
+                    2d8 Radiant (Bonus Action). Click to Use.
+                </div>
             </div>
-            <div class="attack-detail" style="font-size:0.8em; color:#cbd5e1;">
-                2d8 Radiant (Bonus Action). Click to Use.
-            </div>
-        </div>
+
             <div class="attack-card" style="border-left-color: var(--magic); cursor:pointer;" id="shield-resource" onclick="useShield()">
                 <div class="attack-header">
                     <span>Shield (Reaction)</span> 
@@ -646,7 +779,7 @@
 </div>
 
 <script>
-    // --- EXPANDED DATA (1-20) ---
+    // --- 1. DATA OBJECTS ---
     const spellSlotsByLevel = {
         1: [2,0,0,0,0], 2: [2,0,0,0,0], 3: [3,0,0,0,0], 4: [3,0,0,0,0],
         5: [4,2,0,0,0], 6: [4,2,0,0,0], 7: [4,3,0,0,0], 8: [4,3,0,0,0],
@@ -665,14 +798,9 @@
     }
 
     const magicInitiateSpells = [
-        {name: "Fire Bolt", level: 0, school: "Evoc", note: "36m, 1d10 Fire", desc: "Ranged spell attack. 1d10 Fire damage. (Alchemy Vial)", upcast: "Damage increases to 2d10 (5th), 3d10 (11th), 4d10 (17th).",
-         roll: {type: "attack", dice: "1d10", dmgType: "Fire"}},
-         
-        {name: "Minor Illusion", level: 0, school: "Illu", note: "Utility", desc: "Create a sound or image of an object (1 min).", upcast: null,
-         roll: {type: "info", desc: "Created an illusion (12m range)."}},
-         
-        {name: "Shield", level: 1, school: "Abjur", note: "Reaction: +5 AC", desc: "Reaction when hit. +5 AC until next turn. Magic Missile immunity. (Use Resource Card for Free Cast).", upcast: null,
-         roll: {type: "buff", desc: "Shield! +5 AC until next turn."}}
+        {name: "Fire Bolt", level: 0, school: "Evoc", note: "36m, 1d10 Fire", desc: "Ranged spell attack. 1d10 Fire damage. (Alchemy Vial)", upcast: "Damage increases to 2d10 (5th), 3d10 (11th), 4d10 (17th).", roll: {type: "attack", dice: "1d10", dmgType: "Fire"}},
+        {name: "Minor Illusion", level: 0, school: "Illu", note: "Utility", desc: "Create a sound or image of an object (1 min).", upcast: null, roll: {type: "info", desc: "Created an illusion (12m range)."}},
+        {name: "Shield", level: 1, school: "Abjur", note: "Reaction: +5 AC", desc: "Reaction when hit. +5 AC until next turn. Magic Missile immunity. (Use Resource Card for Free Cast).", upcast: null, roll: {type: "buff", desc: "Shield! +5 AC until next turn."}}
     ];
 
     const genieSpellsByLevel = {
@@ -707,21 +835,20 @@
         {name: "Sleight of Hand", ability: "dex"}, {name: "Stealth", ability: "dex"}, {name: "Survival", ability: "wis"}
     ];
     const proficientSkills = {
-        1: ["Deception", "Sleight of Hand", "Persuasion", "Intimidation", "Perception", "Acrobatics", "Stealth", "Insight"],
-        3: ["Deception", "Sleight of Hand", "Persuasion", "Intimidation", "Perception", "Acrobatics", "Stealth", "Insight"]
+        1: ["Deception", "Sleight of Hand", "Persuasion", "Intimidation", "Perception", "Athletics", "Stealth", "Insight"],
+        3: ["Deception", "Sleight of Hand", "Persuasion", "Intimidation", "Perception", "Athletics", "Stealth", "Insight", "Acrobatics"]
     };
 
     const levels = {
         1: { str:8, dex:17, con:14, int:8, wis:10, cha:16, prof:2, hp:12, features: [
             {name:"Human: Versatile", source:"Species", desc:"<b>Feat: Magic Initiate (Wizard)</b>.<br>Spells: Fire Bolt, Minor Illusion, Shield (1/LR)."},
-            {name:"Background: Charlatan (Merchant)", source:"Origin", desc:"Stats: +2 DEX, +1 CHA.<br><b>Feat: Skilled</b> (Gain 3 Skill Proficiencies).<br>Skills: Deception, Sleight of Hand.<br><i>(Mechanically Charlatan, RP as Merchant)</i>"},
+            {name:"Background: Charlatan", source:"Origin", desc:"Stats: +2 DEX, +1 CHA.<br><b>Feat: Skilled</b> (Gain 3 Skill Proficiencies).<br>Skills: Deception, Sleight of Hand.<br><i></i>"},
             {name:"Human: Heroic Inspiration", source:"Species", desc:"Gain Inspiration after Long Rest. Reroll any die."},
             {name:"Weapon Mastery", source:"Paladin 1", desc:"Scimitar (Nick): Extra attack is part of Action.<br>Shortsword (Vex): Adv on next hit."}
         ], prepared: [
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
             {name:"Heroism", level:1, school:"Ench", desc:"Immune to Frightened + Temp HP.", roll:{type:"buff", desc:"Target gains Temp HP start of turn."}}
         ] },
-
         2: { str:8, dex:17, con:14, int:8, wis:10, cha:16, prof:2, hp:20, features: [
             {name:"Fighting Style: Two-Weapon Fighting", source:"Paladin 2", desc:"Add Ability Mod to damage of the extra attack of the Light weapon property."},
             {name:"Divine Smite", source:"Paladin 2", desc:"BA after hit. 2d8 Radiant (slot). 1 Free/LR."}
@@ -730,17 +857,15 @@
             {name:"Heroism", level:1, school:"Ench", roll:{type:"buff", desc:"Target gains Temp HP."}},
             {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}}
         ] },
-
         3: { str:8, dex:17, con:14, int:8, wis:10, cha:16, prof:2, hp:28, features: [
             {name:"Genie's Splendor", source:"Oath 3", desc:"AC includes CHA modifier if no heavy armor."},
-            {name:"Channel Divinity", source:"Oath 3", desc:"Elemental Smite (Add effect to Smite) or Divine Sense."}
+            {name:"Channel Divinity", source:"Oath 3", desc:"Elemental Smite (Add effect to Smite)."}
         ], prepared: [
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
             {name:"Heroism", level:1, school:"Ench", roll:{type:"buff", desc:"Target gains Temp HP."}},
             {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}},
             {name:"Shield of Faith", level:1, school:"Abjur", desc:"BA. +2 AC.", roll:{type:"buff", desc:"+2 AC (Conc)."}}
         ] },
-
         4: { str:8, dex:18, con:14, int:8, wis:10, cha:16, prof:2, hp:36, features: [
             {name:"Feat: Defensive Duelist", source:"Lvl 4", desc:"Reaction: Add PB to AC against one melee attack (+1 DEX)."}
         ], prepared: [
@@ -750,18 +875,28 @@
             {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}},
             {name:"Protection from Evil & Good", level:1, school:"Abjur", desc:"Disadv on attacks against you by Undead/Fiends/Fey.", roll:{type:"buff", desc:"Active: Protection vs Types."}}
         ] },
-
-        5: { str:8, dex:18, con:14, int:8, wis:10, cha:16, prof:3, hp:44, features: [
-            {name:"Extra Attack", source:"Paladin 5", desc:"Attack twice (3x with Nick Mastery)."}
-        ], prepared: [
-            {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
-            {name:"Aid", level:2, school:"Abjur", desc:"Max HP +5 for 3 creatures.", roll:{type:"buff", desc:"3 Targets gain +5 Max HP."}},
-            {name:"Misty Step", level:2, school:"Conj", roll:{type:"info", desc:"Teleport 9m."}},
-            {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
-            {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}},
-            {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}}
-        ] },
-
+        5: { 
+            str:8, dex:18, con:14, int:8, wis:10, cha:16, prof:3, hp:44, 
+            features: [
+                {name:"Extra Attack", source:"Paladin 5", desc:"Attack twice per Action."},
+                {name:"Find Steed", source:"Paladin 5", desc:"You always have this spell prepared."}
+            ], 
+            prepared: [
+                {name:"Divine Smite", level:1, typeClass:"always", roll:{type:"attack", dice:"2d8", desc:"BA. Radiant Dmg."}},
+                {name:"Find Steed", level:2, typeClass:"always", roll:{type:"info", desc:"Summon Steed."}},
+                {name:"Shield", level:1, typeClass:"always", roll:{type:"buff", desc:"+5 AC Reaction."}},
+                {name:"Chromatic Orb", level:1, typeClass:"genie", roll:{type:"attack", dice:"3d8", desc:"Elemental Dmg."}},
+                {name:"Thunderous Smite", level:1, typeClass:"genie", roll:{type:"buff", desc:"Next Hit: +2d6 Thunder + Prone."}},
+                {name:"Mirror Image", level:2, typeClass:"genie", roll:{type:"buff", desc:"3 Duplicates."}},
+                {name:"Phantasmal Force", level:2, typeClass:"genie", roll:{type:"save", save:"INT", desc:"1d6 Psychic/turn."}},
+                {name:"Bless", level:1, school:"Ench", desc:"3 Allies add +1d4 to Atk/Saves.", roll:{type:"buff", desc:"Active: +1d4 Hit/Save."}},
+                {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}},
+                {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}},
+                {name:"Aid", level:2, school:"Abjur", desc:"Max HP +5 (8 hours).", roll:{type:"buff", desc:"3 Targets +5 Max HP."}},
+                {name:"Lesser Restoration", level:2, school:"Abjur", desc:"BA. End Condition.", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
+                {name:"Prayer of Healing", level:2, school:"Evoc", desc:"10 min cast. Grant Short Rest.", roll:{type:"heal", dice:"2d8", desc:"Short Rest + Heal."}}
+            ] 
+        },
         6: { str:8, dex:18, con:14, int:8, wis:10, cha:16, prof:3, hp:52, features: [
             {name:"Aura of Protection", source:"Paladin 6", desc:"Allies within 3m add +CHA to Saves."}
         ], prepared: [
@@ -772,7 +907,6 @@
             {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}},
             {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}}
         ] },
-
         7: { str:8, dex:18, con:14, int:8, wis:10, cha:16, prof:3, hp:60, features: [
             {name:"Aura of Warding", source:"Oath 7", desc:"Resistance to Spell Damage for you and allies in Aura."}
         ], prepared: [
@@ -784,7 +918,6 @@
             {name:"Magic Weapon", level:2, school:"Trans", desc:"Weapon becomes +1.", roll:{type:"buff", desc:"Weapon is +1 Magic."}},
             {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}}
         ] },
-
         8: { str:8, dex:20, con:14, int:8, wis:10, cha:16, prof:3, hp:68, features: [
             {name:"ASI: Dexterity +2", source:"Lvl 8", desc:"DEX capped at 20. +1 AC, +1 Hit/Dmg."}
         ], prepared: [
@@ -796,10 +929,7 @@
             {name:"Magic Weapon", level:2, school:"Trans", roll:{type:"buff", desc:"Weapon is +1 Magic."}},
             {name:"Cure Wounds", level:1, school:"Abjur", roll:{type:"heal", dice:"2d8+MOD", desc:"Touch heal."}}
         ] },
-
-        // --- TIER 3 (S-TIER META) ---
-        9: { str:8, dex:20, con:14, int:8, wis:10, cha:16, prof:4, hp:76, features: [],
-             prepared: [
+        9: { str:8, dex:20, con:14, int:8, wis:10, cha:16, prof:4, hp:76, features: [], prepared: [
             {name:"Revivify", level:3, school:"Necro", roll:{type:"info", desc:"Revive within 1 min."}}, 
             {name:"Spirit Shroud", level:3, school:"Necro", desc:"BA. +1d8 Radiant/Cold/Necro to all hits. No heal for enemy.", roll:{type:"buff", desc:"Active: +1d8 Dmg/hit."}},
             {name:"Dispel Magic", level:3, school:"Abjur", desc:"End spells on target.", roll:{type:"info", desc:"Dispel Magic cast."}},
@@ -810,7 +940,6 @@
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
             {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}}
         ] },
-
         10: { str:8, dex:20, con:14, int:8, wis:10, cha:16, prof:4, hp:84, features: [
             {name:"Aura of Courage", source:"Paladin 10", desc:"Immune to Frightened (3m Aura)."}
         ], prepared: [
@@ -824,7 +953,6 @@
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
             {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}}
         ] },
-
         11: { str:8, dex:20, con:14, int:8, wis:10, cha:16, prof:4, hp:92, features: [
             {name:"Radiant Strikes", source:"Paladin 11", desc:"<b>Improve Divine Smite:</b> All melee hits deal +1d8 Radiant damage."}
         ], prepared: [
@@ -839,7 +967,6 @@
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
             {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}}
         ] },
-
         12: { str:8, dex:20, con:14, int:8, wis:10, cha:17, prof:4, hp:100, features: [
             {name:"Feat: Fey Touched", source:"Lvl 12", desc:"+1 CHA. Learn Misty Step & Silvery Barbs (Free 1/LR)."}
         ], prepared: [
@@ -855,7 +982,6 @@
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}},
             {name:"Shield of Faith", level:1, school:"Abjur", roll:{type:"buff", desc:"+2 AC (Conc)."}}
         ] },
-
         13: { str:8, dex:20, con:14, int:8, wis:10, cha:17, prof:5, hp:108, features: [
             {name:"Find Greater Steed", source:"Paladin 13", desc:"Summon Pegasus (Fly 90ft)."}
         ], prepared: [
@@ -871,7 +997,6 @@
             {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
         ] },
-
         14: { str:8, dex:20, con:14, int:8, wis:10, cha:17, prof:5, hp:116, features: [
             {name:"Cleansing Touch", source:"Paladin 14", desc:"Action. End one spell on yourself/willing creature (CHA Mod/LR)."}
         ], prepared: [
@@ -887,7 +1012,6 @@
             {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
         ] },
-
         15: { str:8, dex:20, con:14, int:8, wis:10, cha:17, prof:5, hp:124, features: [
             {name:"Noble Escape", source:"Oath 15", desc:"Reaction to taking dmg: Teleport 18m + Invisible until start of next turn."}
         ], prepared: [
@@ -904,7 +1028,6 @@
             {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
         ] },
-
         16: { str:8, dex:20, con:14, int:8, wis:10, cha:19, prof:5, hp:132, features: [
             {name:"ASI: Charisma +2", source:"Lvl 16", desc:"Max Aura (+4). Spell Save DC increases."}
         ], prepared: [
@@ -921,10 +1044,7 @@
             {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
         ] },
-
-        // --- TIER 4 (END GAME) ---
-        17: { str:8, dex:20, con:14, int:8, wis:10, cha:19, prof:6, hp:140, features: [],
-             prepared: [
+        17: { str:8, dex:20, con:14, int:8, wis:10, cha:19, prof:6, hp:140, features: [], prepared: [
             {name:"Circle of Power", level:5, school:"Abjur", desc:"Advantage on Save vs Spells + Evasion for Aura.", roll:{type:"buff", desc:"Aura: Adv vs Spells + Evasion."}}, 
             {name:"Holy Weapon", level:5, school:"Evoc", desc:"Weapon deals +2d8 Radiant.", roll:{type:"buff", desc:"Active: +2d8 Radiant."}},
             {name:"Destructive Wave", level:5, school:"Evoc", desc:"10d6 Area Damage.", roll:{type:"attack", dice:"10d6", desc:"Area Damage (Thunder/Radiant)."}},
@@ -940,7 +1060,6 @@
             {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
         ] },
-
         18: { str:8, dex:20, con:14, int:8, wis:10, cha:19, prof:6, hp:148, features: [
             {name:"Aura Expansion", source:"Paladin 18", desc:"Aura ranges increase to 9m."}
         ], prepared: [
@@ -959,7 +1078,6 @@
             {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
         ] },
-
         19: { str:8, dex:20, con:14, int:8, wis:10, cha:20, prof:6, hp:156, features: [
             {name:"Epic Boon: Dimensional Travel", source:"Lvl 19", desc:"+1 CHA. Teleport 9m immediately after Attack or Spell."}
         ], prepared: [
@@ -979,7 +1097,6 @@
             {name:"Lesser Restoration", level:2, school:"Abjur", roll:{type:"heal", dice:"0d0", desc:"Cure Condition."}},
             {name:"Divine Favor", level:1, roll:{type:"buff", desc:"Active: +1d4 Radiant on hits."}}
         ] },
-
         20: { str:8, dex:20, con:14, int:8, wis:10, cha:20, prof:6, hp:164, features: [
             {name:"Elder Genie Champion", source:"Oath 20", desc:"Bonus Action transformation (1 min): Flight 18m, Resist all Dmg from Spells, Enemy starts turn in aura takes 10 Radiant."}
         ], prepared: [
@@ -1004,24 +1121,27 @@
     function getMod(score) { return Math.floor((score - 10) / 2); }
     function fmtSign(n) { return n >= 0 ? "+" + n : n; }
 
+    // --- MAIN DASHBOARD UPDATE ---
     function updateDashboard(lvl) {
         document.getElementById('lvl-badge').innerText = lvl;
+        // Safety Check for Level Data
+        if (!levels[lvl]) return;
         let data = { ...levels[lvl] }; 
         
         // --- 1. READ INPUTS ---
         const amuletEl = document.getElementById('amuletToggle');
         const hasAmulet = amuletEl ? amuletEl.checked : false;
-        
         const blessEl = document.getElementById('buffBless');
         const isBless = blessEl ? blessEl.checked : false;
-        
         const divineEl = document.getElementById('buffDivine');
         const isDivine = divineEl ? divineEl.checked : false;
 
-        // --- Accumulate Features ---
+        // --- Accumulate Features (Safe Mode) ---
         let allFeatures = [];
         for (let i = 1; i <= lvl; i++) {
-            if (levels[i].features) allFeatures = [...allFeatures, ...levels[i].features];
+            if (levels[i] && levels[i].features) {
+                allFeatures = [...allFeatures, ...levels[i].features];
+            }
         }
 
         // --- Stats ---
@@ -1032,330 +1152,347 @@
 
         for (const [key, val] of Object.entries(data)) {
             if (['str','dex','con','int','wis','cha'].includes(key)) {
-                document.getElementById(key).innerText = val;
-                document.getElementById(`${key}-mod`).innerText = fmtSign(mods[key]);
+                const el = document.getElementById(key);
+                const elMod = document.getElementById(`${key}-mod`);
+                if(el) el.innerText = val;
+                if(elMod) elMod.innerText = fmtSign(mods[key]);
             }
         }
-        document.getElementById('prof-bonus').innerText = fmtSign(data.prof);
+        if(document.getElementById('prof-bonus')) 
+            document.getElementById('prof-bonus').innerText = fmtSign(data.prof);
         
         // Initiative
         const initMod = mods.dex + data.prof;
-        document.getElementById('init-val').innerText = fmtSign(initMod);
+        if(document.getElementById('init-val'))
+            document.getElementById('init-val').innerText = fmtSign(initMod);
 
         // --- Aura Bonus ---
         let auraBonus = (lvl >= 6) ? Math.max(1, mods.cha) : 0;
 
-        // --- Saving Throws (Apply Bless) ---
+        // --- Saving Throws ---
         const savesContainer = document.getElementById('saves-container');
-        savesContainer.innerHTML = '';
-        const saves = [
-            {name: "Strength", mod: mods.str, prof: false},
-            {name: "Dexterity", mod: mods.dex, prof: false},
-            {name: "Constitution", mod: mods.con, prof: false},
-            {name: "Intelligence", mod: mods.int, prof: false},
-            {name: "Wisdom", mod: mods.wis, prof: true},
-            {name: "Charisma", mod: mods.cha, prof: true}
-        ];
-
-        saves.forEach(s => {
-            const total = s.mod + (s.prof ? data.prof : 0) + auraBonus;
-            const cls = s.prof ? 'skill-prof' : '';
-            // Bless Logic
-            let sign = fmtSign(total);
-            if(isBless) sign += " + 1d4";
-            
-            savesContainer.innerHTML += `<div class="skill-row"><span class="${cls}">${s.name}</span> <span class="${cls}">${sign}</span></div>`;
-        });
-        
-        if (lvl >= 6) {
-            savesContainer.innerHTML += `<div style="font-size:0.75em; color:var(--magic); text-align:center; margin-top:5px;">Aura of Protection (+${auraBonus})</div>`;
+        if(savesContainer) {
+            savesContainer.innerHTML = '';
+            const saves = [
+                {name: "Strength", mod: mods.str, prof: false},
+                {name: "Dexterity", mod: mods.dex, prof: false},
+                {name: "Constitution", mod: mods.con, prof: false},
+                {name: "Intelligence", mod: mods.int, prof: false},
+                {name: "Wisdom", mod: mods.wis, prof: true},
+                {name: "Charisma", mod: mods.cha, prof: true}
+            ];
+            saves.forEach(s => {
+                const total = s.mod + (s.prof ? data.prof : 0) + auraBonus;
+                const cls = s.prof ? 'skill-prof' : '';
+                let sign = fmtSign(total);
+                if(isBless) sign += " + 1d4";
+                savesContainer.innerHTML += `<div class="skill-row"><span class="${cls}">${s.name}</span> <span class="${cls}">${sign}</span></div>`;
+            });
+            if (lvl >= 6) {
+                savesContainer.innerHTML += `<div style="font-size:0.75em; color:var(--magic); text-align:center; margin-top:5px;">Aura of Protection (+${auraBonus})</div>`;
+            }
         }
 
         // --- Skills ---
         const skillsContainer = document.getElementById('skills-container');
-        skillsContainer.innerHTML = '';
-        const currentProfs = lvl >= 3 ? proficientSkills[3] : proficientSkills[1];
-        allSkills.forEach(skill => {
-            const mod = mods[skill.ability];
-            const isProf = currentProfs.includes(skill.name);
-            const total = mod + (isProf ? data.prof : 0);
-            const cls = isProf ? 'skill-prof' : '';
-            const star = isProf ? ' ★' : '';
-            skillsContainer.innerHTML += `<div class="skill-row"><span class="${cls}">${skill.name}${star}</span> <span class="${cls}">${fmtSign(total)}</span></div>`;
-        });
+        if(skillsContainer) {
+            skillsContainer.innerHTML = '';
+            const currentProfs = lvl >= 3 ? proficientSkills[3] : proficientSkills[1];
+            allSkills.forEach(skill => {
+                const mod = mods[skill.ability];
+                const isProf = currentProfs.includes(skill.name);
+                const total = mod + (isProf ? data.prof : 0);
+                const cls = isProf ? 'skill-prof' : '';
+                const star = isProf ? ' ★' : '';
+                skillsContainer.innerHTML += `<div class="skill-row"><span class="${cls}">${skill.name}${star}</span> <span class="${cls}">${fmtSign(total)}</span></div>`;
+            });
+        }
 
         // --- Combat Stats ---
-        let ac = (lvl < 3) ? (12 + mods.dex) : (10 + mods.dex + mods.cha + 2);
-        document.getElementById('ac-val').innerText = ac;
+        let ac = (lvl < 3) ? (12 + mods.dex) : (10 + mods.dex + mods.cha);
+        if(document.getElementById('ac-val')) document.getElementById('ac-val').innerText = ac;
 
-        // Attack Math (Apply Bless/Divine Favor)
+        // Attack Math
         const hitMod = mods.dex + data.prof;
         const dmgMod = mods.dex;
-        
         let hitText = fmtSign(hitMod);
         if(isBless) hitText += " + 1d4";
-        
         let bonusDmg = isDivine ? "+1d4" : "";
         
-        document.getElementById('wep1-hit').innerText = hitText + " Hit";
-        document.getElementById('wep1-dmg').innerText = `1d6${fmtSign(dmgMod)}${bonusDmg}`;
+        if(document.getElementById('wep1-hit')) document.getElementById('wep1-hit').innerText = hitText + " Hit";
+        if(document.getElementById('wep1-dmg')) document.getElementById('wep1-dmg').innerText = `1d6${fmtSign(dmgMod)}${bonusDmg}`;
 
         const offhandMod = (lvl >= 2) ? dmgMod : 0;
-        document.getElementById('wep2-hit').innerText = hitText + " Hit";
-        document.getElementById('wep2-dmg').innerText = `1d6${offhandMod !== 0 ? fmtSign(offhandMod) : ''}${bonusDmg}`;
-        document.getElementById('twf-mod').style.display = (lvl >= 2) ? 'inline' : 'none';
+        if(document.getElementById('wep2-hit')) document.getElementById('wep2-hit').innerText = hitText + " Hit";
+        if(document.getElementById('wep2-dmg')) document.getElementById('wep2-dmg').innerText = `1d6${offhandMod !== 0 ? fmtSign(offhandMod) : ''}${bonusDmg}`;
+        if(document.getElementById('twf-mod')) document.getElementById('twf-mod').style.display = (lvl >= 2) ? 'inline' : 'none';
 
         // Spell Stats
         const spellAtk = mods.cha + data.prof + (hasAmulet ? 1 : 0);
         const spellDC = 8 + mods.cha + data.prof + (hasAmulet ? 1 : 0);
-        document.getElementById('spell-hit').innerText = fmtSign(spellAtk) + " Hit";
-        document.getElementById('spell-atk').innerText = fmtSign(spellAtk);
-        document.getElementById('spell-dc').innerText = spellDC;
+        if(document.getElementById('spell-hit')) document.getElementById('spell-hit').innerText = fmtSign(spellAtk) + " Hit";
+        if(document.getElementById('spell-atk')) document.getElementById('spell-atk').innerText = fmtSign(spellAtk);
+        if(document.getElementById('spell-dc')) document.getElementById('spell-dc').innerText = spellDC;
 
-        // --- Features Render ---
-        const featContainer = document.getElementById('features-container');
-        featContainer.innerHTML = '';
-        allFeatures.forEach(f => {
-            let item = document.createElement('div');
-            item.className = 'feature-item';
-            item.innerHTML = `<span class="feat-name">${f.name} <span class="feat-source">${f.source}</span></span><div class="feat-desc">${f.desc}</div>`;
-            featContainer.appendChild(item);
-        });
-
-        document.getElementById('loh-val').innerText = lvl * 5;
-        document.getElementById('smite-resource').style.display = (lvl >= 2) ? 'block' : 'none';
-        
-        // --- 6. STEED LOGIC (CONSOLIDATED) ---
-        const steedCard = document.getElementById('steed-resource');
-        const speedEl = document.getElementById('speed-val');
-        const steedTrack = document.getElementById('steed-track');
-        
-        // Default Base Speed
-        let currentSpeed = "9m";
-
-        if (lvl >= 5) {
-            steedCard.style.display = 'block';
-            const isGreater = lvl >= 13;
-            
-            // 1. Update Card Title & Name
-            document.getElementById('steed-title').innerText = isGreater ? "Find Greater Steed" : "Find Steed";
-            const sName = isGreater ? "Golden Stormstrider (Ascended)" : "Golden Stormstrider";
-            const sMeta = isGreater ? "Large Celestial (Pegasus)" : "Large Fey";
-            const sHP = isGreater ? 59 : (5 + (10 * 2));
-            const sAC = isGreater ? 12 : 15;
-            const sSpeedDesc = isGreater ? "<span style='color:var(--gold)'>27m Fly</span>" : "15m Run";
-            
-            const sAtk = isGreater ? "+6" : fmtSign(spellAtk);
-            const sDmg = isGreater ? "2d6+4" : `1d8+${mods.cha + 2}`;
-
-            // 2. Build Actions
-            let actionsHtml = "";
-            if(isGreater) {
-                actionsHtml = `
-                    <div class="sb-action"><strong>Aerial Charge:</strong> ${sAtk} Hit, ${sDmg} Bludgeoning.<br><span style="font-size:0.85em; color:#aaa">If moving 6m straight before hit, target DC 14 STR save or Prone.</span></div>
-                    <div class="sb-action"><strong>Golden Plumage:</strong> Grant resistance to Radiance/Necrotic (Passive).</div>
-                `;
-            } else {
-                actionsHtml = `
-                    <div class="sb-action"><strong>Kweh Kick:</strong> ${sAtk} Hit, ${sDmg} Bludgeoning.</div>
-                    <div class="sb-action"><strong>Fey Step (BA):</strong> Teleport 9m.</div>
-                `;
-            }
-
-            // 3. Inject Content
-            const contentDiv = steedCard.querySelector('.steed-content');
-            contentDiv.innerHTML = `
-                <div class="sb-header">
-                    <div class="sb-title">${sName}</div>
-                    <div class="sb-meta">${sMeta}</div>
-                </div>
-                <div class="sb-stats">
-                    <div style="text-align:center"><span class="sb-lbl">AC</span><br><span class="sb-val">${sAC}</span></div>
-                    <div style="text-align:center"><span class="sb-lbl">HP</span><br><span class="sb-val">${sHP}</span></div>
-                    <div style="text-align:center"><span class="sb-lbl">SPD</span><br><span class="sb-val">${sSpeedDesc}</span></div>
-                </div>
-                ${actionsHtml}
-                <div class="sb-action" style="font-style:italic; font-size:0.8em; color:#94a3b8; margin-top:5px;">
-                   *Shared Spells: Spells targeting only you also target the steed.
-                </div>
-            `;
-
-            // 4. Inject Image
-            const imgContainer = steedCard.querySelector('.steed-img-container');
-            if(isGreater) {
-                // If you don't have the file, this will just show the alt text or a broken icon
-                imgContainer.innerHTML = `<img src="images/ostrich_ascended.png" class="steed-img" alt="Ascended Ostrich">`;
-            } else {
-                imgContainer.innerHTML = `<img src="images/ostrich.png" class="steed-img" alt="Ostrich">`;
-            }
-
-            // 5. Update Player Speed Based on State
-            if (steedTrack && steedTrack.innerText === "USED") {
-                currentSpeed = isGreater ? '<span style="color:var(--gold)">27m Fly</span>' : '15m (Steed)';
-            }
-
-        } else {
-            steedCard.style.display = 'none';
-            // Reset state if you drop below level 5
-            if(steedTrack) {
-                steedTrack.innerText = "1 / LR";
-                steedCard.style.opacity = "1";
-            }
-        }
-        
-        // Apply calculated player speed
-        speedEl.innerHTML = currentSpeed;
-
-        // --- Slots ---
-        const slots = spellSlotsByLevel[lvl];
-        const slotContainer = document.getElementById('slot-container');
-        slotContainer.innerHTML = '';
-        
-        // HP Sync
-        const maxHpEl = document.getElementById('max-hp');
-        const curHpEl = document.getElementById('current-hp');
-        if (maxHpEl.innerText != data.hp) curHpEl.value = data.hp;
-        maxHpEl.innerText = data.hp;
-        
-        // Update HP Bar
-        updateHpBar();
-
-        const slotLabels = ['1st', '2nd', '3rd', '4th', '5th'];
-        slots.forEach((count, idx) => {
-            if (count > 0) {
-                let row = `<div class="slot-row"><div class="slot-lvl">${slotLabels[idx]}</div>`;
-                for(let i=0; i<count; i++) row += `<div class="slot-pip" onclick="this.classList.toggle('used')"></div>`;
-                row += `</div>`;
-                slotContainer.innerHTML += row;
-            }
-        });
-
-        // --- Spells Render ---
-        const spellListEl = document.getElementById('spells-list');
-        spellListEl.innerHTML = '';
-        
-        // (Function inside function is fine here for closures)
-        function drawSpell(s, typeClass) {
-            let note = s.note ? `<span class="spell-note">${s.note}</span>` : '';
-            let clickAttr = '';
-            let hoverClass = '';
-
-            if (s.customHandler) {
-                clickAttr = `onclick="${s.customHandler}"`;
-                hoverClass = 'attack-card';
-            } 
-            else if (s.roll) {
-                const safeName = s.name.replace(/'/g, "\\'");
-                const safeType = s.roll.type;
-                const safeDice = s.roll.dice || '';
-                const safeDesc = (s.roll.desc || s.desc || '').replace(/'/g, "\\'");
-                const safeSave = s.roll.save || '';
-                
-                clickAttr = `onclick="castSpell('${safeName}', ${s.level}, '${safeType}', '${safeDice}', '${safeDesc}', '${safeSave}')"`;
-                hoverClass = 'attack-card';
-            }
-
-            let tooltipContent = `<strong style="color:var(--dex-highlight)">${s.name}</strong><br>${s.desc || ''}`;
-            if (s.upcast) {
-                tooltipContent += `<div style="margin-top:8px; padding-top:8px; border-top:1px solid #475569; font-style:italic; color:#fff;">At Higher Levels:<br><span style="color:#cbd5e1; font-style:normal;">${s.upcast}</span></div>`;
-            }
-            let tooltip = `<span class="spell-tooltip">${tooltipContent}</span>`;
-
-            let rightSide = s.usage
-                ? `<span class="spell-usage">${s.usage}</span>`
-                : `<span class="spell-meta">${s.school || 'Spell'}</span>`;
-
-            return `<div class="spell-item ${typeClass} ${hoverClass}" ${clickAttr}>
-                        <span class="spell-name">${s.name}</span>
-                        ${rightSide}
-                        ${tooltip}
-                    </div>${note}`;
-        }
-
-        let allSpells = [];
-
-        magicInitiateSpells.forEach(s => {
-            allSpells.push({...s, typeClass: 'cantrip', usage: null});
-        });
-
-        if (lvl >= 2) {
-            allSpells.push({
-                name: "Divine Smite", level: 1, school: "Evoc", typeClass: "always", usage: "Slot",
-                note: "Bonus Action. Radiant Dmg.",
-                desc: "Bonus Action. Expend a slot to deal Radiant damage. 2d8 (Lvl 1) + 1d8 per slot level above 1st. Cap 5d8.",
-                upcast: "Max 5d8 damage at Level 4+.",
-                customHandler: "castSmite(false)"
-            });
-
-            if (lvl >= 5) {
-                allSpells.push({
-                    name: "Find Steed", level: 2, school: "Conj", typeClass: "always", usage: "1 Free/LR",
-                    note: "Otherworldly Steed",
-                    desc: "Summon an Otherworldly Steed (Stat block in Resources). Lasts until you die.",
-                    upcast: "Cast at higher levels for better stats (Combat Log logic required).",
-                    customHandler: "castFindSteed()" // Added handler for clickable spell list entry
+        // --- Features Render (Protected) ---
+        try {
+            const featContainer = document.getElementById('features-container');
+            if(featContainer) {
+                featContainer.innerHTML = '';
+                allFeatures.forEach(f => {
+                    let item = document.createElement('div');
+                    item.className = 'feature-item';
+                    item.innerHTML = `<span class="feat-name">${f.name} <span class="feat-source">${f.source || 'Class'}</span></span><div class="feat-desc">${f.desc}</div>`;
+                    featContainer.appendChild(item);
                 });
             }
-        }
+        } catch(e) { console.error("Error rendering features:", e); }
 
-        if (lvl >= 3) {
-            for (let spellLvl = 3; spellLvl <= lvl; spellLvl++) {
-                if (genieSpellsByLevel[spellLvl]) {
-                    genieSpellsByLevel[spellLvl].forEach(s => allSpells.push({...s, typeClass: 'genie'}));
+        // --- Resources Visibility Updates ---
+        if(document.getElementById('loh-val')) document.getElementById('loh-val').innerText = lvl * 5;
+        
+        const smiteRes = document.getElementById('smite-resource');
+        if(smiteRes) smiteRes.style.display = (lvl >= 2) ? 'block' : 'none';
+
+        // --- CHANNEL DIVINITY VISIBILITY & PIPS (Protected) ---
+        const cdRes = document.getElementById('cd-resource');
+        if(cdRes) {
+            if (lvl >= 3) {
+                cdRes.style.display = 'block';
+                
+                // D&D 2024 Rule: 
+                // Level 3-10: 2 Uses
+                // Level 11+: 3 Uses
+                let baseCD = (lvl >= 11) ? 3 : 2;
+                
+                // Add Amulet Bonus
+                const maxCD = baseCD + (hasAmulet ? 1 : 0);
+                
+                // Render Pips
+                const pipContainer = document.getElementById('cd-pips-container');
+                if(pipContainer) {
+                    // Only rebuild if count changed to preserve 'used' status where possible
+                    if (pipContainer.children.length !== maxCD) {
+                        pipContainer.innerHTML = ''; 
+                        for(let i=0; i<maxCD; i++) {
+                            pipContainer.innerHTML += `<div class="cd-pip" onclick="this.classList.toggle('used')"></div>`;
+                        }
+                    }
                 }
+            } else {
+                cdRes.style.display = 'none';
             }
         }
 
-        data.prepared.forEach(s => allSpells.push({...s, typeClass: 'paladin'}));
+        // --- STEED LOGIC ---
+        try {
+            const steedCard = document.getElementById('steed-resource');
+            const speedEl = document.getElementById('speed-val');
+            const steedTrack = document.getElementById('steed-track');
+            let currentSpeed = "9m";
 
-        allSpells.sort((a, b) => {
-            if (a.level !== b.level) return a.level - b.level;
-            return a.name.localeCompare(b.name);
-        });
+            if (lvl >= 5) {
+                if(steedCard) steedCard.style.display = 'block';
+                const isGreater = lvl >= 13;
+                
+                const sTitle = document.getElementById('steed-title');
+                if(sTitle) sTitle.innerText = isGreater ? "Find Greater Steed" : "Find Steed";
+                
+                const sName = isGreater ? "Golden Stormstrider (Ascended)" : "Golden Stormstrider";
+                const sMeta = isGreater ? "Large Celestial (Pegasus)" : "Large Fey";
+                const sHP = isGreater ? 59 : (5 + (10 * 2));
+                const sAC = isGreater ? 12 : 15;
+                const sSpeedDesc = isGreater ? "<span style='color:var(--gold)'>27m Fly</span>" : "15m Run";
+                const sAtk = isGreater ? "+6" : fmtSign(spellAtk);
+                const sDmg = isGreater ? "2d6+4" : `1d8+${mods.cha + 2}`;
 
-        const prepLimit = getPrepLimit(lvl, mods.cha);
-        document.getElementById('prep-count').innerText = data.prepared.length;
-        document.getElementById('prep-limit').innerText = prepLimit;
+                let actionsHtml = isGreater ? 
+                    `<div class="sb-action"><strong>Aerial Charge:</strong> ${sAtk} Hit, ${sDmg} Bludgeoning.<br><span style="font-size:0.85em; color:#aaa">If moving 6m straight before hit, target DC 14 STR save or Prone.</span></div>
+                     <div class="sb-action"><strong>Golden Plumage:</strong> Grant resistance to Radiance/Necrotic (Passive).</div>` : 
+                    `<div class="sb-action"><strong>Kweh Kick:</strong> ${sAtk} Hit, ${sDmg} Bludgeoning.</div>
+                     <div class="sb-action"><strong>Fey Step (BA):</strong> Teleport 9m.</div>`;
 
-        const presentLevels = [...new Set(allSpells.map(s => s.level))].sort((a,b)=>a-b);
+                if(steedCard) {
+                    const contentDiv = steedCard.querySelector('.steed-content');
+                    if(contentDiv) {
+                        contentDiv.innerHTML = `
+                            <div class="sb-header"><div class="sb-title">${sName}</div><div class="sb-meta">${sMeta}</div></div>
+                            <div class="sb-stats">
+                                <div style="text-align:center"><span class="sb-lbl">AC</span><br><span class="sb-val">${sAC}</span></div>
+                                <div style="text-align:center"><span class="sb-lbl">HP</span><br><span class="sb-val">${sHP}</span></div>
+                                <div style="text-align:center"><span class="sb-lbl">SPD</span><br><span class="sb-val">${sSpeedDesc}</span></div>
+                            </div>
+                            ${actionsHtml}
+                            <div class="sb-action" style="font-style:italic; font-size:0.8em; color:#94a3b8; margin-top:5px;">*Shared Spells: Spells targeting only you also target the steed.</div>
+                        `;
+                    }
+                    const imgContainer = steedCard.querySelector('.steed-img-container');
+                    if (imgContainer) {
+                        imgContainer.innerHTML = isGreater ? `<img src="images/ostrich_ascended.png" class="steed-img" alt="Ascended Ostrich">` : `<img src="images/ostrich.png" class="steed-img" alt="Ostrich">`;
+                    }
+                }
+                if (steedTrack && steedTrack.innerText === "USED") {
+                    currentSpeed = isGreater ? '<span style="color:var(--gold)">27m Fly</span>' : '15m (Steed)';
+                }
+            } else {
+                if(steedCard) steedCard.style.display = 'none';
+                if(steedTrack) {
+                    steedTrack.innerText = "1 / LR";
+                    if(steedCard) steedCard.style.opacity = "1";
+                }
+            }
+            if(speedEl) speedEl.innerHTML = currentSpeed;
+        } catch(e) { console.error("Error Steed:", e); }
 
-        presentLevels.forEach(levelNum => {
-            let label = (levelNum === 0) ? "Cantrips" : (levelNum === 1) ? "1st Level" : (levelNum === 2) ? "2nd Level" : (levelNum === 3) ? "3rd Level" : `${levelNum}th Level`;
-            spellListEl.innerHTML += `<div class="spell-category">${label}</div>`;
-            const spellsAtLevel = allSpells.filter(s => s.level === levelNum);
-            spellsAtLevel.forEach(s => {
-                spellListEl.innerHTML += drawSpell(s, s.typeClass);
-            });
-        });
+        // --- Slots & HP Sync ---
+        try {
+            const slots = spellSlotsByLevel[lvl];
+            const slotContainer = document.getElementById('slot-container');
+            if(slotContainer) {
+                slotContainer.innerHTML = '';
+                const maxHpEl = document.getElementById('max-hp');
+                const curHpEl = document.getElementById('current-hp');
+                if (maxHpEl && maxHpEl.innerText != data.hp) {
+                    if(curHpEl) curHpEl.value = data.hp;
+                    maxHpEl.innerText = data.hp;
+                }
+                updateHpBar();
+
+                const slotLabels = ['1st', '2nd', '3rd', '4th', '5th'];
+                if(slots) {
+                    slots.forEach((count, idx) => {
+                        if (count > 0) {
+                            let row = `<div class="slot-row"><div class="slot-lvl">${slotLabels[idx]}</div>`;
+                            for(let i=0; i<count; i++) row += `<div class="slot-pip" onclick="this.classList.toggle('used')"></div>`;
+                            row += `</div>`;
+                            slotContainer.innerHTML += row;
+                        }
+                    });
+                }
+            }
+        } catch(e) { console.error("Error Slots:", e); }
+
+        // --- Spells Render (Protected) ---
+        try {
+            const spellListEl = document.getElementById('spells-list');
+            if(spellListEl) {
+                spellListEl.innerHTML = '';
+                let allSpells = [];
+                magicInitiateSpells.forEach(s => allSpells.push({...s, typeClass: 'cantrip', usage: null}));
+
+                if (lvl >= 2) {
+                    allSpells.push({
+                        name: "Divine Smite", level: 1, school: "Evoc", typeClass: "always", usage: "Slot",
+                        note: "Bonus Action. Radiant Dmg.",
+                        desc: "Bonus Action. Expend a slot to deal Radiant damage. 2d8 (Lvl 1) + 1d8 per slot level above 1st. Cap 5d8.",
+                        upcast: "Max 5d8 damage at Level 4+.",
+                        customHandler: "castSmite(false)"
+                    });
+                    if (lvl >= 5) {
+                        allSpells.push({
+                            name: "Find Steed", level: 2, school: "Conj", typeClass: "always", usage: "1 Free/LR",
+                            note: "Otherworldly Steed",
+                            desc: "Summon an Otherworldly Steed (Stat block in Resources). Lasts until you die.",
+                            upcast: "Cast at higher levels for better stats (Combat Log logic required).",
+                            customHandler: "castFindSteed()"
+                        });
+                    }
+                }
+
+                if (lvl >= 3) {
+                    for (let spellLvl = 3; spellLvl <= lvl; spellLvl++) {
+                        if (genieSpellsByLevel[spellLvl]) {
+                            genieSpellsByLevel[spellLvl].forEach(s => allSpells.push({...s, typeClass: 'genie'}));
+                        }
+                    }
+                }
+
+                if(data.prepared) {
+                    data.prepared.forEach(s => allSpells.push({...s, typeClass: 'paladin'}));
+                }
+
+                allSpells.sort((a, b) => {
+                    if (a.level !== b.level) return a.level - b.level;
+                    return a.name.localeCompare(b.name);
+                });
+
+                const prepLimit = getPrepLimit(lvl, mods.cha);
+                if(document.getElementById('prep-count')) document.getElementById('prep-count').innerText = data.prepared ? data.prepared.length : 0;
+                if(document.getElementById('prep-limit')) document.getElementById('prep-limit').innerText = prepLimit;
+
+                const presentLevels = [...new Set(allSpells.map(s => s.level))].sort((a,b)=>a-b);
+
+                presentLevels.forEach(levelNum => {
+                    let label = (levelNum === 0) ? "Cantrips" : (levelNum === 1) ? "1st Level" : (levelNum === 2) ? "2nd Level" : (levelNum === 3) ? "3rd Level" : `${levelNum}th Level`;
+                    spellListEl.innerHTML += `<div class="spell-category">${label}</div>`;
+                    const spellsAtLevel = allSpells.filter(s => s.level === levelNum);
+                    spellsAtLevel.forEach(s => {
+                        spellListEl.innerHTML += drawSpell(s, s.typeClass);
+                    });
+                });
+                
+                spellListEl.innerHTML += `<div class="rules-note">
+                    <strong>Key:</strong> <span style="color:#fff">⬜ Cantrip</span><br>
+                    <div style="margin-top:4px; display:flex; gap:10px; align-items:center;">
+                        <span style="background:rgba(45, 212, 191, 0.2); border:1px solid var(--dex-highlight); padding:2px 6px; border-radius:4px; color:#fff;">Blue Background = Prepared</span>
+                    </div>
+                    <div style="margin-top:4px; font-size:0.9em; color:#94a3b8;">
+                        <span style="color:var(--dex-highlight)">▍Choice</span> &nbsp;
+                        <span style="color:var(--accent)">▍Genie</span> &nbsp;
+                        <span style="color:var(--success)">▍Free</span>
+                    </div>
+                </div>`;
+            }
+        } catch(e) { console.error("Error Spells:", e); }
+    } // --- END OF updateDashboard ---
+
+    // --- UPDATED drawSpell FUNCTION ---
+    function drawSpell(s, typeClass) {
+        let note = s.note ? `<span class="spell-note">${s.note}</span>` : '';
+        let clickAttr = '';
+        let hoverClass = '';
+
+        if (s.customHandler) {
+            clickAttr = `onclick="${s.customHandler}"`;
+            hoverClass = 'attack-card';
+        } 
+        else if (s.roll) {
+            const safeName = s.name.replace(/'/g, "\\'");
+            const safeType = s.roll.type;
+            const safeDice = s.roll.dice || '';
+            const safeDesc = (s.roll.desc || s.desc || '').replace(/'/g, "\\'");
+            const safeSave = s.roll.save || '';
+            clickAttr = `onclick="castSpell('${safeName}', ${s.level}, '${safeType}', '${safeDice}', '${safeDesc}', '${safeSave}')"`;
+            hoverClass = 'attack-card';
+        }
+
+        // --- FIX IS HERE ---
+        // We now check s.desc OR s.roll.desc
+        const descriptionText = s.desc || (s.roll ? s.roll.desc : "") || "No description available.";
+
+        let tooltipContent = `<strong style="color:var(--dex-highlight)">${s.name}</strong><br>${descriptionText}`;
         
-        // Legend Key
-        spellListEl.innerHTML += `<div class="rules-note">
-            <strong>Key:</strong> <span style="color:#fff">⬜ Cantrip</span><br>
-            <div style="margin-top:4px; display:flex; gap:10px; align-items:center;">
-                <span style="background:rgba(45, 212, 191, 0.2); border:1px solid var(--dex-highlight); padding:2px 6px; border-radius:4px; color:#fff;">Blue Background = Prepared</span>
-            </div>
-            <div style="margin-top:4px; font-size:0.9em; color:#94a3b8;">
-                <span style="color:var(--dex-highlight)">▍Choice</span> &nbsp;
-                <span style="color:var(--accent)">▍Genie</span> &nbsp;
-                <span style="color:var(--success)">▍Free</span>
-            </div>
-        </div>`;
+        if (s.upcast) {
+            tooltipContent += `<div style="margin-top:8px; padding-top:8px; border-top:1px solid #475569; font-style:italic; color:#fff;">At Higher Levels:<br><span style="color:#cbd5e1; font-style:normal;">${s.upcast}</span></div>`;
+        }
+        
+        let tooltip = `<span class="spell-tooltip">${tooltipContent}</span>`;
+        let rightSide = s.usage ? `<span class="spell-usage">${s.usage}</span>` : `<span class="spell-meta">${s.school || 'Spell'}</span>`;
+
+        return `<div class="spell-item ${typeClass} ${hoverClass}" ${clickAttr}>
+                    <span class="spell-name">${s.name}</span>
+                    ${rightSide}
+                    ${tooltip}
+                </div>${note}`;
     }
 
-    // --- NEW JS LOGIC ---
-
-    // 1. Short Rest Logic
+    // --- LOGIC FUNCTIONS (Short Rest, Long Rest, Actions) ---
     function shortRest() {
-        // Reset Channel Divinity Pips
         const pips = document.querySelectorAll('.cd-pip');
         pips.forEach(p => p.classList.remove('used'));
-
-        // Heal Logic (Optional: Paladins usually heal on Long Rest, but let's simulate spending hit dice)
         const max = parseInt(document.getElementById('max-hp').innerText);
         const curInput = document.getElementById('current-hp');
         let current = parseInt(curInput.value);
-
-        // Simple logic: Heal 50% of missing health on Short Rest
         if(current < max) {
             let heal = Math.floor((max - current) / 2);
             if(heal < 1) heal = 1;
@@ -1367,61 +1504,41 @@
         }
     }
 
-    // Long Rest Logic
     function longRest() {
-        // 1. Reset HP
         const max = parseInt(document.getElementById('max-hp').innerText);
         document.getElementById('current-hp').value = max;
-
-        // 2. Reset Spell Slots (Visual Pips)
         document.querySelectorAll('.slot-pip').forEach(p => p.classList.remove('used'));
-
-        // 3. Reset Channel Divinity & other toggles
         document.querySelectorAll('.cd-pip').forEach(p => p.classList.remove('used'));
-
-        // 4. Reset Heroic Inspiration
         const heroicChk = document.querySelector('.heroic-chk');
         if (heroicChk) heroicChk.checked = true;
-
-        // 5. Reset Free Smite
         const smiteCard = document.getElementById('smite-resource');
         if(smiteCard) {
             smiteCard.style.opacity = "1";
             document.getElementById('smite-track').innerText = "1 / LR";
         }
-
-        // 6. Reset Steed
-        document.getElementById('speed-val').innerText = "9m";
         const steedCard = document.getElementById('steed-resource');
         const steedTrack = document.getElementById('steed-track');
         if(steedCard && steedTrack) {
             steedCard.style.opacity = "1";
             steedTrack.innerText = "1 / LR";
         }
-
-        // 7. Reset Shield
         const shieldCard = document.getElementById('shield-resource');
         const shieldTrack = document.getElementById('shield-track');
         if(shieldCard && shieldTrack) {
             shieldCard.style.opacity = "1";
             shieldTrack.innerText = "1 / LR";
         }
-        
         updateHpBar();
         logMsg("Long Rest: HP, Slots, CDs, Smite, and Inspiration restored.");
     }
 
-    // Spell Filter Logic
     function filterSpells(query) {
         const term = query.toLowerCase();
         const items = document.querySelectorAll('.spell-item');
-
         items.forEach(item => {
             const name = item.querySelector('.spell-name').innerText.toLowerCase();
-            // Also search the tooltip content (description)
             const tooltip = item.querySelector('.spell-tooltip');
             const desc = tooltip ? tooltip.innerText.toLowerCase() : '';
-
             if (name.includes(term) || desc.includes(term)) {
                 item.style.display = 'flex';
             } else {
@@ -1430,38 +1547,22 @@
         });
     }
 
-    // 2. Dice Roller Logic
     function rollAttack(name, hitId, dmgId) {
-        // Get Hit Mod (e.g., "+5 Hit" -> 5)
         const hitText = document.getElementById(hitId).innerText;
-        const hitMod = parseInt(hitText.replace(/[^0-9-]/g, '')); // Extracts number
-
-        // Get Dmg String (e.g., "1d6+3")
-        let dmgText = document.getElementById(dmgId).innerText.split(' ')[0]; // Take first part "1d6+3"
-
-        // Roll d20
+        const hitMod = parseInt(hitText.replace(/[^0-9-]/g, ''));
+        let dmgText = document.getElementById(dmgId).innerText.split(' ')[0];
         const d20 = Math.floor(Math.random() * 20) + 1;
         let hitTotal = d20 + hitMod;
-
-        // Crit Logic
         let isCrit = (d20 === 20);
         let isFail = (d20 === 1);
-
-        // Roll Damage
         let dmgTotal = 0;
-
-        // Parse "1d6+3" or "2d6"
-        // Regex matches: (Count)d(Faces)(Modifier)
         const regex = /(\d+)d(\d+)([+-]\d+)?/;
         const match = dmgText.match(regex);
-
         if (match) {
             let count = parseInt(match[1]);
             let faces = parseInt(match[2]);
             let mod = match[3] ? parseInt(match[3]) : 0;
-
-            if (isCrit) count *= 2; // Double dice on crit
-
+            if (isCrit) count *= 2;
             let rolls = [];
             for(let i=0; i<count; i++) {
                 let r = Math.floor(Math.random() * faces) + 1;
@@ -1469,11 +1570,8 @@
                 dmgTotal += r;
             }
             dmgTotal += mod;
-
-            // Log Formatting
             let hitClass = isCrit ? 'log-crit' : (isFail ? 'log-fail' : '');
             let hitDisplay = isCrit ? 'NAT 20!' : (isFail ? 'MISS (1)' : hitTotal);
-
             logMsg(`<strong>${name}:</strong> Attack <span class="${hitClass}">[${hitDisplay}]</span> | Dmg: <strong>${dmgTotal}</strong> (${rolls.join('+')}${mod >=0 ? '+'+mod : mod})`);
         } else {
             logMsg(`Error parsing damage: ${dmgText}`);
@@ -1485,25 +1583,18 @@
         const entry = document.createElement('div');
         entry.className = 'log-entry';
         entry.innerHTML = `> ${html}`;
-        log.prepend(entry); // Add to top
+        log.prepend(entry);
     }
 
-    // --- SPELLCASTING LOGIC ---
     function castSpell(name, level, type, diceStr, desc, saveStat) {
-        
-        // --- RESOURCE CHECK ---
-        // If it's a leveled spell (Level > 0), try to eat a slot
         if (level > 0) {
             if (!consumeSlot(level)) {
-                // If we fail to find a slot, warn the user
                 if (!confirm(`You have no Level ${level} slots left! Cast anyway?`)) {
-                    return; // Cancel the cast
+                    return;
                 }
                 logMsg(`<span style="color:#888;">(Warning: Cast ${name} without a slot)</span>`);
             }
         }
-
-        // ... Existing Spell Logic ...
         const spellAtk = parseInt(document.getElementById('spell-atk').innerText.replace('+',''));
         const spellDC = document.getElementById('spell-dc').innerText;
         const chaMod = parseInt(document.getElementById('cha-mod').innerText.replace('+',''));
@@ -1517,14 +1608,10 @@
             let dmgResult = parseAndRoll(actualDice, isCrit);
             let hitClass = isCrit ? 'log-crit' : (isFail ? 'log-fail' : '');
             let hitDisplay = isCrit ? 'NAT 20!' : (isFail ? 'MISS (1)' : totalHit);
-            
-            // Added slot info to log
             let slotText = (level > 0) ? `[Lvl ${level}]` : '[Cantrip]';
             logMsg(`<strong>${name} ${slotText}:</strong> Attack <span class="${hitClass}">[${hitDisplay}]</span> | Dmg: <strong>${dmgResult.total}</strong> (${dmgResult.formula})`);
-
         } else if (type === 'save') {
             logMsg(`<strong>${name}:</strong> Cast! DC <span style="color:var(--magic); font-weight:bold;">${spellDC}</span> ${saveStat} Save. <br><span style="color:#cbd5e1; font-size:0.9em;">Effect: ${desc}</span>`);
-
         } else if (type === 'heal') {
             let healResult = parseAndRoll(actualDice, false);
             logMsg(`<strong>${name}:</strong> <span style="color:var(--success)">Healed <strong>${healResult.total}</strong> HP</span>`);
@@ -1532,25 +1619,19 @@
             const max = parseInt(document.getElementById('max-hp').innerText);
             curEl.value = Math.min(max, parseInt(curEl.value) + healResult.total);
             updateHpBar();
-
         } else if (type === 'buff' || type === 'info') {
             logMsg(`<strong>${name}:</strong> ${desc}`);
         }
     }
 
-    // Helper to roll dice strings like "2d8+3" or "1d10"
     function parseAndRoll(diceStr, isCrit) {
         const regex = /(\d+)d(\d+)([+-]\d+)?/;
         const match = diceStr.match(regex);
-
         if (!match) return { total: 0, formula: 'error' };
-
         let count = parseInt(match[1]);
         let faces = parseInt(match[2]);
         let mod = match[3] ? parseInt(match[3]) : 0;
-
         if (isCrit) count *= 2;
-
         let total = 0;
         let rolls = [];
         for(let i=0; i<count; i++) {
@@ -1559,28 +1640,18 @@
             total += r;
         }
         total += mod;
-
-        // Format: "4+2+3"
         let formula = rolls.join('+') + (mod !== 0 ? (mod > 0 ? `+${mod}` : mod) : '');
         return { total, formula };
     }
 
-    // --- HP BAR LOGIC ---
     function updateHpBar() {
         const curInput = document.getElementById('current-hp');
         const maxHp = parseInt(document.getElementById('max-hp').innerText) || 1;
         let currentHp = parseInt(curInput.value) || 0;
-
-        // Visual Cap (keeps bar from overflowing if you overheal)
         if (currentHp > maxHp) currentHp = maxHp; 
-
         const hpBar = document.getElementById('hp-bar');
-        
-        // Calculate HP percentage
         const hpPercent = Math.max(0, (currentHp / maxHp) * 100);
         hpBar.style.width = hpPercent + '%';
-
-        // Color Logic: Green -> Yellow (50%) -> Red (25%)
         hpBar.classList.remove('warning', 'danger');
         if (hpPercent <= 25) {
             hpBar.classList.add('danger');
@@ -1589,38 +1660,10 @@
         }
     }
 
-    function useFreeSmite() {
-        const card = document.getElementById('smite-resource');
-        const track = document.getElementById('smite-track');
-
-        // Check if already used
-        if (track.innerText === "USED") {
-            if(confirm("You already used your Free Smite. Reset it?")) {
-                 card.style.opacity = "1";
-                 track.innerText = "1 / LR";
-            }
-            return;
-        }
-
-        // Roll 2d8
-        const r1 = Math.floor(Math.random() * 8) + 1;
-        const r2 = Math.floor(Math.random() * 8) + 1;
-        const total = r1 + r2;
-
-        logMsg(`<strong>Free Divine Smite:</strong> <span class="dmg-text">${total}</span> Radiant Dmg (${r1}+${r2}).`);
-
-        // Mark as Used
-        card.style.opacity = "0.5";
-        track.innerText = "USED";
-    }
-
-    // --- SMART SMITE LOGIC ---
     function castSmite(isFree) {
         const charLvl = parseInt(document.getElementById('levelRange').value) || 1;
         let levelToUse = 1;
-
         if (isFree) {
-            // Free Logic
             const track = document.getElementById('smite-track');
             if (track && track.innerText === "USED") {
                 if(!confirm("You already used your Free Smite. Use it anyway?")) return;
@@ -1631,36 +1674,27 @@
             }
             logMsg("<strong>Divine Smite (Free):</strong> Casting...");
         } else {
-            // Slot Logic
             const currentSlots = spellSlotsByLevel[charLvl] || [];
             let maxSlot = 0;
             for (let i = 0; i < currentSlots.length; i++) {
                  if (currentSlots[i] > 0) maxSlot = i + 1;
             }
-
             if (maxSlot === 0) { alert("No slots available!"); return; }
-
             let input = prompt(`Enter Slot Level (1 - ${maxSlot}):`, "1");
             if (input === null) return;
-            
             levelToUse = parseInt(input);
             if (isNaN(levelToUse) || levelToUse < 1 || levelToUse > maxSlot) {
                 alert("Invalid slot level.");
                 return;
             }
-
-            // --- THE NEW PART: CONSUME SLOT ---
             if (!consumeSlot(levelToUse)) {
                 alert(`You have no Level ${levelToUse} slots remaining!`);
-                return; // Stop the function, don't roll damage
+                return;
             }
         }
-
-        // Damage Logic
         let diceCount = 1 + levelToUse;
         let capMsg = "";
         if (diceCount > 5) { diceCount = 5; capMsg = " (Capped)"; }
-
         let total = 0;
         let rolls = [];
         for(let i=0; i<diceCount; i++) {
@@ -1668,27 +1702,21 @@
             rolls.push(r);
             total += r;
         }
-
         let typeLabel = isFree ? "Free Smite" : `Smite (Lvl ${levelToUse})`;
         logMsg(`<strong>${typeLabel}:</strong> <span class="dmg-text">${total}</span> Radiant (${rolls.join('+')})${capMsg}`);
     }
 
     function consumeSlot(level) {
-        // Level 1 = Index 0 in the DOM rows
         const rows = document.querySelectorAll('.slot-row');
         const rowIndex = level - 1;
-        
         if (rowIndex < 0 || rowIndex >= rows.length) return false;
-
         const row = rows[rowIndex];
-        // Find the first pip that does NOT have the 'used' class
         const pip = row.querySelector('.slot-pip:not(.used)');
-        
         if (pip) {
-            pip.classList.add('used'); // Mark it as used visually
-            return true; // Success
+            pip.classList.add('used'); 
+            return true; 
         }
-        return false; // No slots left
+        return false;
     }
 
     function castFindSteed() {
@@ -1697,45 +1725,70 @@
         const lvl = parseInt(document.getElementById('levelRange').value) || 1;
         const isGreater = lvl >= 13;
         const name = isGreater ? "Golden Stormstrider (Pegasus)" : "Golden Stormstrider";
-
         if (track.innerText === "USED") {
             if(!confirm(`You have already summoned ${name} today. Summon again?`)) return;
         }
-
-        // 1. Mark as Used
         track.innerText = "USED";
         card.style.opacity = "0.5";
-
-        // 2. Update Speed Immediately
         const speedEl = document.getElementById('speed-val');
         if (isGreater) {
              speedEl.innerHTML = '<span style="color:var(--gold)">27m Fly</span>';
         } else {
              speedEl.innerText = '15m (Steed)';
         }
-
         logMsg(`<strong>${name}:</strong> Summoned! Your speed is now updated.`);
     }
 
     function useShield() {
         const card = document.getElementById('shield-resource');
         const track = document.getElementById('shield-track');
-
-        // Check usage
         if (track.innerText === "USED") {
             if(!confirm("You already used your free Shield. Reset usage?")) return;
-            // If they say yes, we reset it (optional convenience)
             track.innerText = "1 / LR";
             card.style.opacity = "1";
             return;
         }
-
-        // Execute
         logMsg("<strong>Shield:</strong> <span style='color:var(--magic)'>+5 AC</span> until start of your next turn. (Magic Missile Immune)");
-        
-        // Mark Used
         track.innerText = "USED";
         card.style.opacity = "0.5";
+    }
+
+    function useElementalSmite(type) {
+        const container = document.getElementById('cd-pips-container');
+        if (!container || container.children.length === 0) return;
+        const freePip = container.querySelector('.cd-pip:not(.used)');
+        if (!freePip) {
+            if(!confirm("No Channel Divinity uses left. Use anyway?")) return;
+        } else {
+            freePip.classList.add('used');
+        }
+        const spellDC = document.getElementById('spell-dc').innerText;
+        let title = "";
+        let effect = "";
+        let color = "#fff";
+        switch(type) {
+            case 'dao':
+                title = "Dao's Crush (Earth)";
+                effect = `Target is <strong style="color:#a855f7">Grappled + Restrained</strong>.<br>Escape DC ${spellDC}.`;
+                color = "#a855f7";
+                break;
+            case 'djinni':
+                title = "Djinni's Escape (Air)";
+                effect = `You teleport 9m. Take on semi-incorporeal form (1 round).<br>Gain Resistance to B/P/S. Immunity to Grappled/Prone/Restrained.`;
+                color = "#cbd5e1";
+                break;
+            case 'efreeti':
+                title = "Efreeti's Fury (Fire)";
+                effect = `Smite Target takes <strong style="color:#f87171">+2d4 Fire</strong>.<br>Fire jumps to another creature within 9m for <strong>2d4 Fire</strong>.`;
+                color = "#f87171";
+                break;
+            case 'marid':
+                title = "Marid's Surge (Water)";
+                effect = `Target + Creatures in 3m Emanation make <strong>STR Save DC ${spellDC}</strong>.<br>Fail: Pushed 4.5m + <strong style="color:#38bdf8">Prone</strong>.`;
+                color = "#38bdf8";
+                break;
+        }
+        logMsg(`<strong>Elemental Smite:</strong> <span style="color:${color}">${title}</span><br>${effect}`);
     }
 
     // Initialize
