@@ -33,6 +33,10 @@
             font-size: 14px;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         header {
             background: var(--card-bg);
             padding: 20px;
@@ -44,6 +48,14 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            margin-top: -20px;
+            margin-left: -20px;
+            margin-right: -20px;
+            border-radius: 0 0 12px 12px;
+            width: calc(100% + 40px);
         }
 
         .header-info h1 { margin: 0; font-size: 1.8em; color: var(--samurai-highlight); text-transform: uppercase; letter-spacing: 2px; }
@@ -541,7 +553,7 @@
 
     <div class="col-2">
         <div class="card" style="padding:10px; background:#0f172a;">
-            <div class="card-title" style="margin:0 0 5px 0; border:none; font-size:0.8em;">Combat Log</div>
+            <div class="card-title" style="margin:0 0 5px 0; border:none; font-size:0.8em;">Combat Log <span style="cursor:pointer; font-size:0.9em; color:#94a3b8; float:right;" onclick="clearLog()" title="Clear combat log">CLEAR</span></div>
             <div id="combat-log">
                 <div class="log-entry">> System Ready...</div>
             </div>
@@ -1780,6 +1792,19 @@
         updateHpBar();
         
         logMsg(`<span style="color:var(--accent)">LONG REST:</span> HP restored. All abilities recharged.`);
+    }
+
+    // Escape key closes modals
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('backstory-modal');
+            if (modal && modal.style.display === 'flex') toggleModal('backstory-modal');
+        }
+    });
+
+    function clearLog() {
+        const log = document.getElementById('combat-log');
+        log.innerHTML = '<div class="log-entry">> Log cleared.</div>';
     }
 
     // Initialize Pet on Load

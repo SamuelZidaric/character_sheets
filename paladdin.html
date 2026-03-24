@@ -18,6 +18,10 @@
             --dex-highlight: #2dd4bf;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
@@ -612,7 +616,7 @@
 
     <div class="col-2">
         <div class="card" style="padding:10px; background:#0f172a;">
-            <div class="card-title" style="margin:0 0 5px 0; border:none; font-size:0.8em;">Combat Log</div>
+            <div class="card-title" style="margin:0 0 5px 0; border:none; font-size:0.8em;">Combat Log <span style="cursor:pointer; font-size:0.9em; color:#94a3b8; float:right;" onclick="clearLog()" title="Clear combat log">CLEAR</span></div>
             <div id="combat-log"><div class="log-entry">> System Ready...</div></div>
         </div>
 
@@ -1584,6 +1588,11 @@
         entry.className = 'log-entry';
         entry.innerHTML = `> ${html}`;
         log.prepend(entry);
+    }
+
+    function clearLog() {
+        const log = document.getElementById('combat-log');
+        log.innerHTML = '<div class="log-entry">> Log cleared.</div>';
     }
 
     function castSpell(name, level, type, diceStr, desc, saveStat) {
