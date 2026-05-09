@@ -1,0 +1,352 @@
+
+/* ============================================================
+   ADDITIONS — vault, compare drawer, level preview,
+   stat modes, equipment, skills sources, owner badge
+   ============================================================ */
+
+/* ---------- Topbar additions ---------- */
+.owner-badge {
+  font-family: var(--font-display, var(--font-body));
+  font-size: 0.72em;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: 1px solid var(--rule);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.vault-tab { position: relative; }
+.vault-tab.on::after { background: var(--accent); }
+
+/* ---------- Vault ---------- */
+.vault-shell { padding: 0 0 60px; }
+.vault-banner {
+  display: flex; align-items: center; gap: 18px;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  padding: 22px 28px;
+  margin-bottom: 28px;
+  border-left: 4px solid var(--accent);
+}
+.vault-banner-icon {
+  font-size: 2.4em;
+  color: var(--accent);
+  font-family: var(--font-display, var(--font-body));
+}
+.vault-banner-title {
+  font-family: var(--font-display, var(--font-body));
+  font-size: 1.4em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.vault-banner-sub { font-size: 0.95em; max-width: 60ch; }
+
+.cast-card.draft { cursor: pointer; }
+.cast-portrait.placeholder {
+  background: repeating-linear-gradient(45deg, var(--surface), var(--surface) 8px, var(--surface-2) 8px, var(--surface-2) 16px);
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  min-height: 180px;
+}
+
+/* ---------- Compare ---------- */
+.pick-card { position: relative; padding: 0 !important; }
+.pick-card-main {
+  text-align: left; background: transparent; border: none;
+  padding: 14px 16px; width: 100%;
+  display: grid; gap: 6px;
+  border-radius: var(--radius);
+}
+.pick-compare-btn {
+  position: absolute; top: 8px; right: 8px;
+  font-size: 0.75em; padding: 3px 8px;
+  background: var(--paper); border: 1px solid var(--rule);
+  opacity: 0.7;
+}
+.pick-compare-btn:hover { opacity: 1; }
+.pick-card.comparing { outline: 2px dashed var(--accent); outline-offset: -2px; }
+
+.compare-drawer {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: var(--paper);
+  border-top: 2px solid var(--ink);
+  box-shadow: 0 -8px 24px rgba(0,0,0,.18);
+  padding: 14px 24px 22px;
+  z-index: 90;
+  max-height: 50vh; overflow: auto;
+}
+.compare-head {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--font-display, var(--font-body));
+  letter-spacing: 0.14em; text-transform: uppercase;
+  font-size: 0.85em;
+  margin-bottom: 8px;
+}
+.compare-cols {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+.compare-col { border: 1px solid var(--rule); padding: 10px 12px; background: var(--surface); }
+.compare-name {
+  font-family: var(--font-display, var(--font-body));
+  font-weight: 600; font-size: 1.1em;
+  border-bottom: 1px solid var(--rule); padding-bottom: 4px; margin-bottom: 6px;
+}
+.compare-row {
+  display: flex; justify-content: space-between;
+  padding: 2px 0; font-size: 0.9em;
+}
+.compare-list {
+  margin: 6px 0 0; padding-left: 16px;
+  font-size: 0.85em; line-height: 1.4;
+}
+
+/* ---------- Subclass / class skill ---------- */
+.subclass-row, .classskill-row {
+  margin-top: 14px; padding: 12px 14px;
+  background: var(--surface); border: 1px solid var(--rule);
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+.sub-chip {
+  background: var(--paper); border: 1px solid var(--rule);
+  padding: 4px 10px;
+}
+.sub-chip.on { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.classskill-row { display: block; }
+.skill-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.skill-chip-row .skill-chip { padding: 4px 10px; font-size: 0.88em; cursor: pointer; }
+
+/* ---------- Stat modes ---------- */
+.stats-modes { display: flex; gap: 4px; margin-bottom: 12px; }
+.stat-mode-tab {
+  background: var(--surface); border: 1px solid var(--rule);
+  padding: 6px 14px; font-family: var(--font-display, var(--font-body));
+  letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.8em;
+}
+.stat-mode-tab.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.stats-pb-head {
+  background: var(--surface); border: 1px solid var(--rule);
+  padding: 8px 12px; display: flex; gap: 12px; align-items: center;
+  font-size: 0.92em;
+}
+.stats-pb-head .ghost-btn.small { margin-left: auto; }
+.stat-pick-controls.array select { width: auto; min-width: 60px; }
+.stat-pick-input { width: 60px; text-align: center; padding: 4px; }
+.stat-bonus { margin-top: 4px; font-size: 0.85em; }
+
+/* ---------- Skills sources ---------- */
+.skills-help { margin-bottom: 10px; }
+.skill-chip.with-source { display: grid; grid-template-columns: 1fr auto auto; gap: 6px; align-items: center; }
+.skill-chip-source {
+  font-family: var(--font-display, var(--font-body));
+  font-size: 0.7em; letter-spacing: 0.12em;
+  background: var(--paper); color: var(--ink);
+  padding: 1px 5px; border: 1px solid var(--rule);
+  min-width: 22px; text-align: center;
+}
+.skill-chip.on .skill-chip-source { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+.skills-legend { display: flex; gap: 14px; margin-top: 12px; font-size: 0.85em; color: var(--ink-soft); }
+.legend-key { display: flex; align-items: center; gap: 4px; }
+.legend-dot {
+  width: 18px; height: 18px;
+  font-size: 0.7em; letter-spacing: 0.1em;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent); color: var(--paper);
+  border-radius: 50%;
+}
+
+/* ---------- Equipment ---------- */
+.eq-shell { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+.eq-side, .eq-catalog {
+  background: var(--surface); border: 1px solid var(--rule);
+  padding: 12px 14px;
+}
+.eq-head {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--font-display, var(--font-body));
+  letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.85em;
+  border-bottom: 1px solid var(--rule); padding-bottom: 6px; margin-bottom: 10px;
+}
+.eq-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+.eq-item {
+  display: grid; grid-template-columns: auto 1fr 60px auto auto;
+  gap: 8px; align-items: center;
+  padding: 4px 6px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  font-size: 0.92em;
+}
+.eq-kind { text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.08em; }
+.eq-qty { width: 50px; text-align: center; padding: 2px; }
+.eq-encum {
+  margin-top: 12px; padding: 8px 10px;
+  border: 1px solid var(--rule); background: var(--paper);
+  font-size: 0.92em;
+}
+.eq-encum.over { border-color: var(--accent); color: var(--accent); }
+.eq-bar { height: 6px; background: var(--surface-2); margin-top: 4px; }
+.eq-bar-fill { height: 100%; background: var(--accent); transition: width 0.2s; }
+.eq-cat-list { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 3px; font-size: 0.88em; }
+.eq-cat-list li { display: flex; gap: 6px; align-items: center; }
+.eq-catalog details summary {
+  font-family: var(--font-display, var(--font-body));
+  letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.82em;
+  cursor: pointer; padding: 4px 0;
+}
+
+/* ---------- Review extras ---------- */
+.review-shell { display: grid; gap: 14px; }
+.review-head { border-bottom: 1px solid var(--rule); padding-bottom: 12px; }
+.review-vitals { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.review-vitals .vital {
+  background: var(--surface); border: 1px solid var(--rule);
+  padding: 10px; text-align: center;
+}
+.review-vitals .vital-key {
+  display: block;
+  font-family: var(--font-display, var(--font-body));
+  font-size: 0.75em; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.review-vitals .vital-val { font-size: 1.6em; font-weight: 600; font-variant-numeric: tabular-nums; }
+.review-cols { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 18px; }
+.review-section-head {
+  font-family: var(--font-display, var(--font-body));
+  font-size: 0.82em; letter-spacing: 0.14em; text-transform: uppercase;
+  border-bottom: 1px solid var(--rule); padding-bottom: 4px; margin: 8px 0 6px;
+}
+.review-skill-list, .review-feat-list, .review-trait-list {
+  list-style: none; padding: 0; margin: 0;
+  font-size: 0.92em; line-height: 1.5;
+}
+.review-skill-list li, .review-feat-list li, .review-trait-list li {
+  padding: 2px 0; border-bottom: 1px dotted var(--rule);
+}
+.slot-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.slot-chip {
+  background: var(--surface); border: 1px solid var(--rule);
+  padding: 3px 10px; font-size: 0.88em;
+}
+.mini-table .prof { color: var(--accent); font-weight: 600; }
+.tag-class { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+
+/* ---------- Level preview ---------- */
+.level-actions {
+  display: flex; gap: 6px; margin-top: 6px;
+  align-items: center;
+}
+.solid-btn.small, .ghost-btn.small {
+  padding: 4px 10px; font-size: 0.85em;
+}
+
+/* ---------- Misc ---------- */
+.x-btn {
+  background: transparent; border: none; padding: 0 4px;
+  font-size: 1.4em; line-height: 1; cursor: pointer; color: inherit;
+}
+.x-btn.small { font-size: 1em; }
+.warn { color: var(--accent); }
+.tag-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.dice-adv { display: flex; gap: 0; padding: 0 10px 8px; }
+.dice-adv-tab {
+  flex: 1; padding: 4px;
+  font-size: 0.8em;
+  background: var(--surface);
+}
+.dice-adv-tab.on { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+
+/* ---------- DB Detail Modal ---------- */
+.db-card { cursor: pointer; transition: transform 0.08s, border-color 0.12s; }
+.db-card:hover { border-color: var(--ink); transform: translateY(-1px); }
+
+.detail-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.detail-panel {
+  background: var(--paper); color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  width: 920px; max-width: 100%; max-height: 90vh;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+.detail-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 16px 22px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface);
+}
+.detail-title { font-family: var(--font-display, var(--font-body)); font-size: 1.4em; font-weight: 600; }
+.detail-subtitle { font-size: 0.9em; color: var(--ink-soft); margin-top: 2px; }
+.detail-close { font-size: 1.5em; line-height: 1; padding: 0 8px; }
+
+.detail-body {
+  padding: 18px 24px 26px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+.detail-body.has-img {
+  grid-template-columns: 220px minmax(0, 1fr);
+}
+@media (max-width: 720px) {
+  .detail-body.has-img { grid-template-columns: minmax(0, 1fr); }
+}
+.detail-img {
+  width: 100%; height: auto; border-radius: 6px;
+  border: 1px solid var(--rule);
+  background: var(--surface-2);
+}
+
+.detail-section { margin-top: 6px; }
+.detail-section h4 {
+  font-family: var(--font-display, var(--font-body));
+  font-size: 0.78em; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 6px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 4px;
+}
+.detail-section p { margin: 0 0 8px; line-height: 1.55; white-space: pre-wrap; }
+.detail-section ul { margin: 0; padding-left: 22px; }
+
+/* Monster ability score grid */
+.stat-grid-6 {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px;
+  text-align: center;
+  margin: 6px 0 4px;
+}
+.stat-grid-6 .stat-cell {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 6px 4px;
+}
+.stat-grid-6 .stat-cell .ab { font-size: 0.7em; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); }
+.stat-grid-6 .stat-cell .v  { font-size: 1.1em; font-weight: 600; }
+.stat-grid-6 .stat-cell .m  { font-size: 0.8em; color: var(--ink-soft); }
+
+/* key-value lines (Senses, Languages, Resistances) */
+.kv-line { font-size: 0.93em; margin-bottom: 4px; }
+.kv-line .k { font-weight: 600; margin-right: 6px; }
+
+/* Action / trait blocks */
+.ability-block { margin-bottom: 10px; }
+.ability-block .ab-name {
+  font-weight: 600; font-style: italic; margin-right: 6px;
+}
+.ability-block .ab-desc { display: inline; color: inherit; }
+
+.legendary-tag {
+  font-size: 0.7em; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 1px 6px; border-radius: 999px;
+  margin-left: 6px;
+}

@@ -1,0 +1,9 @@
+# Claude Code working state — local only.
+# Includes the worktree(s) used by background agents and any local settings.
+.claude/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/

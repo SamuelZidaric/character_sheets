@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>The Codex — Three directions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Spectral:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #2b2620;
+      --panel: #3a3530;
+      --ink: #f3ecdc;
+      --ink-soft: #b8ad97;
+      --rule: rgba(255,255,255,0.08);
+      --accent: #c96442;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: "Spectral", "EB Garamond", Georgia, serif; }
+
+    /* ───────── header ───────── */
+    .lead {
+      padding: 28px 36px 20px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .lead-left h1 {
+      margin: 0 0 6px;
+      font-family: "EB Garamond", Georgia, serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 26px;
+      letter-spacing: -0.005em;
+    }
+    .lead-left p {
+      margin: 0;
+      max-width: 720px;
+      color: var(--ink-soft);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .lead-right {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .lead-right .pill {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      border: 1px solid var(--rule);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    /* ───────── canvas ───────── */
+    .canvas {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 20px 28px 28px;
+      height: calc(100% - 110px);
+      min-height: 0;
+    }
+    .frame {
+      background: var(--panel);
+      border-radius: 12px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.04) inset;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .frame-head {
+      padding: 14px 18px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--rule);
+      background: rgba(0,0,0,0.12);
+    }
+    .frame-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .frame-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .frame-name {
+      font-family: "EB Garamond", Georgia, serif;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: -0.005em;
+    }
+    .frame-name em { color: var(--accent); font-style: italic; }
+    .frame-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .frame-actions a {
+      font-family: "Spectral", Georgia, serif;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--rule);
+      padding: 6px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .frame-actions a:hover {
+      background: rgba(255,255,255,0.10);
+      border-color: rgba(255,255,255,0.18);
+    }
+    .frame-actions a.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .frame-actions a.primary:hover {
+      background: #d97757;
+      border-color: #d97757;
+    }
+    .frame-note {
+      padding: 10px 18px 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--rule);
+      background: rgba(0,0,0,0.06);
+    }
+    .frame-body {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      background: #1f1b16;
+      overflow: hidden;
+    }
+    /* iframe is rendered at design width, then scaled to fit */
+    .frame-body iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1400px;
+      height: 933px; /* ≈1400 * 2/3 */
+      border: 0;
+      transform-origin: 0 0;
+      background: #f5ecd5;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="lead">
+    <div class="lead-left">
+      <h1>The Codex — three aesthetic directions</h1>
+      <p>Same app, same data, same flows. Three different visual systems for the cartographer-meets-grimoire feel you described, all using readable serifs (no decorative display fonts in body copy). Open any one fullscreen to click through the homepage, character cast, database browser and step-based generator. Pick a direction (or mix) and we'll go deep on the one you choose.</p>
+    </div>
+    <div class="lead-right">
+      <span class="pill">Round 1 · Visual</span>
+    </div>
+  </header>
+
+  <main class="canvas">
+
+    <section class="frame">
+      <div class="frame-head">
+        <div class="frame-title">
+          <span class="frame-eyebrow">Direction A</span>
+          <span class="frame-name"><em>Atlas</em> — cartographer's parchment</span>
+        </div>
+        <div class="frame-actions">
+          <a href="atlas.html" target="_blank" rel="noopener" class="primary">Open ↗</a>
+        </div>
+      </div>
+      <div class="frame-note">Warm cream paper with a faint compass grid, weathered cinnabar &amp; faded teal accents. Italic Cormorant titles, EB&nbsp;Garamond body. Cards feel like map plates with deckled corners.</div>
+      <div class="frame-body">
+        <iframe src="atlas.html" title="Atlas direction" id="if-atlas"></iframe>
+      </div>
+    </section>
+
+    <section class="frame">
+      <div class="frame-head">
+        <div class="frame-title">
+          <span class="frame-eyebrow">Direction B</span>
+          <span class="frame-name"><em>Tome</em> — illuminated grimoire</span>
+        </div>
+        <div class="frame-actions">
+          <a href="tome.html" target="_blank" rel="noopener" class="primary">Open ↗</a>
+        </div>
+      </div>
+      <div class="frame-note">Deep ink-on-cream with red rubrications and ornamental fleurons. Cinzel small-caps for headings only; everything readable stays in EB&nbsp;Garamond. Drop-cap on the home title.</div>
+      <div class="frame-body">
+        <iframe src="tome.html" title="Tome direction" id="if-tome"></iframe>
+      </div>
+    </section>
+
+    <section class="frame">
+      <div class="frame-head">
+        <div class="frame-title">
+          <span class="frame-eyebrow">Direction C</span>
+          <span class="frame-name"><em>Field Notes</em> — adventurer's journal</span>
+        </div>
+        <div class="frame-actions">
+          <a href="field-notes.html" target="_blank" rel="noopener" class="primary">Open ↗</a>
+        </div>
+      </div>
+      <div class="frame-note">Cleaner, more modern but still warm and serif. Spectral throughout, field-teal &amp; ochre accents, more whitespace, gentle rounded edges. The most "product-y" of the three.</div>
+      <div class="frame-body">
+        <iframe src="field-notes.html" title="Field Notes direction" id="if-field"></iframe>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Scale each iframe (rendered at 1400px wide) to fit its frame body.
+    function fitIframes() {
+      document.querySelectorAll('.frame-body').forEach(body => {
+        const iframe = body.querySelector('iframe');
+        if (!iframe) return;
+        const w = body.clientWidth;
+        const h = body.clientHeight;
+        const designW = 1400;
+        const designH = 933;
+        // fit by width, but cap so it doesn't overflow vertically
+        const scale = Math.min(w / designW, h / designH);
+        iframe.style.transform = 'scale(' + scale + ')';
+        // size the iframe so the scaled box matches the body dims
+        iframe.style.width = designW + 'px';
+        iframe.style.height = (h / scale) + 'px';
+      });
+    }
+    fitIframes();
+    window.addEventListener('resize', fitIframes);
+    // Re-fit after iframes load (their height calc may need a tick)
+    document.querySelectorAll('.frame-body iframe').forEach(f => {
+      f.addEventListener('load', fitIframes);
+    });
+  </script>
+</body>
+</html>

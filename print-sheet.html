@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Character Sheet — The Codex</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --paper:#f1e7cf; --ink:#1a140a; --rule:#3a2a1a; --accent:#9b1c1c;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#3a2a1a;color:var(--ink);font-family:'EB Garamond',Georgia,serif}
+  body{padding:24px 0;display:flex;justify-content:center}
+  .sheet{
+    width:8.5in;min-height:11in;padding:.5in;background:var(--paper);
+    box-shadow:0 4px 24px rgba(0,0,0,.5);
+    background-image:
+      radial-gradient(circle at 10% 5%, rgba(58,42,26,.06), transparent 40%),
+      radial-gradient(circle at 90% 95%, rgba(58,42,26,.08), transparent 40%);
+    border:1px solid var(--rule);
+  }
+  h1,h2,h3{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.04em;margin:0}
+  h1{font-size:32px;color:var(--accent);text-align:center;border-bottom:2px double var(--rule);padding-bottom:6px}
+  h2{font-size:14px;text-transform:uppercase;border-bottom:1px solid var(--rule);padding-bottom:2px;margin:14px 0 6px}
+  .meta-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;font-size:13px}
+  .meta-cell{border:1px solid var(--rule);padding:4px 8px;background:rgba(255,255,255,.25)}
+  .meta-cell .k{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--rule);opacity:.8}
+  .meta-cell .v{font-size:14px}
+  .grid{display:grid;gap:10px}
+  .col-2{grid-template-columns:1.1fr 2fr}
+  .col-3{grid-template-columns:repeat(3,1fr)}
+  .ability-block{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:6px}
+  .ability{border:1px solid var(--rule);padding:6px 4px;text-align:center;background:rgba(255,255,255,.3)}
+  .ability .name{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase}
+  .ability .score{font-size:22px;font-weight:600}
+  .ability .mod{font-size:13px;border-top:1px solid var(--rule);padding-top:2px;margin-top:2px;color:var(--accent)}
+  .vital-block{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
+  .vital{border:1px solid var(--rule);padding:6px;text-align:center;background:rgba(255,255,255,.3)}
+  .vital .k{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase}
+  .vital .v{font-size:20px;font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th,td{border-bottom:1px dotted rgba(58,42,26,.4);padding:2px 4px;text-align:left}
+  th{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--rule)}
+  .check{display:inline-block;width:9px;height:9px;border:1px solid var(--rule);margin-right:4px;vertical-align:middle}
+  .check.on{background:var(--accent)}
+  .feat-list{font-size:12px;line-height:1.45}
+  .feat-list li{margin-bottom:3px}
+  .slot-row{display:flex;gap:4px;flex-wrap:wrap;font-size:11px}
+  .slot-pill{border:1px solid var(--rule);padding:2px 8px;background:rgba(255,255,255,.3)}
+  .tag-row{display:flex;gap:4px;flex-wrap:wrap;font-size:11px;margin-top:4px}
+  .tag{border:1px solid var(--rule);padding:1px 6px;background:rgba(255,255,255,.3)}
+  .notes-box{border:1px solid var(--rule);padding:6px 8px;font-style:italic;background:rgba(255,255,255,.2);min-height:36px;font-size:12px}
+  .toolbar{position:fixed;top:8px;right:8px;z-index:10;display:flex;gap:6px}
+  .toolbar button{font-family:'Cinzel',serif;font-size:11px;padding:6px 12px;border:1px solid #d9c79a;background:#f1e7cf;cursor:pointer;letter-spacing:.06em}
+  .empty-state{padding:60px;text-align:center;color:#f1e7cf;font-size:18px}
+  @media print{
+    body{background:white;padding:0}
+    .sheet{box-shadow:none;border:none}
+    .toolbar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <button onclick="window.print()">Print / Save PDF</button>
+  <button onclick="window.close()">Close</button>
+</div>
+<div id="root"></div>
+<script src="data/srd.js"></script>
+<script src="data/srd-bulk.js"></script>
+<script type="text/babel" src="derive.jsx"></script>
+<script type="text/babel">
+const { mod, sign, derive } = Derive;
+
+function App(){
+  const draft = (() => {
+    try { return JSON.parse(sessionStorage.getItem("codex_print_draft") || "null"); } catch { return null; }
+  })();
+  if (!draft) return <div className="empty-state">No character to print. Open a character in the Forge and click <em>Print Sheet</em>.</div>;
+
+  const d = derive(draft);
+
+  return (
+    <div className="sheet">
+      <h1>{draft.name || "Unnamed Adventurer"}</h1>
+
+      <div className="meta-row">
+        <div className="meta-cell"><div className="k">Class &amp; Level</div><div className="v">{draft.klass}{draft.subclass ? ` (${draft.subclass})` : ""} · {d.level}</div></div>
+        <div className="meta-cell"><div className="k">Race / Species</div><div className="v">{draft.race}</div></div>
+        <div className="meta-cell"><div className="k">Background</div><div className="v">{draft.background}</div></div>
+        <div className="meta-cell"><div className="k">Alignment</div><div className="v">{draft.alignment}</div></div>
+      </div>
+
+      <div className="ability-block">
+        {SRD.abilities.map(a => {
+          const v = d.finalStats[a.key];
+          return (
+            <div key={a.key} className="ability">
+              <div className="name">{a.name}</div>
+              <div className="score">{v}</div>
+              <div className="mod">{sign(mod(v))}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="vital-block">
+        <div className="vital"><div className="k">HP</div><div className="v">{d.hp}</div></div>
+        <div className="vital"><div className="k">AC</div><div className="v">{d.ac}</div></div>
+        <div className="vital"><div className="k">Init</div><div className="v">{sign(mod(d.finalStats.dex))}</div></div>
+        <div className="vital"><div className="k">Speed</div><div className="v">{d.race?.speed || 30}</div></div>
+        <div className="vital"><div className="k">Prof</div><div className="v">{sign(d.prof)}</div></div>
+      </div>
+
+      <div className="grid col-2" style={{marginTop:14}}>
+        <div>
+          <h2>Saves</h2>
+          <table>
+            <tbody>
+              {SRD.abilities.map(a => {
+                const isProf = (d.cls?.saves || []).includes(a.key);
+                return (
+                  <tr key={a.key}>
+                    <td><span className={"check" + (isProf ? " on" : "")}></span>{a.name}</td>
+                    <td style={{textAlign:"right"}}>{sign(d.saves[a.key])}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          <h2>Skills</h2>
+          <table>
+            <tbody>
+              {SRD.skills.map(s => {
+                const isProf = d.skillProfs.includes(s.name);
+                return (
+                  <tr key={s.name}>
+                    <td><span className={"check" + (isProf ? " on" : "")}></span>{s.name} <span style={{opacity:.6,fontSize:9}}>{s.ability.toUpperCase()}</span></td>
+                    <td style={{textAlign:"right"}}>{sign(d.skills[s.name])}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h2>Class Features</h2>
+          <ul className="feat-list">
+            {d.features.length === 0 && <li><em>None yet.</em></li>}
+            {d.features.map(f => <li key={f.name}><strong>Lv {f.lvl} — {f.name}.</strong> {f.text}</li>)}
+          </ul>
+
+          {d.race && <>
+            <h2>Race Traits</h2>
+            <ul className="feat-list">
+              {d.race.traits.map(t => <li key={t}>{t}</li>)}
+            </ul>
+          </>}
+
+          {d.slots.some(n => n > 0) && <>
+            <h2>Spell Slots</h2>
+            <div className="slot-row">
+              {d.slots.map((n, i) => n > 0 && <span key={i} className="slot-pill">L{i+1}: {n}</span>)}
+            </div>
+          </>}
+
+          <h2>Equipment ({d.carry}/{d.cap} lb{d.encumbered ? " — encumbered" : ""})</h2>
+          <div className="tag-row">
+            {(draft.equipment || []).length === 0 && <em>Nothing equipped.</em>}
+            {(draft.equipment || []).map((e, i) => <span key={i} className="tag">{e.name}{e.qty > 1 ? " ×" + e.qty : ""}</span>)}
+          </div>
+
+          <h2>Notes</h2>
+          <div className="notes-box">{draft.notes || <span style={{opacity:.4}}>—</span>}</div>
+        </div>
+      </div>
+
+      <div style={{marginTop:14,fontSize:9,textAlign:"center",opacity:.6,fontStyle:"italic"}}>
+        {SRD.attribution.short}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<App/>, document.getElementById("root"));
+</script>
+</body>
+</html>

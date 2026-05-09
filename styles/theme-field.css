@@ -1,0 +1,124 @@
+/* ============================================================
+   THEME — FIELD NOTES
+   Adventurer's working journal. Tighter, more modern but still
+   warm and serif. Crisp rules, neutral accent, more whitespace.
+   ============================================================ */
+
+:root {
+  --paper:     #faf5e8;
+  --surface:   #ffffff;
+  --surface-2: #f1e8d2;
+  --ink:       #1f1a13;
+  --ink-soft:  #6e6557;
+  --rule:      #d8cfb6;
+  --accent:    #3a5a5a;   /* field-teal */
+  --accent-2:  #b8860b;   /* ochre */
+  --success:   #2a6b3a;
+  --danger:    #8b2e1f;
+  --radius:    4px;
+
+  --font-body:    "Spectral", "EB Garamond", "Times New Roman", Georgia, serif;
+  --font-display: "Spectral", "EB Garamond", Georgia, serif;
+}
+
+body {
+  background: var(--paper);
+}
+
+/* Cleaner topbar, more whitespace */
+.topbar {
+  padding: 18px 36px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.brand-title {
+  font-weight: 600;
+  font-size: 1.2em;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+.brand-sub {
+  font-size: 0.65em;
+  letter-spacing: 0.2em;
+  border-left: 1px solid var(--rule);
+}
+.brand-mark { color: var(--accent); }
+
+.nav button { font-size: 0.95em; letter-spacing: 0; text-transform: none; }
+.nav button.on { font-weight: 600; }
+
+.home-hero { padding: 60px 0 40px; border-bottom: 1px solid var(--rule); }
+.home-eyebrow { color: var(--accent-2); letter-spacing: 0.18em; }
+.home-title {
+  font-weight: 600;
+  font-size: clamp(2.4em, 4vw, 3.6em);
+  letter-spacing: -0.015em;
+  line-height: 1.02;
+}
+
+.home-card {
+  background: var(--surface);
+  border-color: var(--rule);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+}
+.home-card-key { font-weight: 600; }
+.home-card-arrow { color: var(--accent); }
+
+/* Cast cards a touch larger imagery, more breath */
+.cast-card { background: var(--surface); }
+.cast-portrait { background-color: var(--surface-2); }
+
+.tag {
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.74em;
+  letter-spacing: 0.04em;
+}
+
+.db-card { background: var(--surface); }
+.db-tab { font-family: var(--font-body); }
+.db-tab.on {
+  background: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
+}
+.db-tab.on .db-tab-count { background: var(--paper); color: var(--accent); }
+
+.db-search { font-style: italic; }
+.db-badge { font-weight: 600; letter-spacing: 0.06em; }
+
+.pick-card, .stat-pick {
+  background: var(--surface);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+}
+
+.pick-card.selected {
+  outline: 2px solid var(--accent);
+  background: var(--surface);
+}
+
+.skill-chip {
+  background: var(--surface);
+  border-radius: 999px;
+}
+.skill-chip.on {
+  background: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
+}
+
+.solid-btn { background: var(--accent); border-color: var(--accent); }
+.solid-btn:hover { background: var(--ink); border-color: var(--ink); }
+
+.dice-tray {
+  border-radius: 8px;
+  border: 1px solid var(--rule);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+}
+.dice-tray-head { border-radius: 8px 8px 0 0; }
+
+:root { --portrait-filter: none; }
+
+/* a touch more rhythm in cast-grid */
+.cast-grid { gap: 22px; }

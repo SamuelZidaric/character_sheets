@@ -1,0 +1,167 @@
+/* ============================================================
+   THEME — TOME
+   Old grimoire. Deep ink-on-cream with red rubrications.
+   Justified columns feel, drop-cap-ready, heavy serif display.
+   ============================================================ */
+
+:root {
+  --paper:     #f1e7cf;
+  --surface:   #ebe0c2;
+  --surface-2: #e0d3ac;
+  --ink:       #1a1410;
+  --ink-soft:  #5b4a36;
+  --rule:      #b8a570;
+  --accent:    #9b1c1c;   /* rubrication red */
+  --accent-2:  #4a3a8a;
+  --success:   #2a6b3a;
+  --danger:    #9b1c1c;
+  --radius:    0px;
+
+  --font-body:    "EB Garamond", "Times New Roman", Times, serif;
+  --font-display: "Cinzel", "Cormorant Garamond", "EB Garamond", serif;
+}
+
+body {
+  background-color: var(--paper);
+  background-image:
+    /* parchment mottling */
+    radial-gradient(ellipse at top left,     rgba(120, 80, 30, 0.10), transparent 60%),
+    radial-gradient(ellipse at bottom right, rgba(80, 60, 30, 0.10), transparent 60%),
+    /* faint vertical line ruling */
+    repeating-linear-gradient(to bottom, transparent 0 27px, rgba(80,50,20,0.04) 27px 28px);
+}
+
+.topbar {
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper);
+}
+.topbar::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  bottom: -5px;
+  height: 1px;
+  background: var(--ink);
+}
+
+.brand-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 1.15em;
+}
+.brand-mark { color: var(--accent); font-size: 1.4em; }
+.brand-sub { color: var(--accent); font-style: normal; }
+
+.nav button {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.78em;
+}
+.nav button.on { color: var(--accent); border-bottom-color: var(--accent); border-bottom-width: 3px; }
+
+/* Drop-cap on home title */
+.home-title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  font-size: clamp(2em, 3.6vw, 3em);
+}
+.home-title::first-letter {
+  font-size: 1.6em;
+  color: var(--accent);
+  margin-right: 0.04em;
+}
+
+.home-eyebrow { color: var(--accent); }
+
+.home-hero {
+  border-top: 4px double var(--ink);
+  border-bottom: 4px double var(--ink);
+  padding: 48px 0;
+  margin-bottom: 8px;
+}
+
+.home-card {
+  border-width: 1px;
+  border-color: var(--rule);
+  position: relative;
+}
+.home-card::before {
+  content: "❦";
+  position: absolute;
+  top: 14px; right: 16px;
+  color: var(--accent);
+}
+.home-card-key { font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* Section heads as illuminated rubrics */
+.cast-section-head h3,
+.gen-step-head h3 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.cast-section-head h3::before {
+  content: "❦ ";
+  color: var(--accent);
+  margin-right: 6px;
+}
+
+/* Cards a touch more decorated */
+.cast-card, .pick-card, .db-card {
+  background: var(--surface);
+}
+.cast-card { border-width: 1px; }
+
+.cast-name, .pick-name, .db-name {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+
+.tag {
+  font-family: var(--font-body);
+  border-radius: 0;
+}
+.tag-class {
+  background: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
+}
+
+.db-side-head {
+  font-family: var(--font-display);
+  color: var(--accent);
+  letter-spacing: 0.15em;
+}
+.db-tab.on { color: var(--accent); border-color: var(--accent); background: transparent; font-weight: 600; }
+.db-tab.on .db-tab-count { background: var(--accent); color: var(--paper); }
+
+.db-search {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  font-style: italic;
+}
+
+.db-badge {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+/* Step head numbers feel illuminated */
+.step-tab.on { color: var(--accent); border-color: var(--accent); }
+.step-tab.on .step-num { background: var(--accent); border-color: var(--accent); }
+
+.skill-chip.on { background: var(--accent); border-color: var(--accent); }
+
+.dice-tray-head {
+  background: var(--accent);
+  color: var(--paper);
+}
+
+:root { --portrait-filter: sepia(0.10) saturate(0.92); }
