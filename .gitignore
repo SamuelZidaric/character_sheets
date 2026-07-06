@@ -7,3 +7,6 @@
 Thumbs.db
 *.swp
 .vscode/
+
+# Python bytecode (data/fetch-*.py imports)
+__pycache__/
