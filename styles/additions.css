@@ -350,3 +350,51 @@
   padding: 1px 6px; border-radius: 999px;
   margin-left: 6px;
 }
+
+/* ---------- Content packs (Database sources) ---------- */
+.db-src-head { margin-top: 18px; }
+.db-packs { display: grid; gap: 3px; }
+.db-pack {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  text-align: left;
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  font-size: 0.88em;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.db-pack:hover { background: var(--surface); }
+.db-pack.on { color: inherit; background: var(--surface); border-color: var(--rule); }
+.db-pack.base { cursor: default; }
+.db-pack-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.db-pack-group-name {
+  font-size: 0.72em; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 10px 0 3px; padding-left: 10px;
+}
+.db-pack-badge-mini {
+  flex-shrink: 0;
+  font-size: 0.72em; letter-spacing: 0.04em;
+  border: 1px solid var(--rule);
+  background: var(--surface-2);
+  padding: 0 6px; border-radius: 8px;
+}
+.db-pack.on .db-pack-badge-mini { border-color: var(--accent); color: var(--accent); }
+.db-pack-spin { flex-shrink: 0; animation: pack-spin 0.9s linear infinite; }
+@keyframes pack-spin { to { transform: rotate(360deg); } }
+.db-pack-note { padding: 4px 10px; line-height: 1.4; }
+
+.db-card { position: relative; }
+.db-card-src {
+  position: absolute; top: 8px; right: 8px;
+  font-size: 0.68em; letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  border: 1px solid var(--rule);
+  background: var(--surface-2);
+  padding: 0 6px; border-radius: 8px;
+  pointer-events: none;
+}
+.db-more-row { margin-top: 18px; text-align: center; }
+.detail-pack { font-size: 0.78em; color: var(--ink-soft); font-style: italic; margin-top: 2px; }

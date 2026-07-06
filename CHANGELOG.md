@@ -10,9 +10,49 @@ Tracks every meaningful change to:
 
 Newest entries at the top.
 
-> **Rollback strategy.** This file is the human-readable index. Actual rollback runs through git — every entry below should map to a commit (and a tag for big milestones). The repo currently has the React Codex work **uncommitted** (last commit `8dd40c2` predates the pivot), so historical entries describe the surgical-undo path until we tag a baseline. Once we commit a `codex-baseline` tag, future rollbacks become `git revert <commit>` or `git checkout <tag> -- <path>`.
+> **Rollback strategy.** This file is the human-readable index. Actual rollback runs through git — every entry below should map to a commit (and a tag for big milestones). The React Codex work is committed as `e1bcc5b` and tagged **`codex-baseline`** (pushed to origin 2026-07-06), so rollbacks are `git revert <commit>` or `git checkout codex-baseline -- <path>`. Entries below the baseline describe the older surgical-undo path from when the work was still uncommitted.
 
 > **How to add a new entry.** Append at the top of the log. Use the template at the bottom of this file. Every entry should answer: *what changed, why, which files, how to undo, how it was verified*.
+
+---
+
+## 2026-07-06 · Content packs: full Open5e catalog + D&D 2024 SRD 5.2, with a Sources picker
+
+**What changed**
+- New `data/fetch-packs.py`: imports every document Open5e serves beyond the core 5.1 SRD, one lazy-loadable pack per source:
+  - **D&D 2024 rules (SRD 5.2, CC BY 4.0)** via the v2 API — 331 monsters, 339 spells, 757 magic items, 9 species, all 12 classes with 2024 subclass features, 4 backgrounds, 17 feats, 38 weapons (with Mastery properties), 13 armor, 56 rules sections.
+  - Kobold Press: Tome of Beasts 1/2/3 + 2023 edition, Creature Codex, Deep Magic (+Extended), Vault of Magic, Tome of Heroes, KP Compilation, Warlock Archives.
+  - EN Publishing: Level Up Advanced 5e (spells/items/feats/backgrounds) + Monstrous Menagerie (586 monsters).
+  - Black Flag SRD / Tales of the Valiant (360 monsters), Tal'Dorei, Open5e originals.
+  - Output: `data/packs/<id>.js` (17 packs, ≈12.4 MB) + `data/packs/manifest.js` (labels, publisher groups, badges, per-tab counts, sizes, per-document license URLs).
+  - Headline totals across packs: ≈2,885 new monsters, ≈1,455 new spells, ≈2,138 new items.
+- `app.jsx`:
+  - New pack runtime before the Database section: `usePacks()` (manifest injection at mount, per-pack script injection on enable, enabled set persisted in localStorage `dnd_codex_packs_v1`), `injectScript()`, and a WeakMap-cached `searchBlob()` so search doesn't re-stringify thousands of entries per keystroke.
+  - `Database()`: **Sources** panel in the sidebar (packs grouped by publisher; toggling lazy-loads the pack script; base SRD is never mutated — pack rows are concatenated per tab at render time); tab counts include enabled packs; per-card source badge (top-right, e.g. `2024`, `ToB`, `A5E`); pack label + license in tooltips and the detail modal; "Show more" pagination (first 150 cards, +300 per click).
+  - Detail renderers: `FeatDetail` now shows prerequisite + full text; `MonsterDetail` gained a Lore section for pack monsters with descriptions; spell/item/long-text descriptions keep paragraph breaks.
+- `styles/additions.css`: appended `/* ---------- Content packs (Database sources) ---------- */` block.
+- No HTML entry-point changes — the manifest is injected at runtime, so the (currently hand-synced) theme HTMLs didn't need edits.
+- API quirks handled in the fetcher: v2 filter param naming is inconsistent per endpoint (`document` vs `document__key`), so both are sent and every entry is verified client-side; v1 entries are grouped by their `document__slug`.
+
+**Why**
+- Asked for: "pull from the internet all the available content — different versions of dnd too."
+- The 2024 SRD 5.2 is the true "different version"; A5E and Tales of the Valiant are alternate 5e-family systems; the KP books are the long-tail 5e catalog. Older editions (3.5e, AD&D) have no licensed machine-readable source and are not included.
+- Packs are opt-in + lazy so the 12 MB of expansion data costs nothing until a source is enabled.
+
+**Files added/modified**
+- `data/fetch-packs.py` — created.
+- `data/packs/*.js` — created (auto-generated; do not hand-edit; regenerate with `python data/fetch-packs.py`).
+- `app.jsx` — pack runtime + Database rewrite (sources, badges, pagination, search cache).
+- `styles/additions.css` — pack UI styles appended.
+- `CHANGELOG.md` — this entry; also corrected the stale top-note (baseline is committed/tagged/pushed as of 2026-07-06).
+
+**Rollback**
+1. Delete `data/packs/` and `data/fetch-packs.py`.
+2. `git checkout codex-baseline -- app.jsx styles/additions.css` (or surgically: remove the `// ─── Content packs` block, restore `Database()` to read `SRD[tab]` directly, drop the FeatDetail/MonsterDetail/pre-wrap tweaks, and delete the packs CSS block).
+
+**Verification**
+- `python` spot-checks: manifest parses (17 packs, license URLs present); 2024 Goblin Boss (CR 1, HP 21, AC 17 natural armor, darkvision 60 ft, Multiattack/Scimitar/Shortbow), Fireball 2024 (Lv 3, V/S/M, 150 feet, Sorcerer+Wizard), Paladin 2024 (d10, WIS/CHA saves, 27 features, Oath of Devotion), Dwarf 2024 traits, Bag of Holding (Uncommon), ToB "Aboleth, Nihilith" (CR 12, pack-tagged).
+- Browser: Sources panel renders; enabling packs loads scripts on demand and grows tab counts; cards show source badges; modal shows pack attribution; pagination caps initial render; graceful "no packs found" note when `data/packs/` is absent.
 
 ---
 
