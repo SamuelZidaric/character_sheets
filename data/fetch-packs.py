@@ -44,6 +44,7 @@ title_case = base.title_case
 # slug: (label, group, badge, edition)
 PACK_INFO = {
     "srd-2024":  ("D&D 2024 — SRD 5.2",                       "D&D 2024 Rules",        "2024",   "5e-2024"),
+    "spells-that-dont-suck": ("Spells That Don't Suck",       "Open5e Community",      "STDS",   "5e-2014"),
     "a5e":       ("Level Up: Advanced 5e",                     "EN Publishing (A5E)",   "A5E",    "a5e"),
     "menagerie": ("A5E Monstrous Menagerie",                   "EN Publishing (A5E)",   "A5E MM", "a5e"),
     "blackflag": ("Black Flag SRD (Tales of the Valiant)",     "Kobold Press",          "ToV",    "blackflag"),
@@ -64,7 +65,7 @@ PACK_INFO = {
 # Display order for the manifest (groups stay together in the UI):
 PACK_ORDER = ["srd-2024", "a5e", "menagerie", "blackflag", "tob", "tob-2023", "tob2",
               "tob3", "cc", "dmag", "dmag-e", "vom", "toh", "kp", "warlock",
-              "taldorei", "o5e"]
+              "taldorei", "spells-that-dont-suck", "o5e"]
 
 # v1 endpoint -> app tab
 V1_ENDPOINTS = {
@@ -614,6 +615,25 @@ def fetch_v2_srd2024():
     return {key: data}
 
 
+def fetch_v2_spell_doc(key):
+    """Spells-only v2 documents (e.g. spells-that-dont-suck)."""
+
+    def doc_key(r):
+        d = r.get("document")
+        if isinstance(d, dict):
+            return d.get("key") or ""
+        return str(d or "").rstrip("/").rsplit("/", 1)[-1]
+
+    sys.stderr.write(f"  v2/spells ({key}):\n")
+    rows = fetch_all(f"{API2}/spells/?document={key}&document__key={key}&limit=500")
+    rows = [r for r in rows if doc_key(r) == key or str(r.get("key", "")).startswith(key)]
+    spells = [v2_spell(s) for s in rows]
+    for e in spells:
+        e["source"] = key
+        e["pack"] = key
+    return {key: {"spells": spells}}
+
+
 # ─── Output ─────────────────────────────────────────────────────────────────
 
 def render_pack_js(pack_id, data):
@@ -630,19 +650,49 @@ def render_pack_js(pack_id, data):
     )
 
 
+V2_SPELL_DOCS = ["spells-that-dont-suck"]
+
+
+def load_existing_manifest(out_dir):
+    """Parse the committed manifest.js back into a list (for --only runs)."""
+    mpath = out_dir / "manifest.js"
+    if not mpath.exists():
+        return []
+    txt = mpath.read_text(encoding="utf-8")
+    return json.loads(txt.split("=", 1)[1].rstrip().rstrip(";"))
+
+
 def main():
     out_dir = HERE / "packs"
     out_dir.mkdir(exist_ok=True)
 
-    sys.stderr.write("Fetching Open5e v2 — SRD 5.2 (D&D 2024)…\n")
-    packs = fetch_v2_srd2024()
-    licenses = {"srd-2024": "https://creativecommons.org/licenses/by/4.0/"}
-    sys.stderr.write("Fetching Open5e v1 — all expansion documents…\n")
-    v1_packs, v1_licenses = fetch_v1_packs()
-    packs.update(v1_packs)
-    licenses.update(v1_licenses)
+    # --only <id>[,<id>…]: refetch just those packs, keep the rest of the
+    # manifest as committed. A run with no flag rebuilds everything.
+    only = None
+    if "--only" in sys.argv:
+        only = set(sys.argv[sys.argv.index("--only") + 1].split(","))
 
-    manifest = []
+    packs = {}
+    licenses = {"srd-2024": "https://creativecommons.org/licenses/by/4.0/"}
+
+    if only is None or "srd-2024" in only:
+        sys.stderr.write("Fetching Open5e v2 — SRD 5.2 (D&D 2024)…\n")
+        packs.update(fetch_v2_srd2024())
+    for key in V2_SPELL_DOCS:
+        if only is None or key in only:
+            sys.stderr.write(f"Fetching Open5e v2 — {key}…\n")
+            packs.update(fetch_v2_spell_doc(key))
+            licenses.setdefault(key, "https://creativecommons.org/licenses/by/4.0/")
+    v1_wanted = [s for s in PACK_ORDER if s not in ("srd-2024", *V2_SPELL_DOCS)]
+    if only is None or any(s in only for s in v1_wanted):
+        sys.stderr.write("Fetching Open5e v1 — all expansion documents…\n")
+        v1_packs, v1_licenses = fetch_v1_packs()
+        if only is not None:
+            v1_packs = {k: v for k, v in v1_packs.items() if k in only}
+        packs.update(v1_packs)
+        licenses.update(v1_licenses)
+
+    manifest = load_existing_manifest(out_dir) if only is not None else []
     for pack_id in PACK_ORDER:
         data = packs.get(pack_id)
         if not data or not any(data.values()):
@@ -653,6 +703,7 @@ def main():
         path.write_text(js, encoding="utf-8")
         label, group, badge, edition = PACK_INFO[pack_id]
         counts = {cat: len(rows) for cat, rows in data.items()}
+        manifest = [m for m in manifest if m["id"] != pack_id]  # replace on --only reruns
         manifest.append({
             "id": pack_id, "label": label, "group": group, "badge": badge,
             "edition": edition, "file": f"data/packs/{pack_id}.js",
@@ -661,6 +712,7 @@ def main():
         })
         sys.stderr.write(f"  wrote {path.name:18} {path.stat().st_size:>9,} B  {counts}\n")
 
+    manifest.sort(key=lambda m: PACK_ORDER.index(m["id"]) if m["id"] in PACK_ORDER else 99)
     mpath = out_dir / "manifest.js"
     mpath.write_text(
         "/* auto-generated by data/fetch-packs.py — DO NOT EDIT BY HAND. */\n"

@@ -16,6 +16,45 @@ Newest entries at the top.
 
 ---
 
+## 2026-07-19 · Character profile pages, cast redesign, +180 spells (STDS pack)
+
+**What changed**
+- **In-Codex character profiles** at `#char/<id>` for the two legacy heroes, built from data mined out of the legacy sheets (which remain the interactive ground truth, linked from every profile):
+  - Hero section: full-body art in a double-ruled frame, per-character accent color (`accent` field), epithet, quote, tag row, HP/AC/Init/Prof vitals, six-ability grid.
+  - Identity grid (Physical/Personality/Ideals/Bonds/Flaws — lifted verbatim from the sheets' Identity cards).
+  - Signature Moves: Paladdin's Nick/Vex + **Elemental Smite with all four genie modes** (Dao/Djinni/Efreeti/Marid), Lay on Hands, Magic Initiate; Chin's Sharp Friend, Pommel Strike, Amethyst Breath, Fighting Spirit, Action Surge, Second Wind, Gem Flight, Psionic Mind.
+  - **Companion dossiers with stage carousels**: Marcus Gallus the hook horror across Infant/Young/Juvenile/Adult (full stat blocks + growth art), Golden Stormstrider in Prize Bird/Ascended forms.
+  - Story chapters (collapsible; Chin's saga abridged from the sheet's seven-chapter epic) and Field Notes (fun facts).
+- **Cast/Vault card redesign** (`CastCard`, shared — removes the old duplicated markup): taller portraits with accent frames, HP/AC + six-ability vitals strip, companion chip with art overlapping the portrait, hover lift; cards now open the profile page (legacy sheet is linked from there).
+- `data/my-characters.js`: schema grown with `accent`, `identity`, `signature` (with `modes`), `companions[].stages[]`, `story`, `facts`. All values extracted from `legacy/*.html`.
+- **New content pack**: *Spells That Don't Suck* (180 spells, CC BY 4.0) via Open5e v2 — total now 18 packs.
+- `data/fetch-packs.py`: `--only <id>[,<id>]` flag for incremental pack refresh (parses committed manifest, replaces just the requested packs); generalized v2 spells-only doc support (`V2_SPELL_DOCS`).
+- `styles/additions.css`: `/* ---------- Cast cards v2 + character profiles ---------- */` block.
+
+**Why**
+- Asked for: "Improve even more, especially the design for the unique characters, and add more data."
+- The cast cards were thin summaries linking straight out to legacy HTML; the sheets' richest content (genie smites, the hook-horror growth chart, the story) was invisible from the Codex.
+- Probed all v2-only Open5e documents: STDS was the one real addition (180 new spells); bfrd/a5e-ag v2 are near-duplicates of their v1 packs; no monster art exists on the API (checked `/v2/images` — 32 condition icons only).
+
+**Files added/modified**
+- `data/my-characters.js` — enriched (hand-written from legacy-sheet extraction).
+- `app.jsx` — `CastCard`, `CharacterPage`, `#char/<id>` route, Cast/Vault use the shared card, Cast tab stays lit on profile pages.
+- `styles/additions.css` — profile + card styles appended.
+- `data/fetch-packs.py` — STDS pack, `--only` mode.
+- `data/packs/spells-that-dont-suck.js` — new; `data/packs/manifest.js` — regenerated (18 packs).
+
+**Rollback**
+1. `git checkout <prev> -- data/my-characters.js app.jsx styles/additions.css data/fetch-packs.py data/packs/manifest.js`
+2. Delete `data/packs/spells-that-dont-suck.js`.
+
+**Verification**
+- Browser (localhost preview): Cast shows 2 v2 cards with vitals strips (Paladdin HP 68 / AC 15 / DEX +5) and companion chips (Golden, Marcus); cards route to `#char/…`.
+- Chin's profile: 5 sections, 5 identity cards, 8 signature moves, 4 companion stages — clicking ADULT swaps to `hook_horror_adult.png` with AC 15 / HP 75 / Multiattack; 7 story chapters; 6 field notes.
+- Paladdin's profile: amber accent applied (`#b45309`), 4 genie modes listed, steed carousel Prize Bird ↔ Ascended.
+- DB Sources panel: 18 packs; STDS tooltip shows "180 spells (241 KB) · License: …/by/4.0".
+
+---
+
 ## 2026-07-06 · Content packs: full Open5e catalog + D&D 2024 SRD 5.2, with a Sources picker
 
 **What changed**

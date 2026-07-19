@@ -230,6 +230,19 @@ window.CODEX_PACK_MANIFEST = [
     "license": "http://open5e.com/legal"
   },
   {
+    "id": "spells-that-dont-suck",
+    "label": "Spells That Don't Suck",
+    "group": "Open5e Community",
+    "badge": "STDS",
+    "edition": "5e-2014",
+    "file": "data/packs/spells-that-dont-suck.js",
+    "counts": {
+      "spells": 180
+    },
+    "kb": 241,
+    "license": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  {
     "id": "o5e",
     "label": "Open5e Original Content",
     "group": "Open5e Community",

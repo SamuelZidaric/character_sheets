@@ -882,6 +882,208 @@ function Database() {
   );
 }
 
+// ─── Cast cards & character profiles ────────────────────
+// One shared card for Cast + Vault; clicking opens the in-Codex
+// profile (#char/<id>). The legacy sheet stays one click deeper.
+function CastCard({ c }) {
+  const comp = (c.companions || [])[0];
+  const compImg = comp && comp.stages && comp.stages.length ? comp.stages[comp.stages.length - 1].img : null;
+  return (
+    <a className="cast-card v2" href={"#char/" + c.id} style={c.accent ? { "--char-accent": c.accent } : null}>
+      <div className="cast-portrait" style={{ backgroundImage: `url(${c.portrait})` }}>
+        <span className="cast-level">Lv {c.level}</span>
+        {comp && (
+          <span className="cast-comp" title={comp.name + " — " + comp.kind}>
+            {compImg && <img src={compImg} alt="" className="cast-comp-img"/>}
+            <span className="cast-comp-name">{comp.name.split(" ")[0]}</span>
+          </span>
+        )}
+      </div>
+      <div className="cast-meta">
+        <div className="cast-name">{c.short}</div>
+        <div className="cast-epithet">{c.epithet}</div>
+        <div className="cast-tags">
+          <span className="tag tag-class">{c.subclass} {c.klass}</span>
+          <span className="tag tag-race">{c.race}</span>
+        </div>
+        <div className="cast-vitals">
+          <span className="cv"><em>HP</em>{c.hp}</span>
+          <span className="cv"><em>AC</em>{c.ac}</span>
+          {["str","dex","con","int","wis","cha"].map(k => (
+            <span key={k} className={"cv cv-ab" + (c.stats[k] >= 16 ? " hi" : "")}><em>{k.toUpperCase()}</em>{sign(mod(c.stats[k]))}</span>
+          ))}
+        </div>
+        <div className="cast-quote">“{c.quote}”</div>
+      </div>
+    </a>
+  );
+}
+
+function CharacterPage({ id, go }) {
+  const c = MY_CHARS.find(x => x.id === id);
+  const [stageIdx, setStageIdx] = useState(0);
+  useEffect(() => { setStageIdx(0); window.scrollTo(0, 0); }, [id]);
+  if (!c) {
+    return <div className="empty-state">No such character. <button className="ghost-btn" onClick={() => go("cast")}>Back to the Cast</button></div>;
+  }
+  return (
+    <div className="char-shell" data-screen-label="Character" style={c.accent ? { "--char-accent": c.accent } : null}>
+      <div className="char-topline">
+        <button className="ghost-btn small" onClick={() => go("cast")}>← Cast</button>
+        <a className="ghost-btn small" href={c.sheet}>Full interactive sheet ↗</a>
+      </div>
+
+      <section className="char-hero">
+        <div className="char-hero-img">
+          <img src={c.full || c.portrait} alt={c.name}/>
+        </div>
+        <div className="char-hero-text">
+          <div className="char-eyebrow">{c.race} · {c.subclass} {c.klass} · {c.background} · {c.alignment}</div>
+          <h1 className="char-name">{c.name}</h1>
+          <div className="char-epithet">{c.epithet} — Level {c.level}</div>
+          <blockquote className="char-quote">“{c.quote}”</blockquote>
+          <div className="char-tagrow">{(c.tags || []).map(t => <span key={t} className="tag">{t}</span>)}</div>
+
+          <div className="char-vital-strip">
+            <div className="cvital"><span>HP</span><strong>{c.hp}</strong></div>
+            <div className="cvital"><span>AC</span><strong>{c.ac}</strong></div>
+            <div className="cvital"><span>Init</span><strong>{sign(mod(c.stats.dex))}</strong></div>
+            <div className="cvital"><span>Prof</span><strong>{sign(profByLevel(c.level))}</strong></div>
+          </div>
+          <div className="stat-grid-6 char-stats">
+            {[["str","STR"],["dex","DEX"],["con","CON"],["int","INT"],["wis","WIS"],["cha","CHA"]].map(([k, lbl]) => (
+              <div key={k} className="stat-cell">
+                <div className="ab">{lbl}</div>
+                <div className="v">{c.stats[k]}</div>
+                <div className="m">({sign(mod(c.stats[k]))})</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {c.identity && (
+        <section className="char-section">
+          <h3 className="char-section-head">Identity</h3>
+          <div className="char-id-grid">
+            {Object.entries(c.identity).map(([k, v]) => (
+              <div key={k} className="char-id-card">
+                <div className="char-id-key">{k}</div>
+                <div className="char-id-text">{v}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {(c.signature || []).length > 0 && (
+        <section className="char-section">
+          <h3 className="char-section-head">Signature Moves</h3>
+          <div className="char-sig-grid">
+            {c.signature.map(s => (
+              <div key={s.name} className="char-sig-card">
+                <div className="char-sig-top">
+                  <span className="char-sig-name">{s.name}</span>
+                  {s.tag && <span className="char-sig-tag">{s.tag}</span>}
+                </div>
+                <div className="char-sig-text">{s.text}</div>
+                {(s.modes || []).length > 0 && (
+                  <div className="char-sig-modes">
+                    {s.modes.map(m => (
+                      <div key={m.name} className="char-sig-mode">
+                        <span className="char-sig-mode-name">{m.name}.</span> {m.text}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {(c.companions || []).map(comp => {
+        const stages = comp.stages || [];
+        const st = stages[Math.min(stageIdx, stages.length - 1)] || null;
+        return (
+          <section key={comp.name} className="char-section">
+            <h3 className="char-section-head">Companion — {comp.name}</h3>
+            <div className="char-comp">
+              <div className="char-comp-side">
+                {st && <div className="char-comp-imgframe"><img src={st.img} alt={comp.name + " — " + st.stage}/></div>}
+                {stages.length > 1 && (
+                  <div className="char-comp-stages">
+                    {stages.map((s, i) => (
+                      <button key={s.stage} className={"char-comp-stage" + (i === Math.min(stageIdx, stages.length - 1) ? " on" : "")}
+                        onClick={() => setStageIdx(i)}>{s.stage}</button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="char-comp-body">
+                <div className="char-comp-kind">{comp.kind}</div>
+                <p className="char-comp-blurb">{comp.blurb}</p>
+                {st && (
+                  <div>
+                    <div className="char-comp-vitals">
+                      <span className="cv"><em>Stage</em>{st.stage}</span>
+                      <span className="cv"><em>Age</em>{st.age}</span>
+                      <span className="cv"><em>Size</em>{st.size}</span>
+                      <span className="cv"><em>AC</em>{st.ac}</span>
+                      <span className="cv"><em>HP</em>{st.hp}</span>
+                      <span className="cv"><em>Speed</em>{st.spd}</span>
+                    </div>
+                    {st.stats && (
+                      <div className="stat-grid-6 char-comp-stats">
+                        {[["str","STR"],["dex","DEX"],["con","CON"],["int","INT"],["wis","WIS"],["cha","CHA"]].map(([k, lbl]) => (
+                          <div key={k} className="stat-cell">
+                            <div className="ab">{lbl}</div>
+                            <div className="v">{st.stats[k]}</div>
+                            <div className="m">({sign(mod(st.stats[k]))})</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="char-comp-attack">{st.attack}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        );
+      })}
+
+      {(c.story || []).length > 0 && (
+        <section className="char-section">
+          <h3 className="char-section-head">The Story So Far</h3>
+          <div className="char-story">
+            {c.story.map((ch, i) => (
+              <details key={ch.title} className="char-chapter" open={i === 0}>
+                <summary>{ch.title}</summary>
+                <p>{ch.text}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {(c.facts || []).length > 0 && (
+        <section className="char-section">
+          <h3 className="char-section-head">Field Notes</h3>
+          <ul className="char-facts">
+            {c.facts.map((f, i) => <li key={i}>{f}</li>)}
+          </ul>
+        </section>
+      )}
+
+      <div className="char-footer">
+        The living sheet — resource trackers, spell slots, combat log — remains on the
+        {" "}<a href={c.sheet}>original interactive page ↗</a>.
+      </div>
+    </div>
+  );
+}
+
 // ─── Cast (public) ──────────────────────────────────────
 function Cast() {
   return (
@@ -889,25 +1091,10 @@ function Cast() {
       <div className="cast-section">
         <div className="cast-section-head">
           <h3>Featured Cast</h3>
-          <span className="muted small">A look at characters built in The Codex.</span>
+          <span className="muted small">A look at characters built in The Codex. Click one to open their codex entry.</span>
         </div>
         <div className="cast-grid">
-          {MY_CHARS.map(c => (
-            <a key={c.id} className="cast-card" href={c.sheet}>
-              <div className="cast-portrait" style={{ backgroundImage: `url(${c.portrait})` }}>
-                <span className="cast-level">Lv {c.level}</span>
-              </div>
-              <div className="cast-meta">
-                <div className="cast-name">{c.short}</div>
-                <div className="cast-epithet">{c.epithet}</div>
-                <div className="cast-tags">
-                  <span className="tag tag-class">{c.subclass} {c.klass}</span>
-                  <span className="tag tag-race">{c.race}</span>
-                </div>
-                <div className="cast-quote">“{c.quote}”</div>
-              </div>
-            </a>
-          ))}
+          {MY_CHARS.map(c => <CastCard key={c.id} c={c}/>)}
         </div>
       </div>
     </div>
@@ -933,22 +1120,7 @@ function Vault({ store, onOpenSheet, onNew }) {
           <span className="muted small">{MY_CHARS.length} active sheets</span>
         </div>
         <div className="cast-grid">
-          {MY_CHARS.map(c => (
-            <a key={c.id} className="cast-card" href={c.sheet}>
-              <div className="cast-portrait" style={{ backgroundImage: `url(${c.portrait})` }}>
-                <span className="cast-level">Lv {c.level}</span>
-              </div>
-              <div className="cast-meta">
-                <div className="cast-name">{c.short}</div>
-                <div className="cast-epithet">{c.epithet}</div>
-                <div className="cast-tags">
-                  <span className="tag tag-class">{c.subclass} {c.klass}</span>
-                  <span className="tag tag-race">{c.race}</span>
-                </div>
-                <div className="cast-quote">“{c.quote}”</div>
-              </div>
-            </a>
-          ))}
+          {MY_CHARS.map(c => <CastCard key={c.id} c={c}/>)}
         </div>
       </div>
 
@@ -1091,7 +1263,7 @@ function App({ themeName }) {
         </div>
         <nav className="nav">
           <button className={view === "home" ? "on" : ""} onClick={() => go("home")}>Frontispiece</button>
-          <button className={view === "cast" ? "on" : ""} onClick={() => go("cast")}>Cast</button>
+          <button className={view === "cast" || view === "char" ? "on" : ""} onClick={() => go("cast")}>Cast</button>
           <button className={view === "db"   ? "on" : ""} onClick={() => go("db")}>Database</button>
           <button className={view === "gen"  ? "on" : ""} onClick={() => view === "gen" ? null : newCharacter()}>＋ Forge</button>
           <button className={view === "vault"? "on vault-tab" : "vault-tab"} onClick={() => go("vault")} title="Your private codex">⚿ Vault</button>
@@ -1105,6 +1277,7 @@ function App({ themeName }) {
       <main className="main">
         {view === "home"  && <Home go={go} onNew={newCharacter}/>}
         {view === "cast"  && <Cast/>}
+        {view === "char"  && <CharacterPage id={route.split("/")[1]} go={go}/>}
         {view === "vault" && <Vault store={store} onOpenSheet={openSheet} onNew={newCharacter}/>}
         {view === "db"    && <Database/>}
         {view === "gen"   && <Generator store={store} setStore={setStore} onClose={() => go("vault")}/>}
