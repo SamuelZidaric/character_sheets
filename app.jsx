@@ -347,6 +347,7 @@ const DB_TABS = [
   { id: "feats",       label: "Feats" },
   { id: "weapons",     label: "Weapons" },
   { id: "armor",       label: "Armor" },
+  { id: "gear",        label: "Gear & Tools" },
   { id: "items",       label: "Magic Items" },
   { id: "monsters",    label: "Bestiary" },
   { id: "conditions",  label: "Conditions" },
@@ -399,6 +400,11 @@ const renderEntry = (tab, entry) => {
     case "items":      return <>
       <div className="db-name">{entry.name} <span className="db-badge">{entry.rarity}</span></div>
       <div className="db-meta">{entry.type || "Wondrous Item"} • {entry.attune ? (entry.attuneDesc || "Attunement required") : "No attunement"}</div>
+      <div className="db-blurb">{entry.blurb}</div>
+    </>;
+    case "gear":       return <>
+      <div className="db-name">{entry.name}{entry.type === "Equipment Set" && <span className="db-badge">Set</span>}</div>
+      <div className="db-meta">{entry.type} • {entry.cost} • {entry.weight}</div>
       <div className="db-blurb">{entry.blurb}</div>
     </>;
     case "monsters":   {
@@ -690,11 +696,21 @@ function LongTextDetail({ entry }) {
   return <div className="detail-body"><div><div className="detail-section"><p style={{ whiteSpace: "pre-wrap" }}>{entry.desc || entry.blurb}</p></div></div></div>;
 }
 
+function GearDetail({ g }) {
+  return <div className="detail-body"><div>
+    <KV k="Category" v={g.type} />
+    <KV k="Cost"     v={g.cost} />
+    <KV k="Weight"   v={g.weight} />
+    {g.desc && <div className="detail-section"><p style={{ whiteSpace: "pre-wrap" }}>{g.desc}</p></div>}
+  </div></div>;
+}
+
 const renderDetail = (tab, e) => {
   switch (tab) {
     case "monsters":    return <MonsterDetail m={e} />;
     case "spells":      return <SpellDetail s={e} />;
     case "items":       return <ItemDetail it={e} />;
+    case "gear":        return <GearDetail g={e} />;
     case "races":       return <RaceDetail r={e} />;
     case "classes":     return <ClassDetail c={e} />;
     case "backgrounds": return <BackgroundDetail b={e} />;
@@ -724,6 +740,7 @@ function DetailModal({ tab, entry, onClose, packLabel }) {
     if (tab === "backgrounds") return `Feature: ${entry.feature || ""}`;
     if (tab === "weapons")     return entry.cat;
     if (tab === "armor")       return entry.cat;
+    if (tab === "gear")        return entry.type;
     if (tab === "sections")    return entry.parent || "";
     return "";
   })();

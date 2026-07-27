@@ -11,6 +11,7 @@ window.CODEX_PACK_MANIFEST = [
       "monsters": 331,
       "spells": 339,
       "items": 757,
+      "gear": 203,
       "races": 9,
       "classes": 12,
       "backgrounds": 4,
@@ -19,7 +20,21 @@ window.CODEX_PACK_MANIFEST = [
       "armor": 13,
       "sections": 56
     },
-    "kb": 1741,
+    "kb": 1805,
+    "license": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  {
+    "id": "srd-2014-x",
+    "label": "SRD 5.1 — Gear & Item Variants",
+    "group": "D&D 2014 Rules",
+    "badge": "5.1+",
+    "edition": "5e-2014",
+    "file": "data/packs/srd-2014-x.js",
+    "counts": {
+      "gear": 257,
+      "items": 288
+    },
+    "kb": 294,
     "license": "https://creativecommons.org/licenses/by/4.0/"
   },
   {

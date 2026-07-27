@@ -44,6 +44,7 @@ title_case = base.title_case
 # slug: (label, group, badge, edition)
 PACK_INFO = {
     "srd-2024":  ("D&D 2024 — SRD 5.2",                       "D&D 2024 Rules",        "2024",   "5e-2024"),
+    "srd-2014-x": ("SRD 5.1 — Gear & Item Variants",          "D&D 2014 Rules",        "5.1+",   "5e-2014"),
     "spells-that-dont-suck": ("Spells That Don't Suck",       "Open5e Community",      "STDS",   "5e-2014"),
     "a5e":       ("Level Up: Advanced 5e",                     "EN Publishing (A5E)",   "A5E",    "a5e"),
     "menagerie": ("A5E Monstrous Menagerie",                   "EN Publishing (A5E)",   "A5E MM", "a5e"),
@@ -63,8 +64,8 @@ PACK_INFO = {
     "o5e":       ("Open5e Original Content",                   "Open5e Community",      "O5e",    "5e-2014"),
 }
 # Display order for the manifest (groups stay together in the UI):
-PACK_ORDER = ["srd-2024", "a5e", "menagerie", "blackflag", "tob", "tob-2023", "tob2",
-              "tob3", "cc", "dmag", "dmag-e", "vom", "toh", "kp", "warlock",
+PACK_ORDER = ["srd-2024", "srd-2014-x", "a5e", "menagerie", "blackflag", "tob", "tob-2023",
+              "tob2", "tob3", "cc", "dmag", "dmag-e", "vom", "toh", "kp", "warlock",
               "taldorei", "spells-that-dont-suck", "o5e"]
 
 # v1 endpoint -> app tab
@@ -520,6 +521,52 @@ def v2_armor(a, item_lookup):
     }
 
 
+def fmt_money(c):
+    try:
+        v = float(c or 0)
+    except (TypeError, ValueError):
+        return "—"
+    if v <= 0:
+        return "—"
+    return (f"{v:.2f}".rstrip("0").rstrip(".")) + " gp"
+
+
+def fmt_weight(w):
+    try:
+        v = float(w or 0)
+    except (TypeError, ValueError):
+        return "—"
+    return (f"{v:.3f}".rstrip("0").rstrip(".") + " lb") if v > 0 else "—"
+
+
+def v2_gear(it):
+    desc = (it.get("desc") or "").strip()
+    blurb = first_sentence(desc, 200)
+    return {
+        "name": it["name"],
+        "type": nm(it.get("category")) or "Adventuring Gear",
+        "cost": fmt_money(it.get("cost")),
+        "weight": fmt_weight(it.get("weight")),
+        "blurb": blurb,
+        "desc": desc,
+    }
+
+
+def v2_itemset(s):
+    contents = ", ".join(i.get("name", "") for i in (s.get("items") or []))
+    desc = (s.get("desc") or "").strip()
+    if contents:
+        desc = (desc + "\n\n" if desc else "") + f"Contents: {contents}."
+    return {
+        "name": s["name"],
+        "type": "Equipment Set",
+        "cost": "—",
+        "weight": "—",
+        "blurb": first_sentence(s.get("desc") or f"Contents: {contents}.", 200),
+        "desc": desc,
+    }
+
+
 def v2_rule(r):
     parent = (r.get("ruleset") or "").replace("srd-2024_", "").replace("-", " ")
     return {
@@ -600,6 +647,7 @@ def fetch_v2_srd2024():
         "monsters":    [v2_creature(m) for m in raw["creatures"]],
         "spells":      [v2_spell(s) for s in raw["spells"]],
         "items":       [v2_magicitem(i) for i in raw["magicitems"]],
+        "gear":        [v2_gear(i) for i in raw["items"]],
         "races":       [v2_species(sp, species) for sp in species if not sp.get("is_subspecies")],
         "classes":     [v2_class(c, classes) for c in classes if not c.get("subclass_of")],
         "backgrounds": [v2_background(b) for b in raw["backgrounds"]],
@@ -613,6 +661,64 @@ def fetch_v2_srd2024():
             e["source"] = key
             e["pack"] = key
     return {key: data}
+
+
+def existing_item_names():
+    """Names of magic items already shipped in srd-bulk.js (the v1 5.1 import),
+    so the srd-2014-x variant pack only adds genuinely new entries."""
+    bulk = HERE / "srd-bulk.js"
+    names = set()
+    if bulk.exists():
+        txt = bulk.read_text(encoding="utf-8")
+        m = re.search(r"window\.SRD_BULK = (\{.*?\});\n\n\(function", txt, re.DOTALL)
+        if m:
+            try:
+                names = {e["name"].lower() for e in json.loads(m.group(1)).get("items", [])}
+            except Exception:
+                pass
+    return names
+
+
+def fetch_srd2014_extras():
+    """Official 5.1 content the v1 API never exposed: mundane gear, equipment
+    sets, and the fully-enumerated magic-item variants."""
+    key = "srd-2014"
+
+    def doc_key(r):
+        d = r.get("document")
+        if isinstance(d, dict):
+            return d.get("key") or ""
+        return str(d or "").rstrip("/").rsplit("/", 1)[-1]
+
+    def grab(ep):
+        sys.stderr.write(f"  v2/{ep} ({key}):\n")
+        rows = fetch_all(f"{API2}/{ep}/?document={key}&document__key={key}&limit=500")
+        return [r for r in rows if doc_key(r) == key or str(r.get("key", "")).startswith("srd_")]
+
+    gear = [v2_gear(i) for i in grab("items")]
+    # Equipment packs exist both as items (cost/weight) and itemsets (contents);
+    # merge contents into the matching item, append only true standalone sets.
+    by_name = {g["name"].lower(): g for g in gear}
+    for s in grab("itemsets"):
+        e = v2_itemset(s)
+        hit = by_name.get(e["name"].lower())
+        if hit:
+            hit["desc"] = (hit["desc"] + "\n\n" if hit["desc"] else "") + e["desc"]
+            if not hit["blurb"]:
+                hit["blurb"] = e["blurb"]
+        else:
+            gear.append(e)
+    have = existing_item_names()
+    variants = [v2_magicitem(i) for i in grab("magicitems")]
+    variants = [v for v in variants if v["name"].lower() not in have]
+    sys.stderr.write(f"  srd-2014-x: {len(gear)} gear, {len(variants)} new item variants\n")
+
+    data = {"gear": gear, "items": variants}
+    for cat, rows in data.items():
+        for e in rows:
+            e["source"] = "srd-2014"
+            e["pack"] = "srd-2014-x"
+    return {"srd-2014-x": data}
 
 
 def fetch_v2_spell_doc(key):
@@ -678,12 +784,16 @@ def main():
     if only is None or "srd-2024" in only:
         sys.stderr.write("Fetching Open5e v2 — SRD 5.2 (D&D 2024)…\n")
         packs.update(fetch_v2_srd2024())
+    if only is None or "srd-2014-x" in only:
+        sys.stderr.write("Fetching Open5e v2 — SRD 5.1 gear & item variants…\n")
+        packs.update(fetch_srd2014_extras())
+        licenses.setdefault("srd-2014-x", "https://creativecommons.org/licenses/by/4.0/")
     for key in V2_SPELL_DOCS:
         if only is None or key in only:
             sys.stderr.write(f"Fetching Open5e v2 — {key}…\n")
             packs.update(fetch_v2_spell_doc(key))
             licenses.setdefault(key, "https://creativecommons.org/licenses/by/4.0/")
-    v1_wanted = [s for s in PACK_ORDER if s not in ("srd-2024", *V2_SPELL_DOCS)]
+    v1_wanted = [s for s in PACK_ORDER if s not in ("srd-2024", "srd-2014-x", *V2_SPELL_DOCS)]
     if only is None or any(s in only for s in v1_wanted):
         sys.stderr.write("Fetching Open5e v1 — all expansion documents…\n")
         v1_packs, v1_licenses = fetch_v1_packs()

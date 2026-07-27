@@ -16,6 +16,32 @@ Newest entries at the top.
 
 ---
 
+## 2026-07-27 · Official-content audit: Gear & Tools tab, SRD 5.1 gear/variants pack, 2024 gear
+
+**What changed**
+- Audited official (WotC) coverage against Open5e v2. Both official 5e SRDs were already in (5.1 monsters/spells matched exactly), but three official chunks were missing and are now imported:
+  - **New "Gear & Tools" DB tab** (`gear` category) with card + `GearDetail` renderers.
+  - **New pack `srd-2014-x` — "SRD 5.1 — Gear & Item Variants"** (new "D&D 2014 Rules" group): 257 gear entries (237 mundane items + 20 equipment sets with contents lists) and 288 magic-item variants the v1 API never enumerated (per-armor Adamantine, +1/+2/+3 per weapon, …), deduped by name against the existing 5.1 import via `existing_item_names()` reading `srd-bulk.js`.
+  - **srd-2024 pack now ships its 203 mundane gear items** (previously fetched only for weapon/armor cost joins).
+- `data/fetch-packs.py`: `fetch_srd2014_extras()`, `v2_gear`/`v2_itemset` transforms with `fmt_money`/`fmt_weight`, itemset-into-item merge (defensive), `--only` no longer triggers a spurious full v1 refetch for v2-only packs.
+- Filter-param lesson encoded: `document__key` on `/v2/items` loose-matches across documents (440 rows for srd-2024, only 203 real) — client-side key verification is what keeps counts honest.
+- Older-edition official SRD research (3.5e/d20) delegated to a subagent — outcome tracked separately.
+
+**Why**
+- Asked for: "Did we include all the official ones?" — the answer was "almost": gear, equipment sets, and item variants are official SRD content that was invisible.
+
+**Files added/modified**
+- `data/fetch-packs.py`, `data/packs/srd-2014-x.js` (new), `data/packs/srd-2024.js` + `manifest.js` (regenerated, 19 packs), `app.jsx` (Gear tab), `CHANGELOG.md`.
+
+**Rollback**
+1. Remove the `gear` entries from `DB_TABS`/`renderEntry`/`renderDetail`/`DetailModal` in `app.jsx`.
+2. Delete `data/packs/srd-2014-x.js`; rerun `python data/fetch-packs.py --only srd-2024` after reverting `fetch-packs.py`.
+
+**Verification**
+- Browser: Sources panel shows 19 packs; enabling both SRD packs gives Gear & Tools 460 (203 + 257) and Magic Items 1,285 (997 + 288); gear cards show type • cost • weight with source badges; Burglar's Pack detail lists Category/Cost/Weight and full contents; 2014-vs-2024 same-name entries coexist with distinct badges by design.
+
+---
+
 ## 2026-07-19 · Character profile pages, cast redesign, +180 spells (STDS pack)
 
 **What changed**
