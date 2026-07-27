@@ -364,12 +364,22 @@ const renderEntry = (tab, entry) => {
       <div className="tag-row">{entry.traits.slice(0,4).map(t => <span key={t} className="tag">{t}</span>)}</div>
       {entry.subraces && entry.subraces.length > 0 && <div className="muted small">Subraces: {entry.subraces.map(s => s.name).join(", ")}</div>}
     </>;
-    case "classes":    return <>
-      <div className="db-name">{entry.name}</div>
-      <div className="db-meta">d{entry.hd} • {entry.primary.map(s => s.toUpperCase()).join("/")} • Saves {entry.saves.map(s => s.toUpperCase()).join(" / ")}</div>
-      <div className="db-blurb">{entry.blurb}</div>
-      <div className="muted small">Subclasses: {entry.subclasses.map(s => typeof s === "string" ? s : s.name).join(", ")}</div>
-    </>;
+    case "classes":    {
+      const meta = [
+        entry.hd ? `d${entry.hd}` : null,
+        entry.subclassOf ? `Subclass of ${entry.subclassOf}` : null,
+        (entry.primary || []).length ? entry.primary.map(s => s.toUpperCase()).join("/") : null,
+        (entry.saves || []).length ? "Saves " + entry.saves.map(s => s.toUpperCase()).join(" / ") : null
+      ].filter(Boolean).join(" • ");
+      return <>
+        <div className="db-name">{entry.name}{entry.subclassOf && <span className="db-badge">Subclass</span>}</div>
+        {meta && <div className="db-meta">{meta}</div>}
+        <div className="db-blurb">{entry.blurb}</div>
+        {(entry.subclasses || []).length > 0 && (
+          <div className="muted small">Subclasses: {entry.subclasses.map(s => typeof s === "string" ? s : s.name).join(", ")}</div>
+        )}
+      </>;
+    }
     case "backgrounds":return <>
       <div className="db-name">{entry.name}</div>
       <div className="db-meta">{entry.skills.join(" • ")}</div>
@@ -611,7 +621,8 @@ function ClassDetail({ c }) {
   return (
     <div className="detail-body">
       <div>
-        <KV k="Hit Die"  v={`d${c.hd}`} />
+        <KV k="Hit Die"  v={c.hd ? `d${c.hd}` : null} />
+        <KV k="Subclass of" v={c.subclassOf} />
         <KV k="Primary"  v={(c.primary || []).map(p => p.toUpperCase()).join(" / ")} />
         <KV k="Saves"    v={(c.saves || []).map(s => s.toUpperCase()).join(" / ")} />
         <KV k="Armor"    v={(c.armor || []).length ? c.armor.join(", ") : "None"} />
@@ -736,7 +747,7 @@ function DetailModal({ tab, entry, onClose, packLabel }) {
     if (tab === "spells")      return entry.level === 0 ? "Cantrip" : `${entry.school || ""} • Level ${entry.level}`;
     if (tab === "items")       return `${entry.type || "Magic Item"} • ${entry.rarity || ""}`;
     if (tab === "races")       return `${entry.size || ""}${entry.speed ? ` • ${entry.speed} ft` : ""}`;
-    if (tab === "classes")     return `Hit Die d${entry.hd}`;
+    if (tab === "classes")     return entry.subclassOf ? `Subclass of ${entry.subclassOf}` : (entry.hd ? `Hit Die d${entry.hd}` : "");
     if (tab === "backgrounds") return `Feature: ${entry.feature || ""}`;
     if (tab === "weapons")     return entry.cat;
     if (tab === "armor")       return entry.cat;
@@ -765,7 +776,7 @@ function DetailModal({ tab, entry, onClose, packLabel }) {
 const PAGE_FIRST = 150;
 const PAGE_STEP = 300;
 
-function Database() {
+function Database({ bulkReady }) {
   const [tab, setTab] = useState("races");
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState(null);
@@ -789,7 +800,7 @@ function Database() {
       if (rows && rows.length) extra.push(...rows);
     }
     return extra.length ? base.concat(extra) : base;
-  }, [tab, enabled, loaded]);
+  }, [tab, enabled, loaded, bulkReady]);
 
   const filtered = useMemo(() => {
     if (!q.trim()) return data;
@@ -870,6 +881,7 @@ function Database() {
       <div className="db-main">
         <div className="db-toolbar">
           <input className="db-search" placeholder={"Search " + DB_TABS.find(t => t.id === tab).label.toLowerCase() + "…"} value={q} onChange={e => setQ(e.target.value)}/>
+          {!bulkReady && <span className="muted small db-pack-spin-note"><span className="db-pack-spin">⟳</span> binding full catalog…</span>}
           <span className="muted small">{filtered.length} of {data.length}</span>
         </div>
         <div className="db-grid">
@@ -911,7 +923,7 @@ function CastCard({ c }) {
         <span className="cast-level">Lv {c.level}</span>
         {comp && (
           <span className="cast-comp" title={comp.name + " — " + comp.kind}>
-            {compImg && <img src={compImg} alt="" className="cast-comp-img"/>}
+            {compImg && <img src={compImg} alt="" className="cast-comp-img" loading="lazy"/>}
             <span className="cast-comp-name">{comp.name.split(" ")[0]}</span>
           </span>
         )}
@@ -1027,7 +1039,7 @@ function CharacterPage({ id, go }) {
             <h3 className="char-section-head">Companion — {comp.name}</h3>
             <div className="char-comp">
               <div className="char-comp-side">
-                {st && <div className="char-comp-imgframe"><img src={st.img} alt={comp.name + " — " + st.stage}/></div>}
+                {st && <div className="char-comp-imgframe"><img src={st.img} alt={comp.name + " — " + st.stage} loading="lazy"/></div>}
                 {stages.length > 1 && (
                   <div className="char-comp-stages">
                     {stages.map((s, i) => (
@@ -1239,6 +1251,19 @@ function App({ themeName }) {
   const [route, go] = useHashRoute();
   const [diceOpen, setDiceOpen] = useState(false);
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [bulkReady, setBulkReady] = useState(() => !!window.SRD_BULK);
+
+  // The 1.7 MB srd-bulk catalog no longer blocks first paint — inject it
+  // right after mount; every view re-renders once the merge lands.
+  useEffect(() => {
+    if (window.SRD_BULK) return;
+    const t = setTimeout(() => {
+      injectScript("data/srd-bulk.js")
+        .then(() => setBulkReady(true))
+        .catch(() => console.warn("[codex] srd-bulk.js failed to load — catalog shows curated entries only"));
+    }, 60);
+    return () => clearTimeout(t);
+  }, []);
 
   // Apply tweaks to root CSS vars
   useEffect(() => {
@@ -1296,7 +1321,7 @@ function App({ themeName }) {
         {view === "cast"  && <Cast/>}
         {view === "char"  && <CharacterPage id={route.split("/")[1]} go={go}/>}
         {view === "vault" && <Vault store={store} onOpenSheet={openSheet} onNew={newCharacter}/>}
-        {view === "db"    && <Database/>}
+        {view === "db"    && <Database bulkReady={bulkReady}/>}
         {view === "gen"   && <Generator store={store} setStore={setStore} onClose={() => go("vault")}/>}
       </main>
 

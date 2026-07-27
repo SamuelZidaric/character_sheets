@@ -266,7 +266,7 @@ def render_js(bulk):
    name (case-insensitive). Imported entries are tagged source:"open5e".
    New categories (conditions, sections, planes) are appended fresh.
    ============================================================ */
-window.SRD_BULK = {json.dumps(bulk, indent=2, ensure_ascii=False)};
+window.SRD_BULK = {json.dumps(bulk, ensure_ascii=False, separators=(",", ":"))};
 
 (function () {{
   if (!window.SRD) {{

@@ -16,6 +16,42 @@ Newest entries at the top.
 
 ---
 
+## 2026-07-27 · Load diet (−95% blocking JS) + full Open5e completeness sweep
+
+**What changed**
+- **Load weight** (nothing removed — everything moved to on-demand):
+  - `data/srd-bulk.js` no longer ships as a synchronous `<script>` on any app page. `app.jsx` injects it ~60 ms after mount; every view re-renders when the merge lands (`bulkReady` state; Database shows a "binding full catalog…" spinner until then). `print-sheet.html` keeps it synchronous for equipped-item fidelity.
+  - `fetch-open5e.py` now emits compact JSON: srd-bulk.js 2,040,755 → 1,688,752 bytes (−17%, byte-identical content).
+  - All five entry pages switched from React **development** UMD builds to **production.min** (fresh SRI hashes) — roughly 850 KB less JS and no dev-mode overhead.
+  - Companion/chip images get `loading="lazy"`.
+  - Measured (localhost): JS fetched before DOMContentLoaded fell from ≈3.9 MB to **204 KB**; srd-bulk arrives ≈1.1 s after first paint without blocking.
+- **Completeness sweep** — audited every v2 document against every content endpoint; everything Open5e serves is now importable:
+  - New `V2_SUPPLEMENTS` map folds v2-only categories into their sibling packs (name-deduped): **Tome of Heroes +76 subclasses**, **Open5e originals +17 subclasses**, Tal'Dorei +4 subclasses (Blood Domain …), Black Flag +1 class, A5E +1 class, **A5E backgrounds 16→27** (Adventurer's/Dungeon Delver's/Gate Pass), **A5E +6 conditions**.
+  - Orphan subclasses (parent class in another document) render as standalone entries: `subclassOf` field, "Subclass" badge, tolerant class card/detail/subtitle (no more `dundefined` when `hd` is absent).
+  - `srd-2014-x` pack gains 50 reference **Rules** entries: Languages (19), Damage Types (13), Environments (with descriptions).
+- **Fixed the two blank theme pages**: `atlas.html` and `field-notes.html` were missing the `derive/tweaks-panel/gen-steps` script tags since the JSX split (pre-baseline bug found in the 2026-07-06 assessment) — both render now, and all entry HTMLs are structurally in sync again.
+
+**Why**
+- Asked for: "All that is in Open5e should be here and made way less heavy to load without losing content."
+
+**Files modified**
+- `index.html`, `tome.html`, `atlas.html`, `field-notes.html`, `print-sheet.html` — production React, no sync bulk, dependency fix.
+- `app.jsx` — lazy bulk injection + `bulkReady`, subclass-tolerant class renderers, lazy images, catalog spinner.
+- `data/fetch-open5e.py` — compact JSON. `data/srd-bulk.js` — regenerated.
+- `data/fetch-packs.py` — `V2_SUPPLEMENTS`, `v2_class_any`, `v2_condition`, `fetch_reference_sections`.
+- `data/packs/{a5e,blackflag,toh,taldorei,o5e,srd-2014-x,manifest}.js` — regenerated.
+
+**Rollback**
+1. `git checkout <prev> -- index.html tome.html atlas.html field-notes.html print-sheet.html app.jsx data/fetch-open5e.py data/fetch-packs.py data/srd-bulk.js data/packs/`
+   (note: reverting the HTMLs re-breaks atlas/field-notes deliberately).
+
+**Verification**
+- Fresh load of index.html: 204 KB JS before DOMContentLoaded, production React confirmed, srd-bulk injected ≈1.1 s post-DCL at 1,649 KB, merge lands (Spells 322), Home renders instantly.
+- `atlas.html` and `field-notes.html` render (first time since the split); Field Notes → DB → ToH pack on → Classes 100 with "Ancient Dragons | Subclass of …" cards badged ToH.
+- Supplement dedupe held: +0 duplicate ToH races/feats, +1 net background.
+
+---
+
 ## 2026-07-27 · Official-content audit: Gear & Tools tab, SRD 5.1 gear/variants pack, 2024 gear
 
 **What changed**

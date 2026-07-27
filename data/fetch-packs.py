@@ -758,6 +758,128 @@ def render_pack_js(pack_id, data):
 
 V2_SPELL_DOCS = ["spells-that-dont-suck"]
 
+# v2-only content that belongs inside existing packs: v2-doc-key -> (target pack, endpoints).
+# Entries are name-deduped against whatever the v1 fetch already put in the pack.
+V2_SUPPLEMENTS = {
+    "toh":     ("toh",       ["classes", "species", "backgrounds", "feats"]),
+    "open5e":  ("o5e",       ["classes", "species", "backgrounds"]),
+    "a5e-ag":  ("a5e",       ["classes", "backgrounds", "conditions"]),
+    "a5e-ddg": ("a5e",       ["backgrounds"]),
+    "a5e-gpg": ("a5e",       ["backgrounds"]),
+    "bfrd":    ("blackflag", ["classes"]),
+    "tdcs":    ("taldorei",  ["classes"]),
+}
+V2_EP_TO_CAT = {"classes": "classes", "species": "races", "backgrounds": "backgrounds",
+                "conditions": "conditions", "feats": "feats"}
+
+
+def v2_doc_rows(ep, key):
+    def doc_key(r):
+        d = r.get("document")
+        if isinstance(d, dict):
+            return d.get("key") or ""
+        return str(d or "").rstrip("/").rsplit("/", 1)[-1]
+    rows = fetch_all(f"{API2}/{ep}/?document={key}&document__key={key}&limit=500")
+    return [r for r in rows if doc_key(r) == key]
+
+
+def v2_class_any(c, all_rows):
+    """Class OR standalone subclass (parent may live in another document)."""
+    parent = c.get("subclass_of")
+    if not parent:
+        return v2_class(c, all_rows)
+    feats = []
+    for f in c.get("features") or []:
+        levels = sorted({g.get("level") for g in (f.get("gained_at") or []) if g.get("level")}) or [1]
+        feats.append({"lvl": levels[0], "name": f.get("name", ""), "text": (f.get("desc") or "").strip()})
+    feats.sort(key=lambda x: (x["lvl"], x["name"]))
+    blurb = first_sentence(c.get("desc") or "") or (feats[0]["text"][:160] if feats else "")
+    return {
+        "name": c["name"],
+        "subclassOf": nm(parent),
+        "hd": None,
+        "primary": [], "saves": [], "armor": [], "weapons": [], "equipment": [],
+        "blurb": blurb,
+        "features": feats,
+        "subclasses": [],
+    }
+
+
+def v2_condition(c):
+    return {
+        "name": c["name"],
+        "desc": (c.get("desc") or "").strip(),
+        "blurb": first_sentence(c.get("desc") or ""),
+    }
+
+
+def fetch_v2_supplements(packs, wanted_packs):
+    """Fold v2-only categories into their sibling packs, deduped by name."""
+    for doc, (target, eps) in V2_SUPPLEMENTS.items():
+        if target not in wanted_packs:
+            continue
+        for ep in eps:
+            sys.stderr.write(f"  v2/{ep} ({doc}) -> {target}:\n")
+            rows = v2_doc_rows(ep, doc)
+            if ep == "classes":
+                # Keep base classes (same-doc children fold into them) and
+                # orphan subclasses whose parent lives in another document.
+                keys = {c.get("key") for c in rows}
+                def keep(c):
+                    p = c.get("subclass_of")
+                    if not p:
+                        return True
+                    pk = p.get("key") if isinstance(p, dict) else p
+                    return pk not in keys
+                out = [v2_class_any(c, rows) for c in rows if keep(c)]
+            elif ep == "species":
+                out = [v2_species(sp, rows) for sp in rows if not sp.get("is_subspecies")]
+            elif ep == "backgrounds":
+                out = [v2_background(b) for b in rows]
+            elif ep == "conditions":
+                out = [v2_condition(c) for c in rows]
+            elif ep == "feats":
+                out = [v2_feat(f) for f in rows]
+            else:
+                out = []
+            cat = V2_EP_TO_CAT[ep]
+            existing = packs.setdefault(target, {}).setdefault(cat, [])
+            have = {e["name"].lower() for e in existing}
+            added = 0
+            for e in out:
+                if e["name"].lower() in have:
+                    continue
+                e["source"] = doc
+                e["pack"] = target
+                existing.append(e)
+                have.add(e["name"].lower())
+                added += 1
+            sys.stderr.write(f"    +{added} {cat} (of {len(out)} fetched)\n")
+
+
+def fetch_reference_sections():
+    """Global reference tables (languages, damage types, environments) ->
+    Rules-tab entries inside the srd-2014-x pack."""
+    out = []
+    for ep, parent in (("languages", "Languages"), ("damagetypes", "Damage Types"),
+                       ("environments", "Environments")):
+        sys.stderr.write(f"  v2/{ep} (reference):\n")
+        rows = fetch_all(f"{API2}/{ep}/?limit=500")
+        for r in rows:
+            desc = (r.get("desc") or "").strip()
+            if not desc:
+                continue
+            out.append({
+                "name": r.get("name", ""),
+                "parent": parent,
+                "desc": desc,
+                "blurb": first_sentence(desc, 240),
+                "source": "open5e-reference",
+                "pack": "srd-2014-x",
+            })
+    sys.stderr.write(f"  reference sections: {len(out)}\n")
+    return out
+
 
 def load_existing_manifest(out_dir):
     """Parse the committed manifest.js back into a list (for --only runs)."""
@@ -787,6 +909,7 @@ def main():
     if only is None or "srd-2014-x" in only:
         sys.stderr.write("Fetching Open5e v2 — SRD 5.1 gear & item variants…\n")
         packs.update(fetch_srd2014_extras())
+        packs["srd-2014-x"]["sections"] = fetch_reference_sections()
         licenses.setdefault("srd-2014-x", "https://creativecommons.org/licenses/by/4.0/")
     for key in V2_SPELL_DOCS:
         if only is None or key in only:
@@ -801,6 +924,8 @@ def main():
             v1_packs = {k: v for k, v in v1_packs.items() if k in only}
         packs.update(v1_packs)
         licenses.update(v1_licenses)
+        sys.stderr.write("Fetching Open5e v2 — supplements for existing packs…\n")
+        fetch_v2_supplements(packs, set(v1_packs.keys()))
 
     manifest = load_existing_manifest(out_dir) if only is not None else []
     for pack_id in PACK_ORDER:

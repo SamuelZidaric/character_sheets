@@ -32,9 +32,10 @@ window.CODEX_PACK_MANIFEST = [
     "file": "data/packs/srd-2014-x.js",
     "counts": {
       "gear": 257,
-      "items": 288
+      "items": 288,
+      "sections": 50
     },
-    "kb": 294,
+    "kb": 309,
     "license": "https://creativecommons.org/licenses/by/4.0/"
   },
   {
@@ -48,9 +49,11 @@ window.CODEX_PACK_MANIFEST = [
       "spells": 371,
       "items": 546,
       "feats": 59,
-      "backgrounds": 16
+      "backgrounds": 27,
+      "classes": 1,
+      "conditions": 6
     },
-    "kb": 1162,
+    "kb": 1202,
     "license": "http://open5e.com/legal"
   },
   {
@@ -74,9 +77,10 @@ window.CODEX_PACK_MANIFEST = [
     "edition": "blackflag",
     "file": "data/packs/blackflag.js",
     "counts": {
-      "monsters": 360
+      "monsters": 360,
+      "classes": 1
     },
-    "kb": 831,
+    "kb": 857,
     "license": "https://paizo.com/orclicense"
   },
   {
@@ -196,10 +200,11 @@ window.CODEX_PACK_MANIFEST = [
       "weapons": 31,
       "armor": 5,
       "feats": 13,
-      "backgrounds": 18,
-      "races": 11
+      "backgrounds": 19,
+      "races": 11,
+      "classes": 76
     },
-    "kb": 199,
+    "kb": 482,
     "license": "http://open5e.com/legal"
   },
   {
@@ -239,9 +244,10 @@ window.CODEX_PACK_MANIFEST = [
       "monsters": 4,
       "items": 1,
       "feats": 1,
-      "backgrounds": 5
+      "backgrounds": 5,
+      "classes": 4
     },
-    "kb": 25,
+    "kb": 40,
     "license": "http://open5e.com/legal"
   },
   {
@@ -266,9 +272,10 @@ window.CODEX_PACK_MANIFEST = [
     "file": "data/packs/o5e.js",
     "counts": {
       "spells": 2,
-      "backgrounds": 2
+      "backgrounds": 2,
+      "classes": 17
     },
-    "kb": 4,
+    "kb": 63,
     "license": "http://open5e.com/legal"
   }
 ];
